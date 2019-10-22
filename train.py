@@ -33,10 +33,9 @@ for epoch in range(EPOCH_NUM):
 
         optimizer.zero_grad()
 
-        with torch.no_grad():
-            outputs = net(inputs)
+        outputs = net(inputs)
 
-        loss = criterion(outputs.double(), scale_labels(labels, 1000))
+        loss = criterion(outputs.double(), labels)
         loss.backward()
 
         optimizer.step()
