@@ -8,14 +8,12 @@ class VGG19(nn.Module):
     def __init__(self):
         super(VGG19, self).__init__()
         self.network = self._make_network()
-        self.regression1 = nn.Linear(230400, 2000)
-        self.regression2 = nn.Linear(2000, 3)
+        self.regression1 = nn.Linear(230400, 3)
 
     def forward(self, x):
         out = self.network(x)
         out = out.view(out.size(0), -1)
         out = self.regression1(out)
-        out = self.regression2(out)
 
         return out
 
