@@ -10,7 +10,7 @@ from tqdm import tqdm
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s %(levelname)-8s %(message)s', datefmt='%m-%d %H:%M:%S')
 
-os.environ['CUDA_VISIBLE_DEVICES'] = '1'
+os.environ['CUDA_VISIBLE_DEVICES'] = '3'
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
 
 
