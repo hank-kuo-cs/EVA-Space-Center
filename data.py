@@ -47,7 +47,11 @@ def load_data(path_type):
 
 
 def load_image(img_path):
-    return cv2.imread(img_path) / 255
+    img = cv2.imread(img_path)
+    img = np.array(img / 255)
+    img.astype(dtype=float)
+
+    return img
 
 
 def load_label(img_path):
@@ -68,8 +72,8 @@ class MoonDataset(Dataset):
         return DATA_SIZE
 
     def __getitem__(self, item):
-        file_index = item // 8000
-        file_num = item % 8000
+        file_index = item // 1
+        file_num = item % 1
 
         image_path = self.image_files[file_index][file_num]
         image = load_image(image_path)
