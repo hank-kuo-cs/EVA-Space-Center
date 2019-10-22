@@ -36,6 +36,8 @@ for epoch in range(EPOCH_NUM):
         outputs = net(inputs)
 
         loss = criterion(outputs.double(), labels)
+        if i % 5 == 0:
+            print(loss)
         loss.backward()
 
         optimizer.step()
