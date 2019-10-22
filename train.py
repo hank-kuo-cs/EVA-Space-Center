@@ -33,7 +33,7 @@ for epoch in range(EPOCH_NUM):
 
         optimizer.zero_grad()
 
-        outputs = net(inputs)
+        outputs = net(inputs.float())
 
         loss = criterion(outputs.double(), labels)
         if i % 5 == 0:
