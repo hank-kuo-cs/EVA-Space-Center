@@ -47,7 +47,7 @@ def load_data(path_type):
 
 
 def load_image(img_path):
-    return cv2.imread(img_path)
+    return cv2.imread(img_path) / 255
 
 
 def load_label(img_path):

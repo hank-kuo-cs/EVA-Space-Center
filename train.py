@@ -42,11 +42,11 @@ for epoch in range(EPOCH_NUM):
 
         running_loss += loss.item()
 
-        if i % 2000 == 1999:
+        if i % 1000 == 999:
             logging.info('[%d epoch, %5d step] loss: %.6f' % (epoch + 1, i + 1, running_loss / 2000))
             running_loss = 0.0
 
-    if epoch % 10 == 9 and epoch > 0:
+    if epoch % 20 == 19 and epoch > 0:
             model_path = 'checkpoint/model_epoch%d.pth' % (epoch + 1)
             torch.save(net.state_dict(), model_path)
 
