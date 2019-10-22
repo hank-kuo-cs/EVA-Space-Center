@@ -2,7 +2,7 @@ import os
 import torch
 import logging
 from torch.utils.data import DataLoader
-from data import MoonDataset, scale_labels
+from data import MoonDataset
 from net import VGG19
 from config import *
 from tqdm import tqdm

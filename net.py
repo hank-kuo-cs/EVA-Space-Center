@@ -12,6 +12,7 @@ class VGG19(nn.Module):
         self.regression2 = nn.Linear(2000, 3)
 
     def forward(self, x):
+        x = x.float()
         out = self.network(x)
         out = out.view(out.size(0), -1)
         out = self.regression1(out)

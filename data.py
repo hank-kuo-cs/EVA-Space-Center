@@ -48,19 +48,8 @@ def load_data(path_type):
 
 def load_image(img_path):
     img = cv2.imread(img_path)
-    img = np.array(img / 255)
-    img.astype(dtype=float)
 
-    return img
-
-
-def load_label(img_path):
-    label_paths = sorted(glob(os.path.curdir + '/dataset/%s' % path_type + '/labels/gt*'))
-
-    image_name = path_leaf(img_path)
-    label = (unpickle(label_paths[i]))[image_name]
-
-    return label
+    return img / 255
 
 
 class MoonDataset(Dataset):
