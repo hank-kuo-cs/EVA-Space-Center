@@ -76,6 +76,7 @@ class MoonDataset(Dataset):
 
         image_name = path_leaf(image_path)
         label = np.array(unpickle(self.label_files[file_index])[image_name])
+        label = scale_labels(label, 1000)
 
         transform = transforms.Compose([
             transforms.ToTensor(),
