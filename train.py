@@ -21,7 +21,7 @@ train_loader = DataLoader(train_set, BATCH_SiZE, True, num_workers=2)
 logging.info('Set VGG model')
 net = VGG19().to(device)
 
-criterion = torch.nn.MSELoss()
+criterion = torch.nn.L1Loss()
 optimizer = torch.optim.SGD(net.parameters(), lr=LEARNING_RATE, momentum=MOMENTUM)
 
 logging.info('Start training')
