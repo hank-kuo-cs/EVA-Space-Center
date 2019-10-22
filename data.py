@@ -40,26 +40,17 @@ def load_data(path_type):
         img_paths = glob(dataset_path + '/images/' + str(i) + '/train*')
 
         for img_path in img_paths:
-            images.append(cv2.imread(img_path))
+            images.append(img_path)
 
             image_name = path_leaf(img_path)
             label = (unpickle(label_paths[i]))[bytes(image_name, encoding="utf8")]
             labels.append(label)
 
-    return np.array(images), np.array(labels)
+    return images, np.array(labels)
 
 
-def load_images(path):
-    imgs = []
-
-    for i in range(10):
-        img_paths = glob(path + str(i) + '/*')
-
-        for img_path in img_paths:
-            imgs.append(cv2.imread(img_path))
-            print(os.curdir)
-
-    return imgs
+def load_image(img_path):
+    return cv2.imread(img_path)
 
 
 def load_labels(path):
@@ -82,7 +73,7 @@ class MoonDataset(Dataset):
         return len(self.labels)
 
     def __getitem__(self, item):
-        sample = (self.imgs[item], torch.from_numpy(self.labels)[item])
+        sample = (load_image(self.imgs[item]), torch.from_numpy(self.labels)[item])
 
         transform = transforms.Compose([
             transforms.ToTensor(),
