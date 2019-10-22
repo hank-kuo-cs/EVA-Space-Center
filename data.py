@@ -7,6 +7,7 @@ import numpy as np
 from glob import glob
 from torch.utils.data import Dataset
 from torchvision import transforms
+from config import DATA_SIZE
 
 
 def unpickle(file):
@@ -26,7 +27,6 @@ def scale_labels(labels, value):
 
 
 def load_data(path_type):
-    images, labels = [], []
     path_types = ['train', 'test', 'validation']
 
     if path_type not in path_types:
@@ -34,46 +34,48 @@ def load_data(path_type):
 
     dataset_path = os.path.curdir + '/dataset/%s' % path_type
 
-    label_paths = sorted(glob(dataset_path + '/labels/gt*'))
+    image_files = []
 
-    for i in range(10):
-        img_paths = glob(dataset_path + '/images/' + str(i) + '/train*')
+    for i in range(8):
+        imgs_path = dataset_path + '/images/' + str(i) + '/train*'
+        image_files.append(glob(imgs_path))
 
-        for img_path in img_paths:
-            images.append(img_path)
+    labels_path = dataset_path + '/labels/gt*'
+    label_files = sorted(glob(labels_path))
 
-            image_name = path_leaf(img_path)
-            label = (unpickle(label_paths[i]))[image_name]
-            labels.append(label)
-
-    return images, np.array(labels)
+    return image_files, label_files
 
 
 def load_image(img_path):
     return cv2.imread(img_path)
 
 
-def load_labels(path):
-    labels = []
+def load_label(img_path):
+    label_paths = sorted(glob(os.path.curdir + '/dataset/%s' % path_type + '/labels/gt*'))
 
-    label_paths = glob(path)
+    image_name = path_leaf(img_path)
+    label = (unpickle(label_paths[i]))[image_name]
 
-    for label_path in label_paths:
-        label = unpickle(label_path)
-        labels.append(label)
-
-    return labels
+    return label
 
 
 class MoonDataset(Dataset):
     def __init__(self, data_type):
-        self.imgs, self.labels = load_data(data_type)
+        self.image_files, self.label_files = load_data(data_type)
+        self.data_type = data_type
 
     def __len__(self):
-        return len(self.labels)
+        return DATA_SIZE
 
     def __getitem__(self, item):
-        sample = (load_image(self.imgs[item]), torch.from_numpy(self.labels)[item])
+        file_index = item // 8000
+        file_num = item % 8000
+
+        image_path = self.image_files[file_index][file_num]
+        image = load_image(image_path)
+
+        image_name = path_leaf(image_path)
+        label = np.array(unpickle(self.label_files[file_index])[image_name])
 
         transform = transforms.Compose([
             transforms.ToTensor(),
@@ -81,6 +83,6 @@ class MoonDataset(Dataset):
             ]
         )
 
-        sample = transform(sample[0]), sample[1]
+        sample = transform(image), torch.from_numpy(label)
 
         return sample

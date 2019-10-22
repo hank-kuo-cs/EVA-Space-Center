@@ -10,7 +10,7 @@ from tqdm import tqdm
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s %(levelname)-8s %(message)s', datefmt='%m-%d %H:%M:%S')
 
-os.environ['CUDA_VISIBLE_DEVICES'] = '0'
+os.environ['CUDA_VISIBLE_DEVICES'] = '1'
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
 
 
@@ -33,7 +33,8 @@ for epoch in range(EPOCH_NUM):
 
         optimizer.zero_grad()
 
-        outputs = net(inputs)
+        with torch.no_grad():
+            outputs = net(inputs)
 
         loss = criterion(outputs.double(), scale_labels(labels, 1000))
         loss.backward()
