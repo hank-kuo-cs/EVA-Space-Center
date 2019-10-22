@@ -11,7 +11,7 @@ from torchvision import transforms
 
 def unpickle(file):
     with open(file, 'rb') as fo:
-        data = pickle.load(fo, encoding='bytes')
+        data = pickle.load(fo)
 
     return data
 
@@ -43,7 +43,7 @@ def load_data(path_type):
             images.append(img_path)
 
             image_name = path_leaf(img_path)
-            label = (unpickle(label_paths[i]))[bytes(image_name, encoding="utf8")]
+            label = (unpickle(label_paths[i]))[image_name]
             labels.append(label)
 
     return images, np.array(labels)
