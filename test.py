@@ -58,8 +58,9 @@ if __name__ == '__main__':
 
             outputs = net(images.float())
 
-            for i in range(3):
-                error_percentages[i] += (outputs[i] - labels[i]).numpy()[i]
+            for i in range(BATCH_SiZE):
+                for j in range(3):
+                    error_percentages[j] += (outputs[i] - labels[i].float()).item()[j]
 
     logging.info('Finish testing, time = ' + str(time.time() - start))
     print_error_percentage(error_percentages)
