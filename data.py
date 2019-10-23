@@ -30,7 +30,7 @@ def scale_labels(labels, value):
 
 
 def load_image(img_path):
-    img = cv2.imread(img_path)
+    img = cv2.imread(img_path, cv2.IMREAD_GRAYSCALE)
 
     return img / 255
 
@@ -75,9 +75,8 @@ class MoonDataset(Dataset):
         dataset_path = os.path.curdir + '/dataset/%s' % self.data_type
 
         image_files = []
-        dir_num = self.data_size // SPLIT_DATASET_SIZE
 
-        for i in range(dir_num):
+        for i in range(10):
             imgs_path = dataset_path + '/images/' + str(i) + '/train*'
             image_files.append(glob(imgs_path))
 
