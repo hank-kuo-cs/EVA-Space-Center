@@ -1,4 +1,5 @@
 import os
+import time
 import torch
 import logging
 import matplotlib.pyplot as plt
@@ -12,7 +13,7 @@ from glob import glob
 
 def draw_loss_graph(losses, epoch_start=0, step=100):
     y = losses
-    x = [i * step + epoch_start * TRAIN_DATA_SIZE for i in range(len(losses))]
+    x = [i * step + epoch_start * TRAIN_DATA_SIZE // BATCH_SiZE for i in range(len(losses))]
 
     plt.xlabel("Step")
     plt.ylabel("Loss")
@@ -61,9 +62,12 @@ if __name__ == '__main__':
     optimizer = torch.optim.SGD(net.parameters(), lr=LEARNING_RATE, momentum=MOMENTUM)
 
     logging.info('Start training')
+    train_start = time.time()
     graph_losses = []
 
     for epoch in range(EPOCH_NUM - epoch_start):
+        start = time.time()
+
         epoch += epoch_start
         running_loss = 0.0
 
@@ -95,4 +99,6 @@ if __name__ == '__main__':
                 draw_loss_graph(graph_losses, epoch_start, 10)
                 torch.save(net.state_dict(), model_path)
 
-    logging.info('Finished training')
+        logging.info('Finish one epoch, time = %s' % str(time.time() - start))
+
+    logging.info('Finished training, time = %s' % str(time.time() - train_start))
