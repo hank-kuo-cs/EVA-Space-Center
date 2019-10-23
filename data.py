@@ -46,8 +46,8 @@ class MoonDataset(Dataset):
         return self.data_size
 
     def __getitem__(self, item):
-        file_index = item // 8000
-        file_num = item % 8000
+        file_index = item // 1
+        file_num = item % 1
 
         image_path = self.image_files[file_index][file_num]
         image = load_image(image_path)
@@ -75,7 +75,7 @@ class MoonDataset(Dataset):
         dataset_path = os.path.curdir + '/dataset/%s' % self.data_type
 
         image_files = []
-        dir_num = self.data_size // 8000
+        dir_num = self.data_size // 1
 
         for i in range(dir_num):
             imgs_path = dataset_path + '/images/' + str(i) + '/train*'

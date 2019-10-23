@@ -40,7 +40,7 @@ if __name__ == '__main__':
     test_set = MoonDataset('test')
     test_loader = DataLoader(test_set, BATCH_SiZE, True, num_workers=2)
 
-    model_path = sys.argv[2] if sys.argv[2] else choose_newest_model()
+    model_path = sys.argv[1] if len(sys.argv) == 2 else choose_newest_model()
 
     logging.info('Load pretrained model:', model_path)
     net = VGG19().to(device)
