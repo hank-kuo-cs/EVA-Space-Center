@@ -1,7 +1,7 @@
 import os
 import torch
 import logging
-import matplotlib.pyplot as plot
+import matplotlib.pyplot as plt
 from torch.utils.data import DataLoader
 from data import MoonDataset
 from net import VGG19
@@ -10,8 +10,15 @@ from tqdm import tqdm
 from glob import glob
 
 
-def draw_loss_graph(losses, step=1000):
-    pass
+def draw_loss_graph(losses, epoch_start=0, step=1000):
+    y = losses
+    x = [i * step + epoch_start * TRAIN_DATA_SIZE for i in range(len(losses))]
+
+    plt.xlabel("Step")
+    plt.ylabel("Loss")
+    plt.plot(x, y)
+    plt.show()
+    plt.savefig('./checkpoint/loss_graph/step_%d-%d.png' % (x[0], x[-1]))
 
 
 def choose_newest_model():
@@ -84,6 +91,7 @@ if __name__ == '__main__':
 
         if epoch % 20 == 19 and epoch > 0:
                 model_path = 'checkpoint/model_epoch%d.pth' % (epoch + 1)
+                draw_loss_graph(graph_losses, epoch_start)
                 torch.save(net.state_dict(), model_path)
 
     logging.info('Finished training')
