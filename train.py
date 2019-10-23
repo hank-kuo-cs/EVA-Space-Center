@@ -57,7 +57,7 @@ if __name__ == '__main__':
 
     epoch_start = get_epoch_num(model_path) if model_path else 0
 
-    criterion = torch.nn.MSELoss()
+    criterion = torch.nn.L1Loss()
     optimizer = torch.optim.SGD(net.parameters(), lr=LEARNING_RATE, momentum=MOMENTUM)
 
     logging.info('Start training')
