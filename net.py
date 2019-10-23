@@ -37,6 +37,6 @@ class VGG19(nn.Module):
                            nn.ReLU(inplace=True)]
                 in_channels = layer
 
-        layers += [nn.AvgPool2d(kernel_size=(18, 25))]
+        layers += [nn.AvgPool2d(kernel_size=(9, 12))]
 
         return nn.Sequential(*layers)

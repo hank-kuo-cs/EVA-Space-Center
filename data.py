@@ -31,6 +31,8 @@ def scale_labels(labels, value):
 
 def load_image(img_path):
     img = cv2.imread(img_path, cv2.IMREAD_GRAYSCALE)
+    img = cv2.pyrDown(img)
+    img = cv2.equalizeHist(img)
 
     return img / 255
 
