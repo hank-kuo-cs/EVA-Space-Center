@@ -84,17 +84,16 @@ if __name__ == '__main__':
 
             running_loss += loss.item()
 
-            if i % 10 == 9:
-                running_loss /= 10
+            if i % 100 == 99:
+                running_loss /= 100
                 logging.info('[%d epoch, %5d step] loss: %.6f' % (epoch + 1, i + 1, running_loss))
 
                 graph_losses.append(running_loss)
                 running_loss = 0.0
 
-        if epoch % 10 == 9:
-                model_path = 'checkpoint/model_epoch%d.pth' % (epoch + 1)
-                draw_loss_graph(graph_losses, epoch_start, 10)
-                torch.save(net.state_dict(), model_path)
+        model_path = 'checkpoint/model_epoch%d.pth' % (epoch + 1)
+        draw_loss_graph(graph_losses, epoch_start, 100)
+        torch.save(net.state_dict(), model_path)
 
         logging.info('Finish one epoch, time = %s' % str(time.time() - start))
 
