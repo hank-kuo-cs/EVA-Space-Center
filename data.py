@@ -75,7 +75,7 @@ class MoonDataset(Dataset):
         dataset_path = os.path.curdir + '/dataset/%s' % self.data_type
 
         image_files = []
-        dir_num = self.data_size // 1
+        dir_num = self.data_size // SPLIT_DATASET_SIZE
 
         for i in range(dir_num):
             imgs_path = dataset_path + '/images/' + str(i) + '/train*'

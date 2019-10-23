@@ -10,14 +10,13 @@ from tqdm import tqdm
 from glob import glob
 
 
-def draw_loss_graph(losses, epoch_start=0, step=1000):
+def draw_loss_graph(losses, epoch_start=0, step=100):
     y = losses
     x = [i * step + epoch_start * TRAIN_DATA_SIZE for i in range(len(losses))]
 
     plt.xlabel("Step")
     plt.ylabel("Loss")
     plt.plot(x, y)
-    plt.show()
     plt.savefig('./checkpoint/loss_graph/step_%d-%d.png' % (x[0], x[-1]))
 
 
@@ -51,8 +50,10 @@ if __name__ == '__main__':
     net = VGG19().to(device)
 
     model_path = choose_newest_model()
+
     if model_path:
         net.load_state_dict(torch.load(model_path))
+        logging.info('Find pretrained model, continue training this model')
 
     epoch_start = get_epoch_num(model_path) if model_path else 0
 
@@ -82,14 +83,14 @@ if __name__ == '__main__':
 
             running_loss += loss.item()
 
-            if i % 1000 == 999:
-                running_loss /= 1000
+            if i % 100 == 99:
+                running_loss /= 100
                 logging.info('[%d epoch, %5d step] loss: %.6f' % (epoch + 1, i + 1, running_loss))
 
                 graph_losses.append(running_loss)
                 running_loss = 0.0
 
-        if epoch % 20 == 19 and epoch > 0:
+        if epoch % 10 == 9:
                 model_path = 'checkpoint/model_epoch%d.pth' % (epoch + 1)
                 draw_loss_graph(graph_losses, epoch_start)
                 torch.save(net.state_dict(), model_path)
