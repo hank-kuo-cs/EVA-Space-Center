@@ -1,8 +1,7 @@
 import torch.nn as nn
 
 
-architecture = [64, 64, 'M', 128, 128, 'M', 256, 256, 256, 256, 'M', 512, 512, 512, 512, 'M',
-                512, 512, 512, 512, 'M', 512, 512, 'M', 512, 512, 'M', 512, 512, 'M']
+architecture = [64, 64, 'M', 128, 128, 'M', 256, 256, 256, 256, 'M', 512, 512, 512, 512, 'M', 512, 512, 512, 512, 'M']
 
 
 class VGG19(nn.Module):
@@ -38,6 +37,6 @@ class VGG19(nn.Module):
                            nn.ReLU(inplace=True)]
                 in_channels = layer
 
-        layers += [nn.AvgPool2d(kernel_size=(2, 3), stride=1)]
+        layers += [nn.AvgPool2d(kernel_size=(18, 25))]
 
         return nn.Sequential(*layers)
