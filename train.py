@@ -7,7 +7,6 @@ from torch.utils.data import DataLoader
 from data import MoonDataset
 from net import VGG19
 from config import *
-from tqdm import tqdm
 from glob import glob
 
 
@@ -40,7 +39,7 @@ if __name__ == '__main__':
 
     logging.basicConfig(level=logging.INFO, format='%(asctime)s %(levelname)-8s %(message)s', datefmt='%m-%d %H:%M:%S')
 
-    os.environ['CUDA_VISIBLE_DEVICES'] = '3'
+    os.environ['CUDA_VISIBLE_DEVICES'] = CUDA_DEVICE
     device = 'cuda' if torch.cuda.is_available() else 'cpu'
 
     logging.info('Load data')
@@ -71,7 +70,7 @@ if __name__ == '__main__':
         epoch += epoch_start
         running_loss = 0.0
 
-        for i, data in enumerate(tqdm(train_loader)):
+        for i, data in enumerate(train_loader):
             inputs, labels = data[0].to(device), data[1].to(device)
 
             optimizer.zero_grad()
@@ -79,8 +78,6 @@ if __name__ == '__main__':
             outputs = net(inputs.float())
 
             loss = criterion(outputs.double(), labels)
-            if i % 5 == 0:
-                print(loss)
             loss.backward()
 
             optimizer.step()

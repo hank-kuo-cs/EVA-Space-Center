@@ -9,14 +9,19 @@ class VGG19(nn.Module):
     def __init__(self):
         super(VGG19, self).__init__()
         self.network = self._make_network()
-        self.regression1 = nn.Linear(3072, 500)
-        self.regression2 = nn.Linear(500, 3)
+        self.regression1 = nn.Linear(512, 256)
+        self.regression2 = nn.Linear(256, 128)
+        self.regression3 = nn.Linear(128, 64)
+        self.regression4 = nn.Linear(64, 3)
 
     def forward(self, x):
         out = self.network(x)
         out = out.view(out.size(0), -1)
+
         out = self.regression1(out)
         out = self.regression2(out)
+        out = self.regression3(out)
+        out = self.regression4(out)
 
         return out
 
@@ -33,6 +38,6 @@ class VGG19(nn.Module):
                            nn.ReLU(inplace=True)]
                 in_channels = layer
 
-        layers += [nn.AvgPool2d(kernel_size=1, stride=1)]
+        layers += [nn.AvgPool2d(kernel_size=(2, 3), stride=1)]
 
         return nn.Sequential(*layers)
