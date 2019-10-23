@@ -1,5 +1,6 @@
 import os
 import sys
+import time
 import torch
 import logging
 from net import VGG19
@@ -42,11 +43,12 @@ if __name__ == '__main__':
 
     model_path = sys.argv[1] if len(sys.argv) == 2 else choose_newest_model()
 
-    logging.info('Load pretrained model:', model_path)
+    logging.info('Load pretrained model: ' + str(model_path))
     net = VGG19().to(device)
     net.load_state_dict(torch.load(model_path))
 
     logging.info('Start testing')
+    start = time.time()
 
     error_percentages = [0, 0, 0]
 
@@ -54,10 +56,11 @@ if __name__ == '__main__':
         for data in tqdm(test_loader):
             images, labels = data[0].to(device), data[1].to(device)
 
-            outputs = net(images)
+            outputs = net(images.float())
 
-            for i in range(3):
-                error_percentages[i] += (outputs[i] - labels[i]).numpy()[i]
+            for i in range(BATCH_SiZE):
+                for j in range(3):
+                    error_percentages[j] += (outputs[i] - labels[i].float()).item()[j]
 
-    logging.info('Finish testing')
+    logging.info('Finish testing, time = ' + str(time.time() - start))
     print_error_percentage(error_percentages)
