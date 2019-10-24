@@ -32,12 +32,16 @@ class MoonMSELoss(torch.nn.Module):
         for i in range(BATCH_SIZE):
             circle_num = np.array([0, 0], dtype=np.float64)
 
-            outputs[i][2] /= 2
+            targets[i][1] /= 2 * np.pi
+            targets[i][2] /= np.pi
+
+            outputs[i][1] = torch.div(outputs[i][1], 2 * np.pi)
+            outputs[i][2]= torch.div(outputs[i][2], np.pi)
 
             for j in range(1, 3):
                 if outputs[i][j] < 0:
                     circle_num[j - 1] = outputs[i][j] // -1
-                    outputs[i][j] = (outputs[i][j] % 1)
+                    outputs[i][j] = torch.remainder(outputs[i][j], 1)
 
                 dis = abs(outputs[i][j] % 1 - targets[i][j])
                 if dis > 0.5:
@@ -46,9 +50,9 @@ class MoonMSELoss(torch.nn.Module):
                     else:
                         targets[i][j] = outputs[i][j] - 1 + dis
                 circle_num[j - 1] += outputs[i][j] // 1
-                outputs[i][j] = outputs[i][j] % 1
+                outputs[i][j] = torch.remainder(outputs[i][j], 1)
 
-            outputs[i][2] *= 2
+            outputs[i][2] = torch.mul(outputs[i][2], 2)
             circle_num[1] *= 2
 
             batch_circle_num.append(circle_num)
@@ -60,3 +64,8 @@ class MoonMSELoss(torch.nn.Module):
         loss = torch.add(mse_loss, amount_loss)
 
         return loss
+
+
+a = torch.tensor(5.6)
+torch.remainder(a, 1)
+print(a)
