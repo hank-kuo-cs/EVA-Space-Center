@@ -1,10 +1,12 @@
 import time
 import argparse
+from glob import glob
 from torch.utils.data import DataLoader
-from data import MoonDataset
+
 from net import VGG19
 from config import *
-from glob import glob
+from data import MoonDataset
+from loss import MoonMSELoss
 from visualize import draw_loss_tensorboard
 
 
@@ -41,7 +43,7 @@ def train(model_path):
 
     epoch_start = get_epoch_num(model_path) if model_path else 0
 
-    criterion = torch.nn.L1Loss()
+    criterion = MoonMSELoss()
     optimizer = torch.optim.SGD(net.parameters(), lr=LEARNING_RATE, momentum=MOMENTUM)
 
     logging.info('Start training')
@@ -81,7 +83,7 @@ def train(model_path):
         model_path = 'checkpoint/model_epoch%.3d.pth' % (epoch + 1)
         torch.save(net.state_dict(), model_path)
 
-        draw_loss_tensorboard(epoch_loss / (DATASET_SIZE['train'] // BATCH_SiZE) / SCALAR_LABEL, epoch, -1)
+        draw_loss_tensorboard(epoch_loss / (DATASET_SIZE['train'] // BATCH_SIZE) / SCALAR_LABEL, epoch, -1)
 
         logging.info('Finish one epoch, time = %s' % str(time.time() - start))
 
@@ -93,7 +95,7 @@ if __name__ == '__main__':
 
     logging.info('Load data')
     train_set = MoonDataset('train')
-    train_loader = DataLoader(train_set, BATCH_SiZE, True, num_workers=2)
+    train_loader = DataLoader(train_set, BATCH_SIZE, True, num_workers=2)
 
     model_path = args.model if args.model else (choose_newest_model() if not args.scratch else None)
 

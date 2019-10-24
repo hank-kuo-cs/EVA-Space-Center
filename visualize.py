@@ -8,7 +8,7 @@ writer = SummaryWriter(WRITER_PATH)
 
 def draw_loss_graph(losses, epoch_start=0, step=100):
     y = losses
-    x = [i * step + epoch_start * DATASET_SIZE['train'] // BATCH_SiZE for i in range(len(losses))]
+    x = [i * step + epoch_start * DATASET_SIZE['train'] // BATCH_SIZE for i in range(len(losses))]
 
     plt.xlabel("Step")
     plt.ylabel("Loss")
@@ -17,7 +17,7 @@ def draw_loss_graph(losses, epoch_start=0, step=100):
 
 
 def draw_loss_tensorboard(loss, epoch, step):
-    x = epoch + 1 if step < 0 else step + epoch * (DATASET_SIZE['train'] // BATCH_SiZE)
+    x = epoch + 1 if step < 0 else step + epoch * (DATASET_SIZE['train'] // BATCH_SIZE)
     y = loss
     tag = '%s/train/loss_with_%s' % (EXPERIMENT_NAME, 'epoch' if step < 0 else 'step')
 
@@ -25,7 +25,7 @@ def draw_loss_tensorboard(loss, epoch, step):
 
 
 def draw_error_percentage_tensorboard(error_percentage, epoch):
-    error_type = ['gamma', 'theta', 'pi']
+    error_type = ['gamma', 'phi', 'theta']
 
     total_error_percentage = 0
 

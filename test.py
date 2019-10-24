@@ -1,12 +1,14 @@
 import time
 import argparse
 import numpy as np
-from net import VGG19
 from torch.utils.data import DataLoader
-from data import MoonDataset
-from config import *
 from tqdm import tqdm
 from glob import glob
+
+from config import *
+from net import VGG19
+from data import MoonDataset
+from loss import get_error_percentage
 from visualize import draw_error_percentage_tensorboard
 
 
@@ -36,17 +38,15 @@ def get_all_model():
 
 
 def print_error_percentage(error_percentage):
+    error_type = ['gamma', 'phi', 'theta']
     total_error_percentage = 0
 
-    for e in error_percentage:
-        total_error_percentage += e
+    for i in range(3):
+        print('%s error percentage:' % error_type[i], error_percentage[i])
 
-    total_error_percentage /= 3
+        total_error_percentage += error_percentage[i] / 3
 
-    print('Gamma error percentage:', error_percentage[0])
-    print('Theta error percentage:', error_percentage[1])
-    print('Pi error percentage:', error_percentage[2])
-    print('Total error percentage:', total_error_percentage)
+    print('total error percentage:', total_error_percentage)
 
 
 def test(model_path, epoch=-1):
@@ -56,7 +56,7 @@ def test(model_path, epoch=-1):
     logging.info('Start testing')
     start = time.time()
 
-    error_percentages = [0, 0, 0]
+    error_percentages = np.array([0.0, 0.0, 0.0])
 
     with torch.no_grad():
         for data in tqdm(test_loader):
@@ -64,11 +64,10 @@ def test(model_path, epoch=-1):
 
             outputs = net(images.float())
 
-            for i in range(BATCH_SiZE):
-                for j in range(3):
-                    error_percentages[j] += (outputs[i] - labels[i].float())[j].item() / labels[i][j].item()
+            for i in range(BATCH_SIZE):
+                error_percentages += get_error_percentage(outputs[i], labels[i])
 
-    error_percentages = np.array(error_percentages) / DATASET_SIZE['test'] * 100
+    error_percentages /= (DATASET_SIZE['test'] / 100)
 
     logging.info('Finish testing, time = ' + str(time.time() - start))
 
@@ -83,7 +82,7 @@ if __name__ == '__main__':
 
     logging.info('Load data')
     test_set = MoonDataset('test')
-    test_loader = DataLoader(test_set, BATCH_SiZE, True, num_workers=2)
+    test_loader = DataLoader(test_set, BATCH_SIZE, True, num_workers=2)
 
     model_path = args.model if args.model else get_newest_model()
 
