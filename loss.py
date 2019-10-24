@@ -1,5 +1,6 @@
 import numpy as np
 from config import *
+BATCH_SIZE = 2
 
 
 def get_error_percentage(output, target):
@@ -8,6 +9,12 @@ def get_error_percentage(output, target):
     error_percentage = [0, 0, 0]
 
     error_percentage[0] = (abs(output[0] - target[0]) / target[0]).item()
+
+    target[1] /= 2 * np.pi
+    target[2] /= np.pi
+
+    output[1] /= 2 * np.pi
+    output[2] /= np.pi
 
     output[2] /= 2
     target[2] /= 2
@@ -36,7 +43,7 @@ class MoonMSELoss(torch.nn.Module):
             targets[i][2] /= np.pi
 
             outputs[i][1] = torch.div(outputs[i][1], 2 * np.pi)
-            outputs[i][2]= torch.div(outputs[i][2], np.pi)
+            outputs[i][2] = torch.div(outputs[i][2], np.pi)
 
             for j in range(1, 3):
                 if outputs[i][j] < 0:
@@ -64,8 +71,3 @@ class MoonMSELoss(torch.nn.Module):
         loss = torch.add(mse_loss, amount_loss)
 
         return loss
-
-
-a = torch.tensor(5.6)
-torch.remainder(a, 1)
-print(a)
