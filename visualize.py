@@ -16,9 +16,29 @@ def draw_loss_graph(losses, epoch_start=0, step=100):
     plt.savefig('./checkpoint/loss_graph/step_%d-%d.png' % (x[0], x[-1]))
 
 
-def draw_loss_tensorboard(loss, data_type, epoch, step):
-    x = epoch + 1 if step < 0 else step + epoch * (DATASET_SIZE[data_type] // BATCH_SiZE)
+def draw_loss_tensorboard(loss, epoch, step):
+    x = epoch + 1 if step < 0 else step + epoch * (DATASET_SIZE['train'] // BATCH_SiZE)
     y = loss
-    tag = '%s/%s_loss_with_%s' % (EXPERIMENT_NAME, data_type, 'epoch' if step < 0 else 'step')
+    tag = '%s/train/loss_with_%s' % (EXPERIMENT_NAME, 'epoch' if step < 0 else 'step')
 
     writer.add_scalar(tag, y, x)
+
+
+def draw_error_percentage_tensorboard(error_percentage, epoch):
+    error_type = ['gamma', 'theta', 'pi']
+
+    total_error_percentage = 0
+
+    for e in error_percentage:
+        total_error_percentage += e
+
+    total_error_percentage /= 3
+
+    for i in range(3):
+        tag = '%s/test/%s_error_percentage' % (EXPERIMENT_NAME, error_type[i])
+
+        writer.add_scalar(tag, error_percentage[i], epoch)
+
+    tag = '%s/test/total_error_percentage' % EXPERIMENT_NAME
+
+    writer.add_scalar(tag, total_error_percentage, epoch)

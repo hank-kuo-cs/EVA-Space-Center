@@ -1,10 +1,19 @@
 import time
+import argparse
 from torch.utils.data import DataLoader
 from data import MoonDataset
 from net import VGG19
 from config import *
 from glob import glob
 from visualize import draw_loss_tensorboard
+
+
+def set_argument_parser():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-m', '--model', help='Choose a pretrained model to train')
+    parser.add_argument('-s', '--scratch', action='store_true', help='Train model from scratch')
+
+    return parser.parse_args()
 
 
 def choose_newest_model():
@@ -22,20 +31,13 @@ def get_epoch_num(model_path):
     return int(model_path[index+5: -4])
 
 
-if __name__ == '__main__':
-
-    logging.info('Load data')
-    train_set = MoonDataset('train')
-    train_loader = DataLoader(train_set, BATCH_SiZE, True, num_workers=2)
-
+def train(model_path):
     logging.info('Set VGG model')
     net = VGG19().to(DEVICE)
 
-    model_path = choose_newest_model()
-
     if model_path:
         net.load_state_dict(torch.load(model_path))
-        logging.info('Find pretrained model, continue training this model')
+        logging.info('Find pretrained model, continue training this model: ' + str(model_path))
 
     epoch_start = get_epoch_num(model_path) if model_path else 0
 
@@ -72,15 +74,27 @@ if __name__ == '__main__':
                 running_loss /= SCALAR_LABEL
 
                 logging.info('[%d epoch, %5d step] loss: %.6f' % (epoch + 1, i + 1, running_loss))
-                draw_loss_tensorboard(running_loss, 'train', epoch, i)
+                draw_loss_tensorboard(running_loss, epoch, i)
 
                 running_loss = 0.0
 
         model_path = 'checkpoint/model_epoch%.3d.pth' % (epoch + 1)
         torch.save(net.state_dict(), model_path)
 
-        draw_loss_tensorboard(epoch_loss / (DATASET_SIZE['train'] // BATCH_SiZE) / SCALAR_LABEL, 'train', epoch, -1)
+        draw_loss_tensorboard(epoch_loss / (DATASET_SIZE['train'] // BATCH_SiZE) / SCALAR_LABEL, epoch, -1)
 
         logging.info('Finish one epoch, time = %s' % str(time.time() - start))
 
     logging.info('Finished training, time = %s' % str(time.time() - train_start))
+
+
+if __name__ == '__main__':
+    args = set_argument_parser()
+
+    logging.info('Load data')
+    train_set = MoonDataset('train')
+    train_loader = DataLoader(train_set, BATCH_SiZE, True, num_workers=2)
+
+    model_path = args.model if args.model else (choose_newest_model() if not args.scratch else None)
+
+    train(model_path)

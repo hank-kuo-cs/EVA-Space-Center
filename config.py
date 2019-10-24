@@ -13,9 +13,9 @@ WRITER_PATH = os.path.expanduser('~') + '/runs/Space-Center'
 EXPERIMENT_NAME = 'many_data_low_epoch'
 
 # dataset
-SPLIT_DATASET_SIZE = {'train': 10000, 'test': 10000, 'valid': 10000}
+SPLIT_DATASET_SIZE = {'train': 10000, 'test': 10000, 'validation': 10000}
 DATASET_SIZE = {'train': 80000, 'test': 10000, 'validation': 10000}
-SCALAR_LABEL = 10000
+SCALAR_LABEL = 100
 
 # visualization
 LOG_STEP = 100
