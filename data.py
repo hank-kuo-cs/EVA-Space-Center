@@ -71,7 +71,7 @@ class MoonDataset(Dataset):
         dir_num = DATASET_SIZE[self.data_type] // SPLIT_DATASET_SIZE[self.data_type]
 
         for i in range(dir_num):
-            imgs_path = dataset_path + '/images/' + str(i) + '/train_cam*'
+            imgs_path = dataset_path + '/images/' + str(i) + '/train*'
             image_files.append(sorted(glob(imgs_path)))
 
         labels_path = dataset_path + '/labels/gt*'
