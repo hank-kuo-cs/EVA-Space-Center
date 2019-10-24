@@ -1,8 +1,6 @@
-import os
 import sys
 import time
-import torch
-import logging
+import numpy as np
 from net import VGG19
 from torch.utils.data import DataLoader
 from data import MoonDataset
@@ -32,11 +30,6 @@ def print_error_percentage(error_percentages):
 
 
 if __name__ == '__main__':
-    logging.basicConfig(level=logging.INFO, format='%(asctime)s %(levelname)-8s %(message)s', datefmt='%m-%d %H:%M:%S')
-
-    os.environ['CUDA_VISIBLE_DEVICES'] = '3'
-    device = 'cuda' if torch.cuda.is_available() else 'cpu'
-
     logging.info('Load data')
     test_set = MoonDataset('test')
     test_loader = DataLoader(test_set, BATCH_SiZE, True, num_workers=2)
@@ -44,7 +37,7 @@ if __name__ == '__main__':
     model_path = sys.argv[1] if len(sys.argv) == 2 else choose_newest_model()
 
     logging.info('Load pretrained model: ' + str(model_path))
-    net = VGG19().to(device)
+    net = VGG19().to(DEVICE)
     net.load_state_dict(torch.load(model_path))
 
     logging.info('Start testing')
@@ -54,13 +47,13 @@ if __name__ == '__main__':
 
     with torch.no_grad():
         for data in tqdm(test_loader):
-            images, labels = data[0].to(device), data[1].to(device)
+            images, labels = data[0].to(DEVICE), data[1].to(DEVICE)
 
             outputs = net(images.float())
 
             for i in range(BATCH_SiZE):
                 for j in range(3):
-                    error_percentages[j] += (outputs[i] - labels[i].float()).item()[j]
+                    error_percentages[j] += (outputs[i] - labels[i].float())[j].item() / labels[i][j].item()
 
     logging.info('Finish testing, time = ' + str(time.time() - start))
-    print_error_percentage(error_percentages)
+    print_error_percentage(np.array(error_percentages) / DATASET_SIZE['test'])

@@ -1,6 +1,4 @@
-import os
 import cv2
-import torch
 import ntpath
 import pickle
 import numpy as np
@@ -8,9 +6,6 @@ from glob import glob
 from torch.utils.data import Dataset
 from torchvision import transforms
 from config import *
-
-
-DATA_SIZE = {'train': TRAIN_DATA_SIZE, 'test': TEST_DATA_SIZE, 'validation': VALIDATION_SIZE}
 
 
 def unpickle(file):
@@ -40,7 +35,7 @@ def load_image(img_path):
 class MoonDataset(Dataset):
     def __init__(self, data_type):
         self.data_type = data_type
-        self.data_size = DATA_SIZE[data_type]
+        self.data_size = DATASET_SIZE[data_type]
         self.image_files, self.label_files = self.load_data()
         self.data_type = data_type
 
@@ -69,18 +64,17 @@ class MoonDataset(Dataset):
         return sample
 
     def load_data(self):
-        data_types = ['train', 'test', 'validation']
-
-        if self.data_type not in data_types:
-            raise ValueError('path type must be \'train\', \'test\', or \'validation\', but get \'%s\'' % self.data_type)
-
-        dataset_path = os.path.curdir + '/dataset/%s' % self.data_type
+        dataset_path = DATASET_PATH + self.data_type
 
         image_files = []
 
-        for i in range(10):
-            imgs_path = dataset_path + '/images/' + str(i) + '/train*'
+        dir_num = DATASET_SIZE[self.data_type] // SPLIT_DATASET_SIZE[self.data_type]
+
+        for i in range(dir_num):
+            imgs_path = dataset_path + '/images/' + str(i) + '/train_cam*'
             image_files.append(glob(imgs_path))
+
+            logging.debug('Load data dir: %s, len = %d' % (str(i), len(glob(imgs_path))))
 
         labels_path = dataset_path + '/labels/gt*'
         label_files = sorted(glob(labels_path))

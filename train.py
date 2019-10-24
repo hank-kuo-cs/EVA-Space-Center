@@ -1,23 +1,10 @@
-import os
 import time
-import torch
-import logging
-import matplotlib.pyplot as plt
 from torch.utils.data import DataLoader
 from data import MoonDataset
 from net import VGG19
 from config import *
 from glob import glob
-
-
-def draw_loss_graph(losses, epoch_start=0, step=100):
-    y = losses
-    x = [i * step + epoch_start * TRAIN_DATA_SIZE // BATCH_SiZE for i in range(len(losses))]
-
-    plt.xlabel("Step")
-    plt.ylabel("Loss")
-    plt.plot(x, y)
-    plt.savefig('./checkpoint/loss_graph/step_%d-%d.png' % (x[0], x[-1]))
+from visualize import draw_loss_graph
 
 
 def choose_newest_model():
@@ -30,24 +17,19 @@ def choose_newest_model():
 
 
 def get_epoch_num(model_path):
-    i = model_path.find('epoch')
+    index = model_path.find('epoch')
 
-    return int(model_path[i+5: -4])
+    return int(model_path[index+5: -4])
 
 
 if __name__ == '__main__':
-
-    logging.basicConfig(level=logging.INFO, format='%(asctime)s %(levelname)-8s %(message)s', datefmt='%m-%d %H:%M:%S')
-
-    os.environ['CUDA_VISIBLE_DEVICES'] = CUDA_DEVICE
-    device = 'cuda' if torch.cuda.is_available() else 'cpu'
 
     logging.info('Load data')
     train_set = MoonDataset('train')
     train_loader = DataLoader(train_set, BATCH_SiZE, True, num_workers=2)
 
     logging.info('Set VGG model')
-    net = VGG19().to(device)
+    net = VGG19().to(DEVICE)
 
     model_path = choose_newest_model()
 
@@ -71,7 +53,7 @@ if __name__ == '__main__':
         running_loss = 0.0
 
         for i, data in enumerate(train_loader):
-            inputs, labels = data[0].to(device), data[1].to(device)
+            inputs, labels = data[0].to(DEVICE), data[1].to(DEVICE)
 
             optimizer.zero_grad()
 

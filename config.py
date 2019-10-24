@@ -1,12 +1,18 @@
+import os
+import torch
+import logging
 
+logging.basicConfig(level=logging.DEBUG, format='%(asctime)s %(levelname)-8s %(message)s', datefmt='%m-%d %H:%M:%S')
+os.environ['CUDA_VISIBLE_DEVICES'] = '3'
+
+DEVICE = 'cuda' if torch.cuda.is_available() else 'cpu'
+DATASET_PATH = '~/dataset_random/'
+SPLIT_DATASET_SIZE = {'train': 10000, 'test': 10000, 'valid': 10000}
+DATASET_SIZE = {'train': 80000, 'test': 10000, 'validation': 10000}
+LOG_STEP = 100
+
+# hyperparameters
 EPOCH_NUM = 500
 BATCH_SiZE = 10
 LEARNING_RATE = 0.001
 MOMENTUM = 0.9
-
-CUDA_DEVICE = '3'
-SPLIT_DATASET_SIZE = {'train': 7000, 'test': 1000, 'valid': 0}
-TRAIN_DATA_SIZE = 70000
-TEST_DATA_SIZE = 10000
-VALIDATION_SIZE = 0
-LOG_STEP = 100
