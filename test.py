@@ -56,4 +56,4 @@ if __name__ == '__main__':
                     error_percentages[j] += (outputs[i] - labels[i].float())[j].item() / labels[i][j].item()
 
     logging.info('Finish testing, time = ' + str(time.time() - start))
-    print_error_percentage(np.array(error_percentages) / DATASET_SIZE['test'])
+    print_error_percentage(np.array(error_percentages) / DATASET_SIZE['test'] * 100)

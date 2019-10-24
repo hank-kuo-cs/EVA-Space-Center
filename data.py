@@ -51,7 +51,7 @@ class MoonDataset(Dataset):
 
         image_name = path_leaf(image_path)
         label = np.array(unpickle(self.label_files[file_index])[image_name])
-        label = scale_labels(label, 1000)
+        label = scale_labels(label, SCALAR_LABEL)
 
         transform = transforms.Compose([
             transforms.ToTensor(),
@@ -73,9 +73,6 @@ class MoonDataset(Dataset):
         for i in range(dir_num):
             imgs_path = dataset_path + '/images/' + str(i) + '/train_cam*'
             image_files.append(sorted(glob(imgs_path)))
-
-            logging.debug('Load data dir: %s, len = %d' % (str(i), len(glob(imgs_path))))
-            logging.debug(sorted(glob(imgs_path)))
 
         labels_path = dataset_path + '/labels/gt*'
         label_files = sorted(glob(labels_path))

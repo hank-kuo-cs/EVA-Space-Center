@@ -4,7 +4,7 @@ from data import MoonDataset
 from net import VGG19
 from config import *
 from glob import glob
-from visualize import draw_loss_graph
+from visualize import draw_loss_tensorboard
 
 
 def choose_newest_model():
@@ -44,13 +44,13 @@ if __name__ == '__main__':
 
     logging.info('Start training')
     train_start = time.time()
-    graph_losses = []
 
     for epoch in range(EPOCH_NUM - epoch_start):
         start = time.time()
 
         epoch += epoch_start
-        running_loss = 0.0
+
+        running_loss, epoch_loss = 0.0, 0.0
 
         for i, data in enumerate(train_loader):
             inputs, labels = data[0].to(DEVICE), data[1].to(DEVICE)
@@ -65,17 +65,21 @@ if __name__ == '__main__':
             optimizer.step()
 
             running_loss += loss.item()
+            epoch_loss += loss.item()
 
             if i % LOG_STEP == LOG_STEP - 1:
                 running_loss /= LOG_STEP
-                logging.info('[%d epoch, %5d step] loss: %.6f' % (epoch + 1, i + 1, running_loss))
+                running_loss /= SCALAR_LABEL
 
-                graph_losses.append(running_loss)
+                logging.info('[%d epoch, %5d step] loss: %.6f' % (epoch + 1, i + 1, running_loss))
+                draw_loss_tensorboard(running_loss, 'train', epoch, i)
+
                 running_loss = 0.0
 
-        model_path = 'checkpoint/model_epoch%d.pth' % (epoch + 1)
-        draw_loss_graph(graph_losses, epoch_start, LOG_STEP)
+        model_path = 'checkpoint/model_epoch%.3d.pth' % (epoch + 1)
         torch.save(net.state_dict(), model_path)
+
+        draw_loss_tensorboard(epoch_loss / (DATASET_SIZE['train'] // BATCH_SiZE) / SCALAR_LABEL, 'train', epoch, -1)
 
         logging.info('Finish one epoch, time = %s' % str(time.time() - start))
 
