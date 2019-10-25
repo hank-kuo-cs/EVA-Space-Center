@@ -24,7 +24,7 @@ def draw_loss_tensorboard(loss, epoch, step):
     writer.add_scalar(tag, y, x)
 
 
-def draw_error_percentage_tensorboard(error_percentage, epoch):
+def draw_error_percentage_tensorboard(error_percentage, epoch, test_type):
     error_type = ['gamma', 'phi', 'theta']
 
     total_error_percentage = 0
@@ -35,10 +35,10 @@ def draw_error_percentage_tensorboard(error_percentage, epoch):
     total_error_percentage /= 3
 
     for i in range(3):
-        tag = '%s/test/%s_error_percentage' % (EXPERIMENT_NAME, error_type[i])
+        tag = '%s/%s/%s_error_percentage' % (EXPERIMENT_NAME, test_type, error_type[i])
 
         writer.add_scalar(tag, error_percentage[i], epoch)
 
-    tag = '%s/test/total_error_percentage' % EXPERIMENT_NAME
+    tag = '%s/%s/total_error_percentage' % (EXPERIMENT_NAME, test_type)
 
     writer.add_scalar(tag, total_error_percentage, epoch)

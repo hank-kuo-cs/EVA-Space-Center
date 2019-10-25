@@ -15,6 +15,7 @@ from visualize import draw_error_percentage_tensorboard
 def set_argument_parser():
     parser = argparse.ArgumentParser()
     parser.add_argument('-m', '--model', help='Choose a model to test')
+    parser.add_argument('-v', '--validation', action='store_true', help='Test the validation set')
     parser.add_argument('-am', '--all_model', action='store_true',
                         help='Use all models to test, and recording on the tensorboard')
 
@@ -49,7 +50,7 @@ def print_error_percentage(error_percentage):
     print('total error percentage:', total_error_percentage)
 
 
-def test(model_path, epoch=-1):
+def test(test_type, model_path, epoch=-1):
     net = VGG19().to(DEVICE)
     net.load_state_dict(torch.load(model_path))
 
@@ -75,31 +76,33 @@ def test(model_path, epoch=-1):
                 logging.info('Predict: ' + str(outputs[0]))
                 logging.info('Target: ' + str(labels[0]))
 
-    error_percentages /= (DATASET_SIZE['test'] / 100)
-    avg_loss /= (DATASET_SIZE['test'] // BATCH_SIZE)
+    error_percentages /= (DATASET_SIZE[test_type] / 100)
+    avg_loss /= (DATASET_SIZE[test_type] // BATCH_SIZE)
 
-    logging.info('Finish testing, time = ' + str(time.time() - start))
+    logging.info('Finish testing ' + test_type + ' dataset, time = ' + str(time.time() - start))
     logging.info('Average loss = ' + str(avg_loss))
 
     print_error_percentage(error_percentages)
 
     if epoch > 0:
-        draw_error_percentage_tensorboard(error_percentages, epoch)
+        draw_error_percentage_tensorboard(error_percentages, epoch, test_type)
 
 
 if __name__ == '__main__':
     args = set_argument_parser()
 
+    test_type = 'test' if not args.validation else 'validation'
+
     logging.info('Load data')
-    test_set = MoonDataset('test')
+    test_set = MoonDataset(test_type)
     test_loader = DataLoader(test_set, BATCH_SIZE, True, num_workers=2)
 
     model_path = args.model if args.model else get_newest_model()
     logging.info('Load model ' + str(model_path))
 
     if not args.all_model:
-        test(model_path)
+        test(test_type, model_path)
     else:
         for model in get_newest_model():
-            test(model, get_epoch_num(model))
+            test(test_type, model, get_epoch_num(model))
 
