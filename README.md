@@ -46,6 +46,7 @@
 - I design custom loss function based on MSE & L1 loss function to handle this issue.
 - If the parameter is phi or theta, I will calculate the shortest distance in the circle between predict direction and the target direction. This is an alternation of MSE & L1. They called `Ball Coordinate MSE` (BCMSE) and `Ball Coordinate L1` (BCL1).
 - The graph below is an example of calculating BCMSE between a prediction phi and a target phi.
+- In the graph, we can see the MSE(phi_predict, phi_target) = (1.5pi)^2, but BCMSE will see the distance between them as 0.5 pi. It can tell the real distance between angles and get the correct MSE loss.
 <img src="https://github.com/hank-kuo-cs/EVA-Space-Center/blob/master/src/BCMSE.png" height="50%" width="50%">
 
 ## Train
