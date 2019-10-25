@@ -61,7 +61,7 @@ def train(train_loader, model_path):
 
             optimizer.zero_grad()
 
-            outputs = net(inputs.float())
+            features, outputs = net(inputs.float())
 
             loss = criterion(outputs.double(), labels)
             loss.backward()

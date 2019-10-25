@@ -9,7 +9,7 @@ from config import *
 from net import VGG19
 from data import MoonDataset
 from loss import get_error_percentage, BCMSELoss
-from visualize import draw_error_percentage_tensorboard
+from visualize import draw_error_percentage_tensorboard, draw_tsne_tensorboard
 
 
 def set_argument_parser():
@@ -60,11 +60,19 @@ def test(test_type, model_path, epoch=-1):
     error_percentages = np.array([0.0, 0.0, 0.0])
     avg_loss = 0.0
 
+    tsne_labels = [[], [], []]
+    tsne_data = []
+
     with torch.no_grad():
         for i, data in tqdm(enumerate(test_loader)):
             images, labels = data[0].to(DEVICE), data[1].to(DEVICE)
 
-            outputs = net(images.float())
+            features, outputs = net(images.float())
+
+            tsne_data.append(features[0].numpy())
+            for j in range(3):
+                tsne_labels[j].append(labels[0][j].item())
+
             avg_loss += BCMSELoss()(outputs.clone().double(), labels.clone()).item()
 
             for b in range(BATCH_SIZE):
@@ -81,8 +89,11 @@ def test(test_type, model_path, epoch=-1):
 
     logging.info('Finish testing ' + test_type + ' dataset, time = ' + str(time.time() - start))
     logging.info('Average loss = ' + str(avg_loss))
-
     print_error_percentage(error_percentages)
+
+    label_types = ['gamma', 'phi', 'theta']
+    for i in range(3):
+        draw_tsne_tensorboard(tsne_data, tsne_labels[i], epoch, test_type, label_types[i])
 
     if epoch > 0:
         draw_error_percentage_tensorboard(error_percentages, epoch, test_type)

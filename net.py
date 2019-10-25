@@ -17,12 +17,14 @@ class VGG19(nn.Module):
         out = self.network(x)
         out = out.view(out.size(0), -1)
 
+        features = out.clone()
+
         out = self.regression1(out)
         out = self.regression2(out)
         out = self.regression3(out)
         out = self.regression4(out)
 
-        return out
+        return features, out
 
     def _make_network(self):
         layers = []
