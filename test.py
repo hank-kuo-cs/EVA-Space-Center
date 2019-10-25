@@ -60,14 +60,19 @@ def test(model_path, epoch=-1):
     avg_loss = 0.0
 
     with torch.no_grad():
-        for data in tqdm(test_loader):
+        for i, data in tqdm(enumerate(test_loader)):
             images, labels = data[0].to(DEVICE), data[1].to(DEVICE)
 
             outputs = net(images.float())
             avg_loss += MoonMSELoss()(outputs.double(), labels).item()
 
-            for i in range(BATCH_SIZE):
-                error_percentages += get_error_percentage(outputs[i], labels[i])
+            for b in range(BATCH_SIZE):
+                error_percentages += get_error_percentage(outputs[b], labels[b])
+
+            if i % LOG_STEP == LOG_STEP - 1:
+                logging.info('\nCheck some predict value:')
+                logging.info('Predict: ' + str(outputs[0]))
+                logging.info('Target: ' + str(labels[0]))
 
     error_percentages /= (DATASET_SIZE['test'] / 100)
     avg_loss /= (DATASET_SIZE['test'] // BATCH_SIZE)
