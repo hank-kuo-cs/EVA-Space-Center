@@ -96,7 +96,7 @@ def test(test_loader, test_type, model_path, epoch=-1):
 
         draw_error_percentage_tensorboard(error_percentages, epoch, test_type)
 
-        if epoch % 10 == 0:
+        if epoch % 10 == 1:
             for i in range(3):
                 draw_tsne_tensorboard(tsne_data, tsne_labels[i], epoch, test_type, label_types[i])
 
@@ -116,6 +116,6 @@ if __name__ == '__main__':
     if not args.all_model:
         test(test_loader, test_type, model_path)
     else:
-        for model in get_newest_model():
+        for model in get_all_model():
             test(test_loader, test_type, model, get_epoch_num(model))
 
