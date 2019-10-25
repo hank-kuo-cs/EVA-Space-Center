@@ -7,7 +7,7 @@ def get_error_percentage(output, target):
 
     error_percentage = [0, 0, 0]
 
-    error_percentage[0] = (abs(output[0] - target[0]) / target[0]).item()
+    error_percentage[0] = (abs(output[0] - target[0]) / GAMMA_RANGE).item()
 
     for i in range(1, 3):
         if output[i] < 0:

@@ -16,6 +16,10 @@ EXPERIMENT_NAME = 'many_data_low_epoch'
 SPLIT_DATASET_SIZE = {'train': 10000, 'test': 10000, 'validation': 10000}
 DATASET_SIZE = {'train': 80000, 'test': 10000, 'validation': 10000}
 SCALAR_LABEL = 1
+GAMMA_RADIUS = 1.742887
+GAMMA_UNIT = 996.679647
+GAMMA_RANGE = 14 / GAMMA_UNIT
+
 
 # visualization
 LOG_STEP = 100
