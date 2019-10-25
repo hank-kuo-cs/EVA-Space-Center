@@ -57,8 +57,8 @@
 3. Using histogram equalization to strengthen edges and textures of the moon image. 
 ### Command Line Usage
 - Just quickly start by the command below.
-```=bash
-python3 train.py
+```bash
+python train.py
 ```
 - `train.py` will look for the newest model in the `checkpoint` directory to train. If there is no any model, it will train from scratch.
 - There are some arguments you can use:
@@ -67,6 +67,24 @@ python3 train.py
 
 
 ## Test
+### Command Line Usage
+- Just quickly start bu the command below.
+```bash
+python test.py
+```
+- `test.py` will look for the newest model in the `checkpoint` directory to test.
+- There are some arguments you can use:
+    - `-m model_epochxxx.pth`: Choose a particular pretrained model to test.
+    - `-v`: Test the validation set
+    - `-am`: Test all models and record the error percentage and tsne on the tensorboard.
+
+## Tensorboard
+- To run the tensorboard, you have to move the directory where your `WRITER_PATH` at there.
+- Input the command:
+```bash
+tensorboard --logdir=<your dir> --bind_all
+```
+- And you can check the tensorboard on the website, the ip and port will be assigned by tensorboard.
 ## Result
 
 
