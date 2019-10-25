@@ -19,9 +19,9 @@ def get_error_percentage(output, target):
     return np.array(error_percentage)
 
 
-class MoonMSELoss(torch.nn.Module):
+class BCMSELoss(torch.nn.Module):
     def __init__(self):
-        super(MoonMSELoss, self).__init__()
+        super(BCMSELoss, self).__init__()
 
     def forward(self, outputs, targets):
         constant_penalties = []
@@ -50,9 +50,9 @@ class MoonMSELoss(torch.nn.Module):
         return loss
 
 
-class MoonL1Loss(torch.nn.Module):
+class BCL1Loss(torch.nn.Module):
     def __init__(self):
-        super(MoonL1Loss, self).__init__()
+        super(BCL1Loss, self).__init__()
 
     def forward(self, outputs, targets):
         constant_penalties = []

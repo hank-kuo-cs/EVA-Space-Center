@@ -8,7 +8,7 @@ from glob import glob
 from config import *
 from net import VGG19
 from data import MoonDataset
-from loss import get_error_percentage, MoonMSELoss
+from loss import get_error_percentage, BCMSELoss
 from visualize import draw_error_percentage_tensorboard
 
 
@@ -65,7 +65,7 @@ def test(test_type, model_path, epoch=-1):
             images, labels = data[0].to(DEVICE), data[1].to(DEVICE)
 
             outputs = net(images.float())
-            avg_loss += MoonMSELoss()(outputs.clone().double(), labels.clone()).item()
+            avg_loss += BCMSELoss()(outputs.clone().double(), labels.clone()).item()
 
             for b in range(BATCH_SIZE):
                 e_percentage = get_error_percentage(outputs[b].clone(), labels[b].clone())

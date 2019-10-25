@@ -6,7 +6,7 @@ from torch.utils.data import DataLoader
 from net import VGG19
 from config import *
 from data import MoonDataset
-from loss import MoonMSELoss
+from loss import BCMSELoss
 from visualize import draw_loss_tensorboard
 
 
@@ -43,7 +43,7 @@ def train(train_loader, model_path):
 
     epoch_start = get_epoch_num(model_path) if model_path else 0
 
-    criterion = MoonMSELoss()
+    criterion = BCMSELoss()
     optimizer = torch.optim.SGD(net.parameters(), lr=LEARNING_RATE, momentum=MOMENTUM)
 
     logging.info('Start training')
