@@ -70,9 +70,10 @@ def test(model_path, epoch=-1):
                 error_percentages += get_error_percentage(outputs[b], labels[b])
 
             if i % LOG_STEP == LOG_STEP - 1:
-                logging.info('\nCheck some predict value:')
+                logging.info('\n\nCheck some predict value:')
                 logging.info('Predict: ' + str(outputs[0]))
                 logging.info('Target: ' + str(labels[0]))
+                logging.info('Error percentage: ' + str(get_error_percentage(outputs[0], labels[0])))
 
     error_percentages /= (DATASET_SIZE['test'] / 100)
     avg_loss /= (DATASET_SIZE['test'] // BATCH_SIZE)
