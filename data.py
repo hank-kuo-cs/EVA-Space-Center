@@ -15,8 +15,17 @@ def unpickle(file):
     return data
 
 
+def normalize_label(label):
+    label[0] = (label[0] - GAMMA_RADIUS) / GAMMA_RANGE
+    label[1] /= (2 * np.pi)
+    label[2] /= (2 * np.pi)
+
+    return label
+
+
 def path_leaf(path):
     head, tail = ntpath.split(path)
+
     return tail or ntpath.basename(head)
 
 
@@ -47,6 +56,7 @@ class MoonDataset(Dataset):
 
         image_name = path_leaf(image_path)
         label = np.array(unpickle(self.label_files[file_index])[image_name])
+        label = normalize_label(label)
 
         transform = transforms.Compose([
             transforms.ToTensor(),

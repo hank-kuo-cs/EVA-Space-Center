@@ -4,12 +4,12 @@ import logging
 
 # Basic Setting
 logging.basicConfig(level=logging.INFO, format='%(asctime)s %(levelname)-8s %(message)s', datefmt='%m-%d %H:%M:%S')
-os.environ['CUDA_VISIBLE_DEVICES'] = '2'
+os.environ['CUDA_VISIBLE_DEVICES'] = '3'
 DEVICE = 'cuda' if torch.cuda.is_available() else 'cpu'
 
 # PATH
 DATASET_PATH = os.path.expanduser('~') + '/dataset_random/'
-WRITER_PATH = os.path.expanduser('~') + '/runs/Space-Center'
+WRITER_PATH = os.path.expanduser('~') + '/Tensorboard/Space-Center'
 EXPERIMENT_NAME = 'BCMSE_SGD_lr=1e-3'
 
 # Dataset
@@ -20,7 +20,7 @@ DATASET_SIZE = {'train': 80000, 'test': 10000, 'validation': 10000}
 GAMMA_RADIUS = 1.742887
 GAMMA_UNIT = 996.679647
 GAMMA_RANGE = 14 / GAMMA_UNIT
-GAMMA_WEIGHT = 447.30877957
+CONSTANT_WEIGHT = 20000
 
 # Visualization
 LOG_STEP = 100

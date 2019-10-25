@@ -42,14 +42,14 @@ def print_error_percentage(error_percentage):
     total_error_percentage = 0
 
     for i in range(3):
-        logging.info('%s error percentage:' % error_type[i] + str(error_percentage[i]))
+        logging.info('%s error percentage: ' % error_type[i] + str(error_percentage[i]))
 
         total_error_percentage += error_percentage[i] / 3
 
-    logging.info('total error percentage:' + str(total_error_percentage))
+    logging.info('total error percentage: ' + str(total_error_percentage))
 
 
-def test(test_type, model_path, epoch=-1):
+def test(test_loader, test_type, model_path, epoch=-1):
     net = VGG19().to(DEVICE)
     net.load_state_dict(torch.load(model_path))
 
@@ -70,7 +70,7 @@ def test(test_type, model_path, epoch=-1):
 
             tsne_data.append(features[0].cpu().numpy())
             for j in range(3):
-                tsne_labels[j].append(labels[0][j].item())
+                tsne_labels[j].append(labels[0][j].clone().item())
 
             avg_loss += BCMSELoss()(outputs.clone().double(), labels.clone()).item()
 
@@ -79,7 +79,7 @@ def test(test_type, model_path, epoch=-1):
                 error_percentages += e_percentage
 
             if i % LOG_STEP == LOG_STEP - 1:
-                logging.info('%d-th iter, check some predict value:' % i * BATCH_SIZE)
+                logging.info('%d-th iter, check some predict value:' % (i * BATCH_SIZE))
                 logging.info('Predict: ' + str(outputs[0]))
                 logging.info('Target: ' + str(labels[0]) + '\n')
 
@@ -90,12 +90,15 @@ def test(test_type, model_path, epoch=-1):
     logging.info('Average loss = ' + str(avg_loss))
     print_error_percentage(error_percentages)
 
-    label_types = ['gamma', 'phi', 'theta']
-    for i in range(3):
-        draw_tsne_tensorboard(tsne_data, tsne_labels[i], epoch, test_type, label_types[i])
-
     if epoch > 0:
+        logging.info('Draw error percentage & tsne onto the tensorboard')
+        label_types = ['gamma', 'phi', 'theta']
+
         draw_error_percentage_tensorboard(error_percentages, epoch, test_type)
+
+        if epoch % 10 == 0:
+            for i in range(3):
+                draw_tsne_tensorboard(tsne_data, tsne_labels[i], epoch, test_type, label_types[i])
 
 
 if __name__ == '__main__':
@@ -111,8 +114,8 @@ if __name__ == '__main__':
     logging.info('Load model ' + str(model_path))
 
     if not args.all_model:
-        test(test_type, model_path)
+        test(test_loader, test_type, model_path)
     else:
         for model in get_newest_model():
-            test(test_type, model, get_epoch_num(model))
+            test(test_loader, test_type, model, get_epoch_num(model))
 

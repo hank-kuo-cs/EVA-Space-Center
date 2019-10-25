@@ -7,7 +7,7 @@ from net import VGG19
 from config import *
 from data import MoonDataset
 from loss import BCMSELoss
-from visualize import draw_loss_tensorboard
+from visualize import draw_loss_tensorboard, draw_tsne_tensorboard
 
 
 def set_argument_parser():
@@ -34,6 +34,8 @@ def get_epoch_num(model_path):
 
 
 def train(train_loader, model_path):
+    label_types = ['gamma', 'phi', 'theta']
+
     logging.info('Set VGG model')
     net = VGG19().to(DEVICE)
 
@@ -50,6 +52,9 @@ def train(train_loader, model_path):
     train_start = time.time()
 
     for epoch in range(EPOCH_NUM - epoch_start):
+        tsne_labels = [[], [], []]
+        tsne_data = []
+
         start = time.time()
 
         epoch += epoch_start
@@ -62,6 +67,10 @@ def train(train_loader, model_path):
             optimizer.zero_grad()
 
             features, outputs = net(inputs.float())
+
+            tsne_data.append(features[0].cpu().numpy())
+            for j in range(3):
+                tsne_labels[j].append(labels[0][j].clone().item())
 
             loss = criterion(outputs.double(), labels)
             loss.backward()
@@ -82,7 +91,11 @@ def train(train_loader, model_path):
         model_path = 'checkpoint/model_epoch%.3d.pth' % (epoch + 1)
         torch.save(net.state_dict(), model_path)
 
+        logging.info('Draw loss & tsne onto the tensorboard')
         draw_loss_tensorboard(epoch_loss / (DATASET_SIZE['train'] // BATCH_SIZE), epoch, -1)
+        if epoch % 10 == 9:
+            for i in range(3):
+                draw_tsne_tensorboard(tsne_data, tsne_labels[i], epoch + 1, 'train', label_types[i])
 
         logging.info('Finish one epoch, time = %s' % str(time.time() - start))
 

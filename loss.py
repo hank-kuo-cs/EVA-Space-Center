@@ -7,14 +7,14 @@ def get_error_percentage(output, target):
 
     error_percentage = [0, 0, 0]
 
-    error_percentage[0] = (abs(output[0] - target[0]) / GAMMA_RANGE).item()
+    error_percentage[0] = (abs(output[0] - target[0])).item()
 
     for i in range(1, 3):
         if output[i] < 0:
-            output[i] = output[i] % (2 * np.pi)
+            output[i] = output[i] % 1
 
         dis = abs(output[i] - target[i])
-        error_percentage[i] = ((2 * np.pi - dis) / (2 * np.pi)).item() if dis > np.pi else (dis / (2 * np.pi)).item()
+        error_percentage[i] = (1 - dis).item() if dis > 0.5 else dis.item()
 
     return np.array(error_percentage)
 
@@ -29,19 +29,16 @@ class BCMSELoss(torch.nn.Module):
         for i in range(BATCH_SIZE):
             constant_penalty = np.array([0, 0], dtype=np.float64)
 
-            outputs[i][0] = torch.mul(outputs[i][0], GAMMA_WEIGHT)
-            targets[i][0] *= GAMMA_WEIGHT
-
             for j in range(1, 3):
-                constant_penalty[j - 1] = abs(outputs[i][j] // (2 * np.pi))
-                outputs[i][j] = torch.remainder(outputs[i][j], 2 * np.pi)
+                constant_penalty[j - 1] = abs(outputs[i][j] // 1)
+                outputs[i][j] = torch.remainder(outputs[i][j], 1)
 
-                if abs(outputs[i][j] - targets[i][j]) > np.pi:
-                    targets[i][j] = 2 * np.pi + targets[i][j] if targets[i][j] < outputs[i][j] else -2 * np.pi + targets[i][j]
+                if abs(outputs[i][j] - targets[i][j]) > 0.5:
+                    targets[i][j] = 1 + targets[i][j] if targets[i][j] < outputs[i][j] else -1 + targets[i][j]
 
             constant_penalties.append(constant_penalty)
 
-        constant_penalties = np.array(constant_penalties).sum() / BATCH_SIZE / 2 / 10000
+        constant_penalties = np.array(constant_penalties).sum() / BATCH_SIZE / CONSTANT_WEIGHT
         amount_loss = torch.tensor(constant_penalties, dtype=torch.double)
 
         mse_loss = torch.nn.MSELoss()(outputs, targets)
@@ -60,15 +57,12 @@ class BCL1Loss(torch.nn.Module):
         for i in range(BATCH_SIZE):
             constant_penalty = np.array([0, 0], dtype=np.float64)
 
-            outputs[i][0] = torch.mul(outputs[i][0], GAMMA_WEIGHT)
-            targets[i][0] *= GAMMA_WEIGHT
-
             for j in range(1, 3):
-                constant_penalty[j - 1] = abs(outputs[i][j] // (2 * np.pi))
-                outputs[i][j] = torch.remainder(outputs[i][j], 2 * np.pi)
+                constant_penalty[j - 1] = abs(outputs[i][j] // 1)
+                outputs[i][j] = torch.remainder(outputs[i][j], 1)
 
-                if abs(outputs[i][j] - targets[i][j]) > np.pi:
-                    targets[i][j] = 2 * np.pi + targets[i][j] if targets[i][j] < outputs[i][j] else -2 * np.pi + targets[i][j]
+                if abs(outputs[i][j] - targets[i][j]) > 0.5:
+                    targets[i][j] = 1 + targets[i][j] if targets[i][j] < outputs[i][j] else -1 + targets[i][j]
 
             constant_penalties.append(constant_penalty)
 
