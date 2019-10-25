@@ -43,11 +43,11 @@ def print_error_percentage(error_percentage):
     total_error_percentage = 0
 
     for i in range(3):
-        print('%s error percentage:' % error_type[i], error_percentage[i])
+        logging.info('%s error percentage:' % error_type[i] + str(error_percentage[i]))
 
         total_error_percentage += error_percentage[i] / 3
 
-    print('total error percentage:', total_error_percentage)
+    logging.info('total error percentage:' + str(total_error_percentage))
 
 
 def test(test_type, model_path, epoch=-1):
@@ -72,9 +72,9 @@ def test(test_type, model_path, epoch=-1):
                 error_percentages += e_percentage
 
             if i % LOG_STEP == LOG_STEP - 1:
-                logging.info('\n\nCheck some predict value:')
+                logging.info('Check some predict value:')
                 logging.info('Predict: ' + str(outputs[0]))
-                logging.info('Target: ' + str(labels[0]))
+                logging.info('Target: ' + str(labels[0]) + '\n')
 
     error_percentages /= (DATASET_SIZE[test_type] / 100)
     avg_loss /= (DATASET_SIZE[test_type] // BATCH_SIZE)

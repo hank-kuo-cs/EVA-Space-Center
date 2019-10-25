@@ -42,3 +42,7 @@ def draw_error_percentage_tensorboard(error_percentage, epoch, test_type):
     tag = '%s/%s/total_error_percentage' % (EXPERIMENT_NAME, test_type)
 
     writer.add_scalar(tag, total_error_percentage, epoch)
+
+
+def draw_tsne_tensorboard(data, labels, epoch, data_type, label_type):
+    writer.add_embedding(data, labels, tag='%s/%s/epoch%d/%s' % (EXPERIMENT_NAME, data_type, epoch, label_type))

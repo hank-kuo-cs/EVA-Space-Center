@@ -10,7 +10,7 @@ DEVICE = 'cuda' if torch.cuda.is_available() else 'cpu'
 # PATH
 DATASET_PATH = os.path.expanduser('~') + '/dataset_random/'
 WRITER_PATH = os.path.expanduser('~') + '/runs/Space-Center'
-EXPERIMENT_NAME = 'many_data_low_epoch'
+EXPERIMENT_NAME = 'BCMSE_SGD_lr=1e-3'
 
 # Dataset
 SPLIT_DATASET_SIZE = {'train': 10000, 'test': 10000, 'validation': 10000}
