@@ -9,21 +9,12 @@ def get_error_percentage(output, target):
 
     error_percentage[0] = (abs(output[0] - target[0]) / target[0]).item()
 
-    target[1] /= 2 * np.pi
-    target[2] /= np.pi
-
-    output[1] /= 2 * np.pi
-    output[2] /= np.pi
-
-    output[2] /= 2
-    target[2] /= 2
-
     for i in range(1, 3):
         if output[i] < 0:
-            output[i] = output[i] % 1
-        dis = abs(output[i] % 1 - target[i])
-        dis = dis if dis < 0.5 else 1 - dis
-        error_percentage[i] = (dis / target[i]).item()
+            output[i] = output[i] % (2 * np.pi)
+
+        dis = abs(output[i] - target[i])
+        error_percentage[i] = ((2 * np.pi - dis) / target[i]).item() if dis > np.pi else (dis / target[i]).item()
 
     return np.array(error_percentage)
 
