@@ -67,7 +67,13 @@ def test(model_path, epoch=-1):
             avg_loss += MoonMSELoss()(outputs.double(), labels).item()
 
             for b in range(BATCH_SIZE):
-                error_percentages += get_error_percentage(outputs[b], labels[b])
+                e_percentage = get_error_percentage(outputs[b], labels[b])
+                error_percentages += e_percentage
+
+                if e_percentage[1] < 0 or e_percentage[2] < 0:
+                    logging.warning('Negative error percentage:' + str(e_percentage))
+                    logging.warning('Predict:' + str(outputs[b]))
+                    logging.warning('Target: ' + str(labels[b]))
 
             if i % LOG_STEP == LOG_STEP - 1:
                 logging.info('\n\nCheck some predict value:')

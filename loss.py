@@ -46,8 +46,8 @@ class MoonMSELoss(torch.nn.Module):
 
         return loss
 
-
-a = torch.tensor([1.7770, -0.7036,  2.5078], dtype=torch.double)
-b = torch.tensor([1.7538, 5.7036,  2.6048], dtype=torch.double)
-
-print(get_error_percentage(a, b))
+# test
+# a = torch.tensor([1.7770, -0.7036,  2.5078], dtype=torch.double)
+# b = torch.tensor([1.7538, 5.7036,  2.6048], dtype=torch.double)
+#
+# print(get_error_percentage(a, b))
