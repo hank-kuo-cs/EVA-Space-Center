@@ -20,10 +20,6 @@ def path_leaf(path):
     return tail or ntpath.basename(head)
 
 
-def scale_labels(labels, value):
-    return value * labels
-
-
 def load_image(img_path):
     img = cv2.imread(img_path, cv2.IMREAD_GRAYSCALE)
     img = cv2.pyrDown(img)
@@ -51,7 +47,6 @@ class MoonDataset(Dataset):
 
         image_name = path_leaf(image_path)
         label = np.array(unpickle(self.label_files[file_index])[image_name])
-        label = scale_labels(label, SCALAR_LABEL)
 
         transform = transforms.Compose([
             transforms.ToTensor(),

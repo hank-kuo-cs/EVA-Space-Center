@@ -73,7 +73,6 @@ def train(train_loader, model_path):
 
             if i % LOG_STEP == LOG_STEP - 1:
                 running_loss /= LOG_STEP
-                running_loss /= SCALAR_LABEL
 
                 logging.info('[%d epoch, %5d step] loss: %.6f' % (epoch + 1, i + 1, running_loss))
                 draw_loss_tensorboard(running_loss, epoch, i)
@@ -83,7 +82,7 @@ def train(train_loader, model_path):
         model_path = 'checkpoint/model_epoch%.3d.pth' % (epoch + 1)
         torch.save(net.state_dict(), model_path)
 
-        draw_loss_tensorboard(epoch_loss / (DATASET_SIZE['train'] // BATCH_SIZE) / SCALAR_LABEL, epoch, -1)
+        draw_loss_tensorboard(epoch_loss / (DATASET_SIZE['train'] // BATCH_SIZE), epoch, -1)
 
         logging.info('Finish one epoch, time = %s' % str(time.time() - start))
 
