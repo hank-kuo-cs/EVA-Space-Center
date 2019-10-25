@@ -39,9 +39,9 @@
 
 ## Train
 ### Data Preprocessing
-- First of all, because the image is 800 x 600, it is really slow down the training time, I use gaussian pyramid down to resize it to 400 x 300.
-- Secondly, I load the image in gray scale, since I think the color information is not really important to the position regression.
-- Lastly, using histogram equalization to strengthen edges and textures of the moon image. 
+1. Because the image is 800 x 600, it is really slow down the training time, I use gaussian pyramid down to resize it to 400 x 300.
+2. I Load the image in gray scale, since I think the color information is not really important to the position regression.
+3. Using histogram equalization to strengthen edges and textures of the moon image. 
 ### Command Line Usage
 - Just quickly start by the command below.
 ```=bash
@@ -49,7 +49,7 @@ python3 train.py
 ```
 - `train.py` will look for the newest model in the `checkpoint` directory to train.
 - There are some arguments you can use:
-    - `-m` model_epochxxx.pth: Choose a particular pretrained model to continue training.
+    - `-m model_epochxxx.pth`: Choose a particular pretrained model to continue training.
     - `-s`: Train from scratch.
 
 
