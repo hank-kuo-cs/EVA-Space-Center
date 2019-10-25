@@ -8,6 +8,17 @@
     - `phi`: [0, 2pi]
     - `theta`: [0, pi]
 - The goal of this experiment is to predict the position of the camera in the ball coordinate based on one Moon image.
+
+## Enviroment
+- Anaconda 3
+- pip install
+    - torch==1.3.0
+    - tensorboardX==1.9
+    - tensorboard==2.0.0
+- conda install
+    - opencv==3.4.2
+    - torchvision==0.4.0
+
 ## Config
 > Before training or testing you have to adjust config.py.
 - Basic Setting
