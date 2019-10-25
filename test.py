@@ -81,6 +81,7 @@ def test(model_path, epoch=-1):
                 logging.info('Target: ' + str(labels[0]))
                 logging.info('Error percentage: ' + str(get_error_percentage(outputs[0], labels[0])))
 
+    logging.info('error_percentages = ' + str(error_percentages))
     error_percentages /= (DATASET_SIZE['test'] / 100)
     avg_loss /= (DATASET_SIZE['test'] // BATCH_SIZE)
 
