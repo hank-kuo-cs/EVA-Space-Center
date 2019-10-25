@@ -64,10 +64,12 @@ def test(model_path, epoch=-1):
             images, labels = data[0].to(DEVICE), data[1].to(DEVICE)
 
             outputs = net(images.float())
-            avg_loss += MoonMSELoss()(outputs.double(), labels).item()
+            avg_loss += MoonMSELoss()(outputs.clone().double(), labels.clone()).item()
+
+            logging.info('\nLabel Check\n' + str(labels))
 
             for b in range(BATCH_SIZE):
-                e_percentage = get_error_percentage(outputs[b], labels[b])
+                e_percentage = get_error_percentage(outputs[b].clone(), labels[b].clone())
                 error_percentages += e_percentage
 
                 if e_percentage[1] < 0 or e_percentage[2] < 0:
@@ -79,9 +81,7 @@ def test(model_path, epoch=-1):
                 logging.info('\n\nCheck some predict value:')
                 logging.info('Predict: ' + str(outputs[0]))
                 logging.info('Target: ' + str(labels[0]))
-                logging.info('Error percentage: ' + str(get_error_percentage(outputs[0], labels[0])))
 
-    logging.info('error_percentages = ' + str(error_percentages))
     error_percentages /= (DATASET_SIZE['test'] / 100)
     avg_loss /= (DATASET_SIZE['test'] // BATCH_SIZE)
 
@@ -102,6 +102,7 @@ if __name__ == '__main__':
     test_loader = DataLoader(test_set, BATCH_SIZE, True, num_workers=2)
 
     model_path = args.model if args.model else get_newest_model()
+    logging.info('Load model ' + str(model_path))
 
     if not args.all_model:
         test(model_path)

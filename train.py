@@ -33,7 +33,7 @@ def get_epoch_num(model_path):
     return int(model_path[index+5: -4])
 
 
-def train(model_path):
+def train(train_loader, model_path):
     logging.info('Set VGG model')
     net = VGG19().to(DEVICE)
 
@@ -99,4 +99,4 @@ if __name__ == '__main__':
 
     model_path = args.model if args.model else (choose_newest_model() if not args.scratch else None)
 
-    train(model_path)
+    train(train_loader, model_path)
