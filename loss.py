@@ -48,3 +48,34 @@ class MoonMSELoss(torch.nn.Module):
         loss = torch.add(mse_loss, amount_loss)
 
         return loss
+
+
+class MoonL1Loss(torch.nn.Module):
+    def __init__(self):
+        super(MoonL1Loss, self).__init__()
+
+    def forward(self, outputs, targets):
+        constant_penalties = []
+
+        for i in range(BATCH_SIZE):
+            constant_penalty = np.array([0, 0], dtype=np.float64)
+
+            outputs[i][0] = torch.mul(outputs[i][0], GAMMA_WEIGHT)
+            targets[i][0] *= GAMMA_WEIGHT
+
+            for j in range(1, 3):
+                constant_penalty[j - 1] = abs(outputs[i][j] // (2 * np.pi))
+                outputs[i][j] = torch.remainder(outputs[i][j], 2 * np.pi)
+
+                if abs(outputs[i][j] - targets[i][j]) > np.pi:
+                    targets[i][j] = 2 * np.pi + targets[i][j] if targets[i][j] < outputs[i][j] else -2 * np.pi + targets[i][j]
+
+            constant_penalties.append(constant_penalty)
+
+        constant_penalties = np.array(constant_penalties).sum() / BATCH_SIZE / 2 / 10000
+        amount_loss = torch.tensor(constant_penalties, dtype=torch.double)
+
+        l1_loss = torch.nn.L1Loss()(outputs, targets)
+        loss = torch.add(l1_loss, amount_loss)
+
+        return loss
