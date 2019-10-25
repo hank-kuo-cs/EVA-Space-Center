@@ -3,6 +3,7 @@ from config import *
 from data import MoonDataset
 from torch.utils.data import DataLoader
 import numpy as np
+from tqdm import tqdm
 
 
 writer = SummaryWriter('test_tsne/TSNE')
@@ -19,7 +20,7 @@ if __name__ == '__main__':
     imgs = []
     labels = []
 
-    for i, data in enumerate(test_dataloader):
+    for i, data in tqdm(enumerate(test_dataloader)):
         images, labels = data[0], data[1]
 
         for b in range(BATCH_SIZE):
