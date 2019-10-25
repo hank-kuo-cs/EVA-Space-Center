@@ -66,8 +66,6 @@ def test(model_path, epoch=-1):
             outputs = net(images.float())
             avg_loss += MoonMSELoss()(outputs.clone().double(), labels.clone()).item()
 
-            logging.info('\nLabel Check\n' + str(labels))
-
             for b in range(BATCH_SIZE):
                 e_percentage = get_error_percentage(outputs[b].clone(), labels[b].clone())
                 error_percentages += e_percentage
