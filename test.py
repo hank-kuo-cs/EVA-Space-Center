@@ -2,7 +2,6 @@ import time
 import argparse
 import numpy as np
 from torch.utils.data import DataLoader
-from tqdm import tqdm
 from glob import glob
 
 from config import *
@@ -64,12 +63,12 @@ def test(test_type, model_path, epoch=-1):
     tsne_data = []
 
     with torch.no_grad():
-        for i, data in tqdm(enumerate(test_loader)):
+        for i, data in enumerate(test_loader):
             images, labels = data[0].to(DEVICE), data[1].to(DEVICE)
 
             features, outputs = net(images.float())
 
-            tsne_data.append(features[0].numpy())
+            tsne_data.append(features[0].cpu().numpy())
             for j in range(3):
                 tsne_labels[j].append(labels[0][j].item())
 
@@ -80,7 +79,7 @@ def test(test_type, model_path, epoch=-1):
                 error_percentages += e_percentage
 
             if i % LOG_STEP == LOG_STEP - 1:
-                logging.info('Check some predict value:')
+                logging.info('%d-th iter, check some predict value:' % i * BATCH_SIZE)
                 logging.info('Predict: ' + str(outputs[0]))
                 logging.info('Target: ' + str(labels[0]) + '\n')
 
