@@ -8,7 +8,7 @@ from glob import glob
 from config import *
 from net import VGG19
 from data import MoonDataset
-from loss import get_error_percentage
+from loss import get_error_percentage, MoonMSELoss
 from visualize import draw_error_percentage_tensorboard
 
 
@@ -57,19 +57,23 @@ def test(model_path, epoch=-1):
     start = time.time()
 
     error_percentages = np.array([0.0, 0.0, 0.0])
+    avg_loss = 0.0
 
     with torch.no_grad():
         for data in tqdm(test_loader):
             images, labels = data[0].to(DEVICE), data[1].to(DEVICE)
 
             outputs = net(images.float())
+            avg_loss += MoonMSELoss()(outputs.double(), labels).item()
 
             for i in range(BATCH_SIZE):
                 error_percentages += get_error_percentage(outputs[i], labels[i])
 
     error_percentages /= (DATASET_SIZE['test'] / 100)
+    avg_loss /= (DATASET_SIZE['test'] // BATCH_SIZE)
 
     logging.info('Finish testing, time = ' + str(time.time() - start))
+    logging.info('Average loss = ' + str(avg_loss))
 
     print_error_percentage(error_percentages)
 
