@@ -7,10 +7,11 @@
     - `gamma`: [1.7438903314, 1.7579369712]
     - `phi`: [0, 2pi]
     - `theta`: [0, pi]
-- The goal of this experiment is to predict the position of the camera in the ball coordinate based on one Moon image.
+- The goal of this experiment is to predict the position of the camera in the ball coordinate based on the Moon image.
 
 ## Enviroment
 - Anaconda 3
+- python 3.7
 - pip install
     - torch==1.3.0
     - tensorboardX==1.9
@@ -59,7 +60,7 @@
 ```=bash
 python3 train.py
 ```
-- `train.py` will look for the newest model in the `checkpoint` directory to train.
+- `train.py` will look for the newest model in the `checkpoint` directory to train. If there is no any model, it will train from scratch.
 - There are some arguments you can use:
     - `-m model_epochxxx.pth`: Choose a particular pretrained model to continue training.
     - `-s`: Train from scratch.
