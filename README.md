@@ -7,7 +7,19 @@
     - `gamma`: [1.7438903314, 1.7579369712]
     - `phi`: [0, 2pi]
     - `theta`: [0, pi]
-- The goal of this experiment is to predict the position of the camera in the ball coordinate based on one Moon image.
+- The goal of this experiment is to predict the position of the camera in the ball coordinate based on the Moon image.
+
+## Enviroment
+- Anaconda 3
+- python 3.7
+- pip install
+    - torch==1.3.0
+    - tensorboardX==1.9
+    - tensorboard==2.0.0
+- conda install
+    - opencv==3.4.2
+    - torchvision==0.4.0
+
 ## Config
 > Before training or testing you have to adjust config.py.
 - Basic Setting
@@ -35,6 +47,7 @@
 - I design custom loss function based on MSE & L1 loss function to handle this issue.
 - If the parameter is phi or theta, I will calculate the shortest distance in the circle between predict direction and the target direction. This is an alternation of MSE & L1. They called `Ball Coordinate MSE` (BCMSE) and `Ball Coordinate L1` (BCL1).
 - The graph below is an example of calculating BCMSE between a prediction phi and a target phi.
+- In the graph, we can see the MSE(phi_predict, phi_target) = (1.5pi)^2, but BCMSE will see the distance between them as 0.5 pi. It can tell the real distance between angles and get the correct MSE loss.
 <img src="https://github.com/hank-kuo-cs/EVA-Space-Center/blob/master/src/BCMSE.png" height="50%" width="50%">
 
 ## Train
@@ -47,7 +60,7 @@
 ```=bash
 python3 train.py
 ```
-- `train.py` will look for the newest model in the `checkpoint` directory to train.
+- `train.py` will look for the newest model in the `checkpoint` directory to train. If there is no any model, it will train from scratch.
 - There are some arguments you can use:
     - `-m model_epochxxx.pth`: Choose a particular pretrained model to continue training.
     - `-s`: Train from scratch.
