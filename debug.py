@@ -18,7 +18,7 @@ if __name__ == '__main__':
     test_dataloader = DataLoader(test_dataset, BATCH_SIZE, True, num_workers=2)
 
     imgs = []
-    labels = []
+    t_labels = []
 
     for i, data in tqdm(enumerate(test_dataloader)):
         images, labels = data[0], data[1]
@@ -28,11 +28,11 @@ if __name__ == '__main__':
             imgs.append(img)
 
             label = labels[b][0].item()
-            labels.append(label)
+            t_labels.append(label)
 
     imgs = np.array(imgs)
 
-    draw_tsne_tensorboard(imgs, labels, 1, 'test', 'gamma')
+    draw_tsne_tensorboard(imgs, t_labels, 1, 'test', 'gamma')
 
 
 
