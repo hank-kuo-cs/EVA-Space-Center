@@ -70,11 +70,6 @@ def test(model_path, epoch=-1):
                 e_percentage = get_error_percentage(outputs[b].clone(), labels[b].clone())
                 error_percentages += e_percentage
 
-                if e_percentage[1] < 0 or e_percentage[2] < 0:
-                    logging.warning('Negative error percentage:' + str(e_percentage))
-                    logging.warning('Predict:' + str(outputs[b]))
-                    logging.warning('Target: ' + str(labels[b]))
-
             if i % LOG_STEP == LOG_STEP - 1:
                 logging.info('\n\nCheck some predict value:')
                 logging.info('Predict: ' + str(outputs[0]))
