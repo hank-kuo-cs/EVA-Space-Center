@@ -26,16 +26,23 @@
     - change your logging and CUDA GPU setting.
 - Path
     - `DATASET_PATH`: You must set your own dataset path.
-    - `WRITER_PATH` & `EXPERIMENT_NAME`: Set the path and the name of the tensorboard.
+    - `WRITER_PATH` & `EXPERIMENT_NAME`: Set the path and the experiment name of the tensorboard.
 - Dataset
     - You can adjust your own split way on the train, test, validation set.
     But advise you not change this setting, maybe a bug will happen when loading data.
 - Loss Function
-    - Only you can change is `GAMMA_WEIGHT`. It means the weight of gamma loss compared to phi and theta.
+    - Only you can change is `CONSTANT_WEIGHT`. It means the weight of constant of the predict direction. But advise not to change it.
+    - For example, although the distance between 100 * 2pi and 1 * 2pi is zero, we want to predict 1 * 2pi more than 100 * 2pi, so `CONSTANT_WEIGHT` is to add a penalty to the constant of the direction.
 - Visualization
     - `LOG_STEP`: How many steps to record the loss on the tensorboard and print on the console.
 - Hyperparameters
     - All hyperparameters list in this section. You can change any of them by your own way.
+
+## Data Prepocessing
+- I Load the image in gray scale, since I think the color information is not really important to the position regression.
+- All sizes of images are 800 x 600, it make the training time too slow, I use gaussian pyramid down method to resize it to 400 x 300.
+- Because the light intensity of images is generally low, Using histogram equalization to strengthen edges and textures of the moon image. See the effect below. Left one is the original image, The other one is equalized image.
+<img src="https://github.com/hank-kuo-cs/EVA-Space-Center/blob/master/src/Equalization.png" height="80%" width="80%">
 
 ## Network Architecture
 - The network model is VGG19 + Global Average Pooling Layer + Fully Connected Network, you can see graph of architecture below. 
@@ -52,9 +59,7 @@
 
 ## Train
 ### Data Preprocessing
-1. Because the image is 800 x 600, it is really slow down the training time, I use gaussian pyramid down to resize it to 400 x 300.
-2. I Load the image in gray scale, since I think the color information is not really important to the position regression.
-3. Using histogram equalization to strengthen edges and textures of the moon image. 
+
 ### Command Line Usage
 - Just quickly start by the command below.
 ```bash
@@ -64,7 +69,6 @@ python train.py
 - There are some arguments you can use:
     - `-m model_epochxxx.pth`: Choose a particular pretrained model to continue training.
     - `-s`: Train from scratch.
-
 
 ## Test
 ### Command Line Usage
@@ -85,6 +89,7 @@ python test.py
 tensorboard --logdir=<your dir> --bind_all
 ```
 - And you can check the tensorboard on the website, the ip and port will be assigned by tensorboard.
+
 ## Result
 
 

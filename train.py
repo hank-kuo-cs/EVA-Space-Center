@@ -68,7 +68,7 @@ def train(train_loader, model_path):
 
             features, outputs = net(inputs.float())
 
-            tsne_data.append(features[0].cpu().numpy())
+            tsne_data.append(features[0].detach().cpu().numpy())
             for j in range(3):
                 tsne_labels[j].append(labels[0][j].clone().item())
 
