@@ -16,10 +16,10 @@ def draw_loss_graph(losses, epoch_start=0, step=100):
     plt.savefig('./checkpoint/loss_graph/step_%d-%d.png' % (x[0], x[-1]))
 
 
-def draw_loss_tensorboard(loss, epoch, step):
-    x = epoch + 1 if step < 0 else step + epoch * (DATASET_SIZE['train'] // BATCH_SIZE)
+def draw_loss_tensorboard(loss, epoch, step, data_type):
+    x = epoch + 1 if step < 0 else step + epoch * (DATASET_SIZE[data_type] // BATCH_SIZE)
     y = loss
-    tag = '%s/train/loss_with_%s' % (EXPERIMENT_NAME, 'epoch' if step < 0 else 'step')
+    tag = '%s/%s/loss_with_%s' % (EXPERIMENT_NAME, data_type, 'epoch' if step < 0 else 'step')
 
     writer.add_scalar(tag, y, x)
 
