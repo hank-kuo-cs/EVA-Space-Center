@@ -99,12 +99,13 @@ tensorboard --logdir=<your dir> --bind_all
 
 ### Test
 - test
+
 ### Error Percentage
 - Epoch 60:
-    - Gamma error percentage: 3.557
-    - Phi error percentage: 1.062
-    - theta error percentage: 0.555
-    - total error percentage: 1.725
-
-
+    - Gamma error percentage: 3.56%
+    - Phi error percentage: 1.06%
+    - theta error percentage: 0.56%
+    - total error percentage: 1.73%
+- It means the error of the predicted distance between camera and moon is ± 0.534 km
+- And the error of the predicted angle between camera and moon, phi is ± 3.82°, and theats is ± 2.02°
 
