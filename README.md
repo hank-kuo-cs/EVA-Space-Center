@@ -58,7 +58,6 @@
 <img src="https://github.com/hank-kuo-cs/EVA-Space-Center/blob/master/src/BCMSE.png" height="50%" width="50%">
 
 ## Train
-### Data Preprocessing
 
 ### Command Line Usage
 - Just quickly start by the command below.
@@ -90,6 +89,22 @@ tensorboard --logdir=<your dir> --bind_all
 ```
 - And you can check the tensorboard on the website, the ip and port will be assigned by tensorboard.
 
-## Result
+## Visualization
+### Train
+- The graphs below are loss graph & tsne graph at epoch60.
+<img src="https://github.com/hank-kuo-cs/EVA-Space-Center/blob/master/src/SGD_lr_1e-3/train/loss.png" height="80%" width="80%">
+<img src="https://github.com/hank-kuo-cs/EVA-Space-Center/blob/master/src/SGD_lr_1e-3/train/tsne/epoch60-gamma.png" height="75%" width="75%">
+<img src="https://github.com/hank-kuo-cs/EVA-Space-Center/blob/master/src/SGD_lr_1e-3/train/tsne/epoch60-phi.png" height="75%" width="75%">
+<img src="https://github.com/hank-kuo-cs/EVA-Space-Center/blob/master/src/SGD_lr_1e-3/train/tsne/epoch60-theta.png" height="75%" width="75%">
+
+### Test
+- test
+### Error Percentage
+- Epoch 60:
+    - Gamma error percentage: 3.557
+    - Phi error percentage: 1.062
+    - theta error percentage: 0.555
+    - total error percentage: 1.725
+
 
 
