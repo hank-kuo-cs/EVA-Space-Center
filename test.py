@@ -52,6 +52,7 @@ def print_error_percentage(error_percentage):
 def test(test_loader, test_type, model_path, epoch=-1):
     net = VGG19().to(DEVICE)
     net.load_state_dict(torch.load(model_path))
+    logging.info('Load model ' + str(model_path))
 
     logging.info('Start testing')
     start = time.time()
@@ -111,7 +112,6 @@ if __name__ == '__main__':
     test_loader = DataLoader(test_set, BATCH_SIZE, True, num_workers=2)
 
     model_path = args.model if args.model else get_newest_model()
-    logging.info('Load model ' + str(model_path))
 
     if not args.all_model:
         test(test_loader, test_type, model_path)
