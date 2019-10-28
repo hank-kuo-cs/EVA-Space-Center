@@ -84,7 +84,7 @@ def train(train_loader, model_path):
                 running_loss /= LOG_STEP
 
                 logging.info('[%d epoch, %5d step] loss: %.6f' % (epoch + 1, i + 1, running_loss))
-                draw_loss_tensorboard(running_loss, epoch, i)
+                draw_loss_tensorboard(running_loss, epoch, i, 'train')
 
                 running_loss = 0.0
 
@@ -92,7 +92,7 @@ def train(train_loader, model_path):
         torch.save(net.state_dict(), model_path)
 
         logging.info('Draw loss & tsne onto the tensorboard')
-        draw_loss_tensorboard(epoch_loss / (DATASET_SIZE['train'] // BATCH_SIZE), epoch, -1)
+        draw_loss_tensorboard(epoch_loss / (DATASET_SIZE['train'] // BATCH_SIZE), epoch, -1, 'train')
         if epoch % 10 == 9:
             for i in range(3):
                 draw_tsne_tensorboard(tsne_data, tsne_labels[i], epoch + 1, 'train', label_types[i])

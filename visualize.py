@@ -20,10 +20,6 @@ def draw_loss_tensorboard(loss, epoch, step, data_type):
     x = epoch + 1 if step < 0 else step + epoch * (DATASET_SIZE[data_type] // BATCH_SIZE)
     y = loss
     tag = '%s/%s/loss_with_%s' % (EXPERIMENT_NAME, data_type, 'epoch' if step < 0 else 'step')
-    print(tag)
-    print(y)
-    print(x)
-    print()
 
     writer.add_scalar(tag, y, x)
 

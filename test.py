@@ -8,7 +8,7 @@ from config import *
 from net import VGG19
 from data import MoonDataset
 from loss import get_error_percentage, BCMSELoss
-from visualize import draw_error_percentage_tensorboard, draw_tsne_tensorboard
+from visualize import draw_error_percentage_tensorboard, draw_tsne_tensorboard, draw_loss_tensorboard
 
 
 def set_argument_parser():
@@ -96,6 +96,7 @@ def test(test_loader, test_type, model_path, epoch=-1):
         label_types = ['gamma', 'phi', 'theta']
 
         draw_error_percentage_tensorboard(error_percentages, epoch, test_type)
+        draw_loss_tensorboard(avg_loss, epoch-1, -1, 'test')
 
         if epoch % 10 == 1:
             for i in range(3):
