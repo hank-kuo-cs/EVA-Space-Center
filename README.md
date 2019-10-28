@@ -97,9 +97,7 @@ tensorboard --logdir=<your dir> --bind_all
 <img src="https://github.com/hank-kuo-cs/EVA-Space-Center/blob/master/src/SGD_lr_1e-3/train/tsne/epoch60-phi.png" height="75%" width="75%">
 <img src="https://github.com/hank-kuo-cs/EVA-Space-Center/blob/master/src/SGD_lr_1e-3/train/tsne/epoch60-theta.png" height="75%" width="75%">
 
-### Test
-- test
-
+## Result
 ### Error Percentage
 - Epoch 60:
     - Gamma error percentage: 3.56%
