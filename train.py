@@ -30,7 +30,7 @@ def get_epoch_num(model):
         index = model.find('epoch')
         epoch_num = int(model[index + 5: -4])
     except Exception as e:
-        logging.warning('get epoch num fail: ' + str(e))
+        logging.info('Cannot find pretrain model, train from scratch')
         epoch_num = 0
 
     return epoch_num
