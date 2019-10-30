@@ -8,7 +8,7 @@ from config import *
 from net import VGG19
 from data import MoonDataset
 from loss import get_error_percentage, BCMSELoss
-from visualize import draw_error_percentage_tensorboard, draw_tsne_tensorboard, draw_loss_tensorboard
+from visualize import draw_error_percentage_tensorboard, draw_tsne_tensorboard, draw_loss_tensorboard, add_tsne_label, add_tsne_data
 
 
 def set_argument_parser():
@@ -21,10 +21,10 @@ def set_argument_parser():
     return parser.parse_args()
 
 
-def get_epoch_num(model_path):
-    index = model_path.find('epoch')
+def get_epoch_num(model):
+    index = model.find('epoch')
 
-    return int(model_path[index+5: -4])
+    return int(model[index+5: -4])
 
 
 def get_newest_model():
@@ -38,42 +38,47 @@ def get_all_model():
 
 
 def print_error_percentage(error_percentage):
-    error_type = ['gamma', 'phi', 'theta']
     total_error_percentage = 0
 
-    for i in range(3):
-        logging.info('%s error percentage: ' % error_type[i] + str(error_percentage[i]))
+    for i in range(LABEL_NUM):
+        logging.info('%s error percentage: ' % LABEL_TYPE[i] + str(error_percentage[i]))
 
-        total_error_percentage += error_percentage[i] / 3
+        total_error_percentage += error_percentage[i] / LABEL_NUM
 
     logging.info('total error percentage: ' + str(total_error_percentage))
 
 
-def test(test_loader, test_type, model_path, epoch=-1):
+def set_net_work(model):
+    logging.info('Set up network')
     net = VGG19().to(DEVICE)
-    net.load_state_dict(torch.load(model_path))
-    logging.info('Load model ' + str(model_path))
+
+    if model:
+        net.load_state_dict(torch.load(model))
+        logging.info('Use this model to test: %s' % str(model))
+
+    return net
+
+
+def test(loader, dataset_type, model, epoch=-1):
+    net = set_net_work(model)
 
     logging.info('Start testing')
-    start = time.time()
+    test_start = time.time()
 
-    error_percentages = np.array([0.0, 0.0, 0.0])
-    avg_loss = 0.0
-
-    tsne_labels = [[], [], []]
-    tsne_data = []
+    error_percentages = np.zeros((1, len(LABEL_TYPE)), dtype=np.double)
+    tsne_data, tsne_labels = [], []
+    running_loss = 0.0
 
     with torch.no_grad():
-        for i, data in enumerate(test_loader):
+        for i, data in enumerate(loader):
             images, labels = data[0].to(DEVICE), data[1].to(DEVICE)
 
             features, outputs = net(images.float())
 
-            tsne_data.append(features[0].cpu().numpy())
-            for j in range(3):
-                tsne_labels[j].append(labels[0][j].clone().item())
+            add_tsne_data(tsne_data, features[0])
+            add_tsne_label(tsne_labels, labels.clone()[0])
 
-            avg_loss += BCMSELoss()(outputs.clone().double(), labels.clone()).item()
+            running_loss += BCMSELoss()(outputs.clone().double(), labels.clone()).item()
 
             for b in range(BATCH_SIZE):
                 e_percentage = get_error_percentage(outputs[b].clone(), labels[b].clone())
@@ -84,39 +89,37 @@ def test(test_loader, test_type, model_path, epoch=-1):
                 logging.info('Predict: ' + str(outputs[0]))
                 logging.info('Target: ' + str(labels[0]) + '\n')
 
-    error_percentages /= (DATASET_SIZE[test_type] / 100)
-    avg_loss /= (DATASET_SIZE[test_type] // BATCH_SIZE)
+    error_percentages /= (DATASET_SIZE[dataset_type] / 100)
+    running_loss /= (DATASET_SIZE[dataset_type] // BATCH_SIZE)
 
-    logging.info('Finish testing ' + test_type + ' dataset, time = ' + str(time.time() - start))
-    logging.info('Average loss = ' + str(avg_loss))
+    logging.info('Finish testing ' + dataset_type + ' dataset, time = ' + str(time.time() - test_start))
+    logging.info('Loss = %.10f' % running_loss)
     print_error_percentage(error_percentages)
 
     if epoch > 0:
         logging.info('Draw error percentage & tsne onto the tensorboard')
-        label_types = ['gamma', 'phi', 'theta']
 
-        draw_error_percentage_tensorboard(error_percentages, epoch, test_type)
-        draw_loss_tensorboard(avg_loss, epoch-1, -1, 'test')
+        draw_error_percentage_tensorboard(error_percentages, epoch, dataset_type)
+        draw_loss_tensorboard(running_loss, epoch-1, -1, 'test')
 
-        if epoch % 10 == 1:
-            for i in range(3):
-                draw_tsne_tensorboard(tsne_data, tsne_labels[i], epoch, test_type, label_types[i])
+        if epoch % LOG_EPOCH == 1:
+            draw_tsne_tensorboard(np.array(tsne_data), np.array(tsne_labels), epoch, dataset_type)
 
 
 if __name__ == '__main__':
     args = set_argument_parser()
 
-    test_type = 'test' if not args.validation else 'validation'
+    dataset_type = 'test' if not args.validation else 'validation'
 
     logging.info('Load data')
-    test_set = MoonDataset(test_type)
+    test_set = MoonDataset(dataset_type)
     test_loader = DataLoader(test_set, BATCH_SIZE, True, num_workers=2)
 
     model_path = args.model if args.model else get_newest_model()
 
     if not args.all_model:
-        test(test_loader, test_type, model_path)
+        test(test_loader, dataset_type, model_path)
     else:
         for model in get_all_model():
-            test(test_loader, test_type, model, get_epoch_num(model))
+            test(test_loader, dataset_type, model, get_epoch_num(model))
 

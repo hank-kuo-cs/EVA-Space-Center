@@ -15,6 +15,7 @@ class VGG19(nn.Module):
 
     def forward(self, x):
         out = self.network(x)
+
         out = out.view(out.size(0), -1)
 
         features = out.clone()

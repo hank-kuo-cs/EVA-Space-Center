@@ -10,9 +10,11 @@ DEVICE = 'cuda' if torch.cuda.is_available() else 'cpu'
 # PATH
 DATASET_PATH = os.path.expanduser('~') + '/dataset_random/'
 WRITER_PATH = os.path.expanduser('~') + '/Tensorboard/Space-Center'
-EXPERIMENT_NAME = 'BCMSE_SGD_lr_1e-3'
 
 # Dataset
+LABEL_TYPE = ['gamma', 'phi', 'theta']
+LABEL_NUM = len(LABEL_TYPE)
+DATASET_TYPE = {'train', 'test', 'validation'}
 SPLIT_DATASET_SIZE = {'train': 10000, 'test': 10000, 'validation': 10000}
 DATASET_SIZE = {'train': 80000, 'test': 10000, 'validation': 10000}
 
@@ -24,6 +26,8 @@ CONSTANT_WEIGHT = 20000
 
 # Visualization
 LOG_STEP = 100
+LOG_EPOCH = 50
+EXPERIMENT_NAME = 'BCMSE_SGD_lr_1e-3'
 
 # hyperparameters
 EPOCH_NUM = 500
