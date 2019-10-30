@@ -97,6 +97,7 @@ class DPN92(nn.Module):
         self.layer2 = self._make_layer(in_planes[1], out_planes[1], num_blocks[1], dense_depth[1], stride=2)
         self.layer3 = self._make_layer(in_planes[2], out_planes[2], num_blocks[2], dense_depth[2], stride=2)
         self.layer4 = self._make_layer(in_planes[3], out_planes[3], num_blocks[3], dense_depth[3], stride=2)
+        self.avg_pool = nn.AvgPool2d(kernel_size=(9, 12))
         self.linear1 = nn.Linear(out_planes[3] + (num_blocks[3] + 1) * dense_depth[3], 10)
         self.linear2 = nn.Linear(10, 3)
 
@@ -116,6 +117,7 @@ class DPN92(nn.Module):
         out = self.layer4(out)
 
         out = F.avg_pool2d(out, 4)
+        out = self.avg_pool(out)
         out = out.view(out.size(0), -1)
 
         feature = out.clone()
