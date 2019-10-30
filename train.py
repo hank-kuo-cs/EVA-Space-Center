@@ -4,7 +4,7 @@ import numpy as np
 from glob import glob
 from torch.utils.data import DataLoader
 
-from net import VGG19
+from net import VGG19, DPN92
 from config import *
 from data import MoonDataset
 from loss import BCMSELoss
@@ -38,7 +38,7 @@ def get_epoch_num(model):
 
 def set_net_work(model):
     logging.info('Set up network')
-    net = VGG19().to(DEVICE)
+    net = DPN92().to(DEVICE)
 
     if model:
         net.load_state_dict(torch.load(model))
