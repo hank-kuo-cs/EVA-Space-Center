@@ -91,22 +91,21 @@ tensorboard --logdir=<your dir> --bind_all
 
 ## Visualization
 ### Train
-- The graphs below are loss graph & tsne graph at epoch60.
+- The graphs below are loss graph & tsne graph at epoch100.
 <img src="https://github.com/hank-kuo-cs/EVA-Space-Center/blob/master/src/SGD_lr_1e-3/train/loss.png" height="80%" width="80%">
-<img src="https://github.com/hank-kuo-cs/EVA-Space-Center/blob/master/src/SGD_lr_1e-3/train/tsne/epoch60-gamma.png" height="75%" width="75%">
-<img src="https://github.com/hank-kuo-cs/EVA-Space-Center/blob/master/src/SGD_lr_1e-3/train/tsne/epoch60-phi.png" height="75%" width="75%">
-<img src="https://github.com/hank-kuo-cs/EVA-Space-Center/blob/master/src/SGD_lr_1e-3/train/tsne/epoch60-theta.png" height="75%" width="75%">
+<img src="https://github.com/hank-kuo-cs/EVA-Space-Center/blob/master/src/SGD_lr_1e-3/train/tsne/epoch100-gamma.png" height="50%" width="50%">
+<img src="https://github.com/hank-kuo-cs/EVA-Space-Center/blob/master/src/SGD_lr_1e-3/train/tsne/epoch100-phi.png" height="50%" width="50%">
+<img src="https://github.com/hank-kuo-cs/EVA-Space-Center/blob/master/src/SGD_lr_1e-3/train/tsne/epoch100-theta.png" height="50%" width="50%">
 
 ## Result
 ### Error Percentage
-- Epoch 60:
-    - Gamma error percentage: 3.56%
-    - Phi error percentage: 1.06%
-    - theta error percentage: 0.56%
-    - total error percentage: 1.73%
-- It means the error of the predicted distance between camera and moon is ± 0.534 km
-- And the error of the predicted angle between camera and moon, phi is ± 3.82°, and theats is ± 2.02°
-
+- Epoch 100:
+    - Gamma error percentage: 2.53%
+    - Phi error percentage: 0.75%
+    - theta error percentage: 0.45%
+    - total error percentage: 1.24%
+- It means the error of the predicted distance between camera and moon is ± 0.380 km
+- And the error of the predicted angle between camera and moon, phi is ± 2.63°, and theats is ± 1.62°
 ## To Do List
 - [ ] Try other model (Resnet...)
 - [ ] Gamma tsne is bad, find the problem.
