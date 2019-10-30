@@ -1,4 +1,7 @@
+import torch
 import torch.nn as nn
+import torch.nn.functional as F
+
 
 vgg_cfg = [64, 64, 'M', 128, 128, 'M', 256, 256, 256, 256, 'M', 512, 512, 512, 512, 'M', 512, 512, 512, 512, 'M']
 dpn_cfg = {
@@ -50,11 +53,6 @@ class VGG19(nn.Module):
         return nn.Sequential(*layers)
 
 
-import torch
-import torch.nn as nn
-import torch.nn.functional as F
-
-
 class Bottleneck(nn.Module):
     def __init__(self, last_planes, in_planes, out_planes, dense_depth, stride, first_layer):
         super(Bottleneck, self).__init__()
@@ -92,7 +90,7 @@ class DPN92(nn.Module):
         in_planes, out_planes = dpn_cfg['in_planes'], dpn_cfg['out_planes']
         num_blocks, dense_depth = dpn_cfg['num_blocks'], dpn_cfg['dense_depth']
 
-        self.conv1 = nn.Conv2d(3, 64, kernel_size=3, stride=1, padding=1, bias=False)
+        self.conv1 = nn.Conv2d(1, 64, kernel_size=3, stride=1, padding=1, bias=False)
         self.bn1 = nn.BatchNorm2d(64)
         self.last_planes = 64
         self.layer1 = self._make_layer(in_planes[0], out_planes[0], num_blocks[0], dense_depth[0], stride=1)
