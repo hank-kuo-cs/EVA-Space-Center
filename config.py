@@ -4,12 +4,13 @@ import logging
 
 # Basic Setting
 logging.basicConfig(level=logging.INFO, format='%(asctime)s %(levelname)-8s %(message)s', datefmt='%m-%d %H:%M:%S')
-os.environ['CUDA_VISIBLE_DEVICES'] = '3'
+os.environ['CUDA_VISIBLE_DEVICES'] = '2'
+PARALLEL_GPUS = [0, 2]
 DEVICE = 'cuda' if torch.cuda.is_available() else 'cpu'
 
 # PATH
 DATASET_PATH = os.path.expanduser('~') + '/dataset_random/'
-WRITER_PATH = os.path.expanduser('~') + '/Tensorboard/Space-Center'
+WRITER_PATH = os.path.expanduser('~') + '/Tensorboard/DPN'
 
 # Dataset
 LABEL_TYPE = ['gamma', 'phi', 'theta']
@@ -30,7 +31,7 @@ LOG_EPOCH = 50
 EXPERIMENT_NAME = 'BCMSE_SGD_lr_1e-3'
 
 # hyperparameters
-EPOCH_NUM = 500
+EPOCH_NUM = 300
 BATCH_SIZE = 10
 LEARNING_RATE = 0.001
 MOMENTUM = 0.9

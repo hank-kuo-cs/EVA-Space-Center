@@ -38,7 +38,9 @@ def get_epoch_num(model):
 
 def set_net_work(model):
     logging.info('Set up network')
-    net = DPN92().to(DEVICE)
+    net = DPN92()
+    net = torch.nn.DataParallel(net, device_ids=PARALLEL_GPUS)
+    net = net.to(DEVICE)
 
     if model:
         net.load_state_dict(torch.load(model))
