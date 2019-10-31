@@ -4,7 +4,6 @@ import numpy as np
 from glob import glob
 from torch.utils.data import DataLoader
 
-from net import VGG19, DPN92
 from config import *
 from data import MoonDataset
 from loss import BCMSELoss
@@ -38,8 +37,9 @@ def get_epoch_num(model):
 
 def set_net_work(model):
     logging.info('Set up network')
-    net = DPN92()
-    net = torch.nn.DataParallel(net, device_ids=PARALLEL_GPUS)
+    net = NET_MODEL()
+    if IS_PARALLEL:
+        net = torch.nn.DataParallel(net, device_ids=PARALLEL_GPUS)
     net = net.to(DEVICE)
 
     if model:

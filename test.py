@@ -5,7 +5,6 @@ from torch.utils.data import DataLoader
 from glob import glob
 
 from config import *
-from net import VGG19
 from data import MoonDataset
 from loss import get_error_percentage, BCMSELoss
 from visualize import draw_error_percentage_tensorboard, draw_tsne_tensorboard, draw_loss_tensorboard, add_tsne_label, add_tsne_data
@@ -50,7 +49,7 @@ def print_error_percentage(error_percentage):
 
 def set_net_work(model):
     logging.info('Set up network')
-    net = VGG19().to(DEVICE)
+    net = NET_MODEL().to(DEVICE)
 
     if model:
         net.load_state_dict(torch.load(model))
