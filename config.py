@@ -1,15 +1,15 @@
 import os
 import torch
 import logging
-from net import VGG19, ResNet101, ResNet152
+from net import VGG19, ResNet50, ResNet101
 
 # Basic Setting
 logging.basicConfig(level=logging.INFO, format='%(asctime)s %(levelname)-8s %(message)s', datefmt='%m-%d %H:%M:%S')
-os.environ['CUDA_VISIBLE_DEVICES'] = '2'
-IS_PARALLEL = False
-PARALLEL_GPUS = [0, 2]
+# os.environ['CUDA_VISIBLE_DEVICES'] = '2'
+IS_PARALLEL = True
+PARALLEL_GPUS = [0, 2, 3]
 DEVICE = 'cuda' if torch.cuda.is_available() else 'cpu'
-NET_MODEL = ResNet152
+NET_MODEL = ResNet50
 
 # PATH
 DATASET_PATH = os.path.expanduser('~') + '/dataset_random/'
@@ -36,6 +36,6 @@ EXPERIMENT_NAME = 'BCMSE_SGD_lr_1e-3'
 
 # hyperparameters
 EPOCH_NUM = 300
-BATCH_SIZE = 10
+BATCH_SIZE = 5
 LEARNING_RATE = 0.001
 MOMENTUM = 0.9
