@@ -3,12 +3,6 @@ import torch.nn as nn
 import torch.nn.functional as F
 
 vgg_cfg = [64, 64, 'M', 128, 128, 'M', 256, 256, 256, 256, 'M', 512, 512, 512, 512, 'M', 512, 512, 512, 512, 'M']
-dpn_cfg = {
-    'in_planes': (96, 192, 384, 768),
-    'out_planes': (256, 512, 1024, 2048),
-    'num_blocks': (3, 4, 20, 3),
-    'dense_depth': (16, 32, 24, 128)
-}
 
 
 class VGG19(nn.Module):
@@ -117,9 +111,9 @@ class ResNet(nn.Module):
         self.layer3 = self._make_layer(block, 256, num_blocks[2], stride=2)
         self.layer4 = self._make_layer(block, 512, num_blocks[3], stride=2)
         self.avg_pool = nn.AvgPool2d(kernel_size=(9, 12))
-        self.linear1 = nn.Linear(512 * block.expansion, 256)
+        self.linear1 = nn.Linear(512 * block.expansion, 512)
         self.linear2 = nn.Linear(512, 256)
-        self.linear3 = nn.Linear(256, 64)
+        self.linear3 = nn.Linear(256, 128)
         self.linear4 = nn.Linear(128, 64)
         self.linear5 = nn.Linear(64, 3)
 
