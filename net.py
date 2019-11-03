@@ -117,8 +117,11 @@ class ResNet(nn.Module):
         self.layer3 = self._make_layer(block, 256, num_blocks[2], stride=2)
         self.layer4 = self._make_layer(block, 512, num_blocks[3], stride=2)
         self.avg_pool = nn.AvgPool2d(kernel_size=(9, 12))
-        self.linear1 = nn.Linear(512 * block.expansion, 64)
-        self.linear2 = nn.Linear(64, 3)
+        self.linear1 = nn.Linear(512 * block.expansion, 512)
+        self.linear2 = nn.Linear(512, 256)
+        self.linear3 = nn.Linear(256, 128)
+        self.linear4 = nn.Linear(128, 64)
+        self.linear5 = nn.Linear(64, 3)
 
     def _make_layer(self, block, planes, num_blocks, stride):
         strides = [stride] + [1] * (num_blocks - 1)
@@ -137,10 +140,14 @@ class ResNet(nn.Module):
         out = F.avg_pool2d(out, 4)
         out = self.avg_pool(out)
         out = out.view(out.size(0), -1)
-        print(out.size)
+
         feature = out.clone()
+
         out = self.linear1(out)
         out = self.linear2(out)
+        out = self.linear3(out)
+        out = self.linear4(out)
+        out = self.linear5(out)
 
         return feature, out
 
@@ -156,46 +163,3 @@ def ResNet101():
 def ResNet152():
     return ResNet(Bottleneck, [3, 8, 36, 3])
 
-
-class DPN92(nn.Module):
-    def __init__(self):
-        super(DPN92, self).__init__()
-        in_planes, out_planes = dpn_cfg['in_planes'], dpn_cfg['out_planes']
-        num_blocks, dense_depth = dpn_cfg['num_blocks'], dpn_cfg['dense_depth']
-
-        self.conv1 = nn.Conv2d(1, 64, kernel_size=3, stride=1, padding=1, bias=False)
-        self.bn1 = nn.BatchNorm2d(64)
-        self.last_planes = 64
-        self.layer1 = self._make_layer(in_planes[0], out_planes[0], num_blocks[0], dense_depth[0], stride=1)
-        self.layer2 = self._make_layer(in_planes[1], out_planes[1], num_blocks[1], dense_depth[1], stride=2)
-        self.layer3 = self._make_layer(in_planes[2], out_planes[2], num_blocks[2], dense_depth[2], stride=2)
-        self.layer4 = self._make_layer(in_planes[3], out_planes[3], num_blocks[3], dense_depth[3], stride=2)
-        self.avg_pool = nn.AvgPool2d(kernel_size=(9, 12))
-        self.linear1 = nn.Linear(out_planes[3] + (num_blocks[3] + 1) * dense_depth[3], 10)
-        self.linear2 = nn.Linear(10, 3)
-
-    def _make_layer(self, in_planes, out_planes, num_blocks, dense_depth, stride):
-        strides = [stride] + [1] * (num_blocks - 1)
-        layers = []
-        for i, stride in enumerate(strides):
-            layers.append(Bottleneck(self.last_planes, in_planes, out_planes, dense_depth, stride, i == 0))
-            self.last_planes = out_planes + (i + 2) * dense_depth
-        return nn.Sequential(*layers)
-
-    def forward(self, x):
-        out = F.relu(self.bn1(self.conv1(x)))
-        out = self.layer1(out)
-        out = self.layer2(out)
-        out = self.layer3(out)
-        out = self.layer4(out)
-
-        out = F.avg_pool2d(out, 4)
-        out = self.avg_pool(out)
-        out = out.view(out.size(0), -1)
-
-        feature = out.clone()
-
-        out = self.linear1(out)
-        out = self.linear2(out)
-
-        return feature, out
