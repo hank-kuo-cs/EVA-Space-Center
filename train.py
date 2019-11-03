@@ -77,12 +77,12 @@ def train(data_loader, model):
 
             optimizer.zero_grad()
 
-            features, outputs = net(inputs.float())
+            features, outputs = net(inputs)
 
             add_tsne_data(tsne_data, features[0])
             add_tsne_label(tsne_labels, labels.clone()[0])
 
-            loss = criterion(outputs.double(), labels)
+            loss = criterion(outputs, labels)
             loss.backward()
 
             optimizer.step()
