@@ -64,7 +64,7 @@ class MoonDataset(Dataset):
             ]
         )
 
-        sample = transform(image).float(), torch.from_numpy(label).float()
+        sample = transform(image), torch.from_numpy(label)
 
         return sample
 

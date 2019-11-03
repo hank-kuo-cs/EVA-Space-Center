@@ -72,12 +72,12 @@ def test(loader, dataset_type, model, epoch=-1):
         for i, data in enumerate(loader):
             images, labels = data[0].to(DEVICE), data[1].to(DEVICE)
 
-            features, outputs = net(images)
+            features, outputs = net(images.float())
 
             add_tsne_data(tsne_data, features[0])
             add_tsne_label(tsne_labels, labels.clone()[0])
 
-            running_loss += BCMSELoss()(outputs.clone(), labels.clone()).item()
+            running_loss += BCMSELoss()(outputs.clone().double(), labels.clone()).item()
 
             for b in range(BATCH_SIZE):
                 e_percentage = get_error_percentage(outputs[b].clone(), labels[b].clone())
