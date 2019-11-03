@@ -1,7 +1,7 @@
 import os
 import torch
 import logging
-from net import VGG19, DPN92
+from net import VGG19, ResNet101, ResNet152
 
 # Basic Setting
 logging.basicConfig(level=logging.INFO, format='%(asctime)s %(levelname)-8s %(message)s', datefmt='%m-%d %H:%M:%S')
@@ -9,11 +9,11 @@ os.environ['CUDA_VISIBLE_DEVICES'] = '2'
 IS_PARALLEL = False
 PARALLEL_GPUS = [0, 2]
 DEVICE = 'cuda' if torch.cuda.is_available() else 'cpu'
-NET_MODEL = DPN92
+NET_MODEL = ResNet152
 
 # PATH
 DATASET_PATH = os.path.expanduser('~') + '/dataset_random/'
-WRITER_PATH = os.path.expanduser('~') + '/Tensorboard/DPN'
+WRITER_PATH = os.path.expanduser('~') + '/Tensorboard/Resnet'
 
 # Dataset
 LABEL_TYPE = ['gamma', 'phi', 'theta']
