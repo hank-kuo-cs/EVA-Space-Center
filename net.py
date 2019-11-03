@@ -117,11 +117,9 @@ class ResNet(nn.Module):
         self.layer3 = self._make_layer(block, 256, num_blocks[2], stride=2)
         self.layer4 = self._make_layer(block, 512, num_blocks[3], stride=2)
         self.avg_pool = nn.AvgPool2d(kernel_size=(9, 12))
-        self.linear1 = nn.Linear(512 * block.expansion, 512)
-        self.linear2 = nn.Linear(512, 256)
-        self.linear3 = nn.Linear(256, 128)
-        self.linear4 = nn.Linear(128, 64)
-        self.linear5 = nn.Linear(64, 3)
+        self.linear1 = nn.Linear(512 * block.expansion, 256)
+        self.linear2 = nn.Linear(256, 64)
+        self.linear3 = nn.Linear(64, 3)
 
     def _make_layer(self, block, planes, num_blocks, stride):
         strides = [stride] + [1] * (num_blocks - 1)
@@ -146,8 +144,6 @@ class ResNet(nn.Module):
         out = self.linear1(out)
         out = self.linear2(out)
         out = self.linear3(out)
-        out = self.linear4(out)
-        out = self.linear5(out)
 
         return feature, out
 
