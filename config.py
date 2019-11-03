@@ -31,6 +31,7 @@ CONSTANT_WEIGHT = 20000
 # Visualization
 LOG_STEP = 100
 LOG_EPOCH = 50
+TSNE_STEP = 20
 EXPERIMENT_NAME = 'BCMSE_SGD_lr_1e-3'
 
 # hyperparameters

@@ -79,8 +79,9 @@ def train(data_loader, model):
 
             features, outputs = net(inputs.float())
 
-            add_tsne_data(tsne_data, features[0])
-            add_tsne_label(tsne_labels, labels.clone()[0])
+            if (i * BATCH_SIZE) % TSNE_STEP == 0:
+                add_tsne_data(tsne_data, features[0])
+                add_tsne_label(tsne_labels, labels.clone()[0])
 
             loss = criterion(outputs.double(), labels)
             loss.backward()
