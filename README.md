@@ -71,7 +71,7 @@ python train.py
 
 ## Test
 ### Command Line Usage
-- Just quickly start bu the command below.
+- Just quickly start by the command below.
 ```bash
 python test.py
 ```

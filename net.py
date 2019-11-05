@@ -144,6 +144,10 @@ class ResNet(nn.Module):
         return feature, out
 
 
+def ResNet18():
+    return ResNet(BasicBlock, [2, 2, 2, 2])
+
+
 def ResNet50():
     return ResNet(Bottleneck, [3, 4, 6, 3])
 
@@ -154,4 +158,3 @@ def ResNet101():
 
 def ResNet152():
     return ResNet(Bottleneck, [3, 8, 36, 3])
-
