@@ -32,7 +32,7 @@ def draw_error_percentage_tensorboard(error_percentage, epoch, dataset_type):
 
 
 def draw_tsne_tensorboard(data, labels, epoch, dataset_type):
-    for i in range(labels.shape(1)):
+    for i in range(labels.shape[1]):
         writer.add_embedding(data, labels[:, i], tag='%s/%s/epoch%d/%s' % (EXPERIMENT_NAME, dataset_type, epoch, LABEL_TYPE[i]))
 
 
