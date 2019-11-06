@@ -64,7 +64,7 @@ def test(loader, dataset_type, model, epoch=-1):
     logging.info('Start testing')
     test_start = time.time()
 
-    error_percentages = np.zeros((1, len(LABEL_TYPE)), dtype=np.double)
+    error_percentages = np.zeros(LABEL_NUM, dtype=np.double)
     tsne_data, tsne_labels = [], []
     running_loss = 0.0
 
