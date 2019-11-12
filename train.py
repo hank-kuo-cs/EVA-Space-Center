@@ -50,6 +50,9 @@ def set_net_work(model):
 
 
 def save_net_work(net, epoch):
+    if not os.path.exists('checkpoint/'):
+        os.makedirs('checkpoint/')
+
     save_model_path = 'checkpoint/model_epoch%.3d.pth' % (epoch + 1)
     torch.save(net.state_dict(), save_model_path)
 
@@ -104,7 +107,7 @@ def train(data_loader, model):
         logging.info('Draw loss & tsne onto the tensorboard')
         draw_loss_tensorboard(epoch_loss / (DATASET_SIZE['train'] // BATCH_SIZE), epoch, -1, 'train')
 
-        if epoch % LOG_EPOCH == LOG_EPOCH - 1:
+        if epoch % TSNE_EPOCH == TSNE_EPOCH - 1:
             draw_tsne_tensorboard(np.array(tsne_data), np.array(tsne_labels), epoch + 1, 'train')
 
         logging.info('Finish one epoch, time = %s' % str(time.time() - epoch_start))

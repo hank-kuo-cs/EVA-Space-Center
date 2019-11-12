@@ -102,7 +102,7 @@ def test(loader, dataset_type, model, epoch=-1):
         draw_error_percentage_tensorboard(error_percentages, epoch, dataset_type)
         draw_loss_tensorboard(running_loss, epoch-1, -1, 'test')
 
-        if epoch % LOG_EPOCH == 1:
+        if epoch % TSNE_EPOCH == 1:
             draw_tsne_tensorboard(np.array(tsne_data), np.array(tsne_labels), epoch, dataset_type)
 
 

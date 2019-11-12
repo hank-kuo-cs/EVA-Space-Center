@@ -23,22 +23,30 @@
 ## Config
 > Before training or testing you have to adjust config.py.
 - Basic Setting
-    - change your logging and CUDA GPU setting.
+    - Change your logging and CUDA GPU setting.
+    - You can turn on parallel gpu setting with `IS_PARALLEL` and `PARALLEL_GPUS`.
+    - When you set `IS_PARALLEL` to True, you have to delete the code `os.environ['CUDA_VISIBLE_DEVICES']`.
+    - `NET_MODEL` means which model do you want to use, includes VGG19, Resnet18, Resnet50.
 - Path
     - `DATASET_PATH`: You must set your own dataset path.
-    - `WRITER_PATH` & `EXPERIMENT_NAME`: Set the path and the experiment name of the tensorboard.
+    - `WRITER_PATH`: Set the path of the tensorboard.
 - Dataset
     - You can adjust your own split way on the train, test, validation set.
-    But advise you not change this setting, maybe a bug will happen when loading data.
+    - But advise you not change this setting, maybe a bug will happen when loading data.
 - Loss Function
-    - Only you can change is `CONSTANT_WEIGHT`. It means the weight of constant of the predict direction. But advise not to change it.
+    - Only you can change is `CONSTANT_WEIGHT`. It means how much do we punish the constant of the predict direction. But advise not to change it.
     - For example, although the distance between 100 * 2pi and 1 * 2pi is zero, we want to predict 1 * 2pi more than 100 * 2pi, so `CONSTANT_WEIGHT` is to add a penalty to the constant of the direction.
+    - As a result, 100 * 2pi will take more penalty than 1 * 2pi.
 - Visualization
-    - `LOG_STEP`: How many steps to record the loss on the tensorboard and print on the console.
+    - `LOG_STEP`: How many steps to record a loss on the tensorboard and print on the console.
+    - `TSNE_EPOCH`: How many epochs to record one tsne on the tensorboard.
+    - `TSNE_STEP`: How many images to record one tsne in a epoch.
+    - `EXPERIMENT_NAME`: You can use your own name of experiment on the tensorboard.
 - Hyperparameters
     - All hyperparameters list in this section. You can change any of them by your own way.
 
 ## Data Prepocessing
+- Normalize the target range to [0, 1], since the range of gamma is not equal to the range of direction.
 - I Load the image in gray scale, since I think the color information is not really important to the position regression.
 - All sizes of images are 800 x 600, it make the training time too slow, I use gaussian pyramid down method to resize it to 400 x 300.
 - Because the light intensity of images is generally low, Using histogram equalization to strengthen edges and textures of the moon image. See the effect below. Left one is the original image, The other one is equalized image.

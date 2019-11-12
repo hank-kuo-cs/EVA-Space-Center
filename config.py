@@ -1,7 +1,7 @@
 import os
 import torch
 import logging
-from net import VGG19, ResNet18, ResNet50, ResNet101
+from net import VGG19, ResNet18, ResNet50
 
 # Basic Setting
 logging.basicConfig(level=logging.INFO, format='%(asctime)s %(levelname)-8s %(message)s', datefmt='%m-%d %H:%M:%S')
@@ -30,7 +30,7 @@ CONSTANT_WEIGHT = 20000
 
 # Visualization
 LOG_STEP = 100
-LOG_EPOCH = 50
+TSNE_EPOCH = 50
 TSNE_STEP = 20
 EXPERIMENT_NAME = 'BCMSE_SGD_lr_1e-3'
 
