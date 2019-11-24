@@ -1,6 +1,5 @@
 import cv2
 import ntpath
-import pickle
 import numpy as np
 from glob import glob
 from torch.utils.data import Dataset
@@ -13,6 +12,9 @@ def unpickle(file):
         data = pickle.load(fo)
 
     return data
+
+def get_target(img_name):
+    with open('ex.json' , 'r') as reader:
 
 
 def normalize_label(label):
