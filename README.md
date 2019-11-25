@@ -55,7 +55,7 @@
 ## Network Architecture
 - The network model is VGG19 + Global Average Pooling Layer + Fully Connected Network, you can see graph of architecture below. 
 - Of course, you can choose your own model, but be aware that input image is of one channel, your model should handle that problem.
-<img src="https://github.com/hank-kuo-cs/EVA-Space-Center/blob/master/src/Network_Architecture.png" height="80%" width="80%">
+<img src="https://github.com/hank-kuo-cs/EVA-Space-Center/blob/charles/src/VGG19.png" height="80%" width="80%">
 
 ## Custom Loss Function - BCMSE & BCL1
 - Because phi & theta are direction of circles, we can't use normal loss function to calculate the distance loss.
