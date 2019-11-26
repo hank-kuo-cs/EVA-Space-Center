@@ -59,8 +59,12 @@ def remove_filename_extension(base_name):
 
     return file_name
 
+
 def load_image(img_path):
+    print(img_path)
     img = cv2.imread(img_path, cv2.IMREAD_GRAYSCALE)
+    if img.empty():
+        exit(1)
     img = cv2.pyrDown(img, (400, 300))
     img = cv2.equalizeHist(img)
 
