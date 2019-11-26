@@ -27,9 +27,10 @@ def read_json(file):
 
 def decompress_targz_file(mode, file):
     for i in range(10):
+        lv1_dir = '0'
         file_path = os.path.join(DATASET_PATH, mode, 'images', file + '_{}.tar.gz'.format(i))
-        check_directory(os.path.join(DATASET_PATH, mode, 'images', file, file + '_{}'.format(i)))
-        extract_dir = os.path.join(DATASET_PATH, mode, 'images', file, file + '_{}'.format(i))
+        check_directory(os.path.join(DATASET_PATH, mode, 'images', lv1_dir, file + '_{}'.format(i)))
+        extract_dir = os.path.join(DATASET_PATH, mode, 'images', lv1_dir, file + '_{}'.format(i))
         shutil.unpack_archive(file_path, extract_dir, 'gztar')
         logging.info('End decompress {}'.format(file_path))
 
@@ -121,3 +122,5 @@ if __name__ == '__main__':
     for i in range(8):
         decompress_targz_file('train', str(i))
 
+    decompress_targz_file('test', '8')
+    decompress_targz_file('valid', '9')
