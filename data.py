@@ -121,7 +121,7 @@ class MoonDataset(Dataset):
         return image_files, label_files
 
 
-if __name__ == '__main__':
+# if __name__ == '__main__':
     # for i in range(8):
     #     decompress_targz_file('train', str(i))
 
