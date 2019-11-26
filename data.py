@@ -63,7 +63,7 @@ def remove_filename_extension(base_name):
 def load_image(img_path):
     print(img_path)
     img = cv2.imread(img_path, cv2.IMREAD_GRAYSCALE)
-    if img.size is None:
+    if img is None:
         # exit(1)
         img = cv2.cv.LoadImage(img_path, cv2.IMREAD_GRAYSCALE)
     img = cv2.pyrDown(img)
