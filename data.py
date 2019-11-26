@@ -8,7 +8,7 @@ from glob import glob
 from torch.utils.data import Dataset
 from torchvision import transforms
 from config import *
-
+ImageFile.LOAD_TRUNCATED_IMAGES = True
 
 def check_directory(directory):
     directory_path = os.path.join(DATASET_PATH, directory)
@@ -63,6 +63,7 @@ def remove_filename_extension(base_name):
 
 def load_image(img_path):
     ImageFile.LOAD_TRUNCATED_IMAGES = True
+    print(img_path)
     img = cv2.imread(img_path, cv2.IMREAD_GRAYSCALE)
     if img is None:
         img = np.array(Image.open(img_path).convert('L'))
