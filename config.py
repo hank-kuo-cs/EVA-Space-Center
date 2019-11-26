@@ -12,13 +12,6 @@ PARALLEL_GPUS = [0, 2, 3]
 DEVICE = 'cuda' if torch.cuda.is_available() else 'cpu'
 NET_MODEL = ResNet18
 
-# PATH
-# DATASET_PATH = os.path.expanduser('~') + '/dataset_random/'
-# DATASET_PATH = os.path.join('/data/', DATASET_NAME)
-DATASET_PATH = 'D:/EVA-Space-Center/test'
-# WRITER_PATH = os.path.expanduser('~') + '/Tensorboard/ResNet'
-WRITER_PATH = 'D:/EVA-Space-Center/Tensorboard/ResNet'
-
 # Dataset
 DATASET_NAME = 'Dataset_all_random'
 LABEL_TYPE = ['c_gamma', 'c_theta', 'c_phi', 'p_gamma', 'p_theta', 'p_phi', 'u_x', 'u_y', 'u_z']
@@ -27,6 +20,11 @@ DATASET_TYPE = {'train', 'test', 'validation'}
 LV_1_SPLIT_DATASET_SIZE = {'train': 1000, 'test': 10000, 'validation': 10000}
 LV_2_SPLIT_DATASET_SIZE = {'train': 1000, 'test': 1000, 'validation': 1000}
 DATASET_SIZE = {'train': 1000, 'test': 10000, 'validation': 10000}
+
+# PATH
+DATASET_PATH = '/data/space/' + DATASET_NAME
+# WRITER_PATH = os.path.expanduser('~') + '/Tensorboard/ResNet'
+WRITER_PATH = os.path.expanduser('~') + '/Tensorboard/ResNet'
 
 # Units
 UNIT_REAL = 996.679647  # in km

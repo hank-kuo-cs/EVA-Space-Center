@@ -25,10 +25,10 @@ def read_json(file):
     return data
 
 
-def decompress_targz_file(file):
-    file_path = os.path.join(DATASET_PATH, file + '.tar.gz')
-    check_directory(os.path.join(DATASET_PATH, file))
-    extract_dir = os.path.join(DATASET_PATH, file)
+def decompress_targz_file(mode, file):
+    file_path = os.path.join(DATASET_PATH, mode, 'images', file + '_*.tar.gz')
+    check_directory(os.path.join(DATASET_PATH, mode, file))
+    extract_dir = os.path.join(DATASET_PATH, mode, file)
     shutil.unpack_archive(file_path, extract_dir, 'gztar')
     logging.info('End decompress {}'.format(file_path))
 
@@ -116,8 +116,7 @@ class MoonDataset(Dataset):
         return image_files, label_files
 
 
-# if __name__ == '__main__':
-#     DATASET_PATH = 'D:/EVA-Space-Center/test'
-#     _ = read_json('target_0')
-#     image_name = path_leaf(DATASET_PATH + '0_0/' + DATASET_NAME + '_0')
-#     print(image_name)
+if __name__ == '__main__':
+    for i in range(8):
+        decompress_targz_file('train', str(i))
+    
