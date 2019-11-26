@@ -65,6 +65,7 @@ def load_image(img_path):
     img = cv2.imread(img_path, cv2.IMREAD_GRAYSCALE)
     if img is None:
         img = np.array(Image.open(img_path).convert('L'))
+        logging.info('cv2.imread() return None, Use PIL')
     img = cv2.pyrDown(img)
     img = cv2.equalizeHist(img)
 
