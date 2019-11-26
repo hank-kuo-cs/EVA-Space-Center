@@ -29,7 +29,7 @@ def decompress_targz_file(mode, file):
     for i in range(10):
         file_path = os.path.join(DATASET_PATH, mode, 'images', file + '_{}.tar.gz'.format(i))
         check_directory(os.path.join(DATASET_PATH, mode, 'images', file, file + '_{}'.format(i)))
-        extract_dir = os.path.join(DATASET_PATH, mode, file)
+        extract_dir = os.path.join(DATASET_PATH, mode, 'images', file, file + '_{}'.format(i))
         shutil.unpack_archive(file_path, extract_dir, 'gztar')
         logging.info('End decompress {}'.format(file_path))
 
