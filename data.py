@@ -1,26 +1,44 @@
+import json
 import cv2
 import ntpath
 import numpy as np
+import shutil
 from glob import glob
 from torch.utils.data import Dataset
 from torchvision import transforms
 from config import *
 
 
-def unpickle(file):
-    with open(file, 'rb') as fo:
-        data = pickle.load(fo)
+def check_directory(directory):
+    directory_path = os.path.join(DATASET_PATH, directory)
+    if not os.path.exists(directory_path):
+        logging.info('Create directory {}'.format(directory))
+        os.makedirs(directory_path)
 
+
+def read_json(file):
+    file_path = os.path.join(DATASET_PATH, file)
+    with open(file_path, 'r') as reader:
+        data = json.loads(reader.read())
+
+    # print(data.keys())
     return data
 
-def get_target(img_name):
-    with open('ex.json' , 'r') as reader:
+
+def decompress_targz_file(file):
+    file_path = os.path.join(DATASET_PATH, file + '.tar.gz')
+    check_directory(os.path.join(DATASET_PATH, file))
+    extract_dir = os.path.join(DATASET_PATH, file)
+    shutil.unpack_archive(file_path, extract_dir, 'gztar')
+    logging.info('End decompress {}'.format(file_path))
 
 
 def normalize_label(label):
-    label[0] = (label[0] - GAMMA_RADIUS) / GAMMA_RANGE
-    label[1] /= (2 * np.pi)
-    label[2] /= (2 * np.pi)
+    label[0] = (label[0] - MOON_RADIUS)
+    for i in range(6, 9):
+        label[i] += 1
+    for i in range(9):
+        label[i] /= LIMIT[i]
 
     return label
 
@@ -30,6 +48,11 @@ def path_leaf(path):
 
     return tail or ntpath.basename(head)
 
+
+def remove_filename_extension(base_name):
+    file_name = os.path.splitext(base_name)[0]
+
+    return file_name
 
 def load_image(img_path):
     img = cv2.imread(img_path, cv2.IMREAD_GRAYSCALE)
@@ -44,26 +67,27 @@ class MoonDataset(Dataset):
         self.data_type = data_type
         self.data_size = DATASET_SIZE[data_type]
         self.image_files, self.label_files = self.load_data()
-        self.data_type = data_type
 
     def __len__(self):
         return self.data_size
 
     def __getitem__(self, item):
-        file_index = item // SPLIT_DATASET_SIZE[self.data_type]
-        file_num = item % SPLIT_DATASET_SIZE[self.data_type]
+        file_index_lv1 = item // LV_1_SPLIT_DATASET_SIZE[self.data_type]
+        file_lv2 = item % LV_1_SPLIT_DATASET_SIZE[self.data_type]
+        file_index_lv2 = file_lv2 // LV_2_SPLIT_DATASET_SIZE[self.data_type]
+        file_num = file_lv2 % LV_2_SPLIT_DATASET_SIZE[self.data_type]
 
-        image_path = self.image_files[file_index][file_num]
+        image_path = self.image_files[file_index_lv1][file_index_lv2][file_num]
         image = load_image(image_path)
 
-        image_name = path_leaf(image_path)
-        label = np.array(unpickle(self.label_files[file_index])[image_name])
+        image_name = remove_filename_extension(path_leaf(image_path))
+        label = np.array(read_json(self.label_files[file_index_lv1])[image_name])
         label = normalize_label(label)
 
         transform = transforms.Compose([
             transforms.ToTensor(),
-            transforms.Normalize([0.5], [0.5])
-            ]
+            # transforms.Normalize([0.5], [0.5])
+        ]
         )
 
         sample = transform(image), torch.from_numpy(label)
@@ -71,17 +95,29 @@ class MoonDataset(Dataset):
         return sample
 
     def load_data(self):
-        dataset_path = DATASET_PATH + self.data_type
+        dataset_path = os.path.join(DATASET_PATH, self.data_type)
 
         image_files = []
 
-        dir_num = DATASET_SIZE[self.data_type] // SPLIT_DATASET_SIZE[self.data_type]
+        lv1_num = DATASET_SIZE[self.data_type] // LV_1_SPLIT_DATASET_SIZE[self.data_type]
+        lv2_num = LV_1_SPLIT_DATASET_SIZE[self.data_type] // LV_2_SPLIT_DATASET_SIZE[self.data_type]
 
-        for i in range(dir_num):
-            imgs_path = dataset_path + '/images/' + str(i) + '/train*'
-            image_files.append(sorted(glob(imgs_path)))
+        for i in range(lv1_num):
+            lv1_image_file = []
+            for j in range(lv2_num):
+                imgs_path = os.path.join(dataset_path, 'images', str(i), '{}_{}'.format(i, j), DATASET_NAME + '_*')
+                lv1_image_file.append(sorted(glob(imgs_path)))
+            image_files.append(lv1_image_file)
+            # print(np.array(image_files).shape)
 
-        labels_path = dataset_path + '/labels/gt*'
+        labels_path = os.path.join(dataset_path, 'labels', 'target_*')
         label_files = sorted(glob(labels_path))
 
         return image_files, label_files
+
+
+# if __name__ == '__main__':
+#     DATASET_PATH = 'D:/EVA-Space-Center/test'
+#     _ = read_json('target_0')
+#     image_name = path_leaf(DATASET_PATH + '0_0/' + DATASET_NAME + '_0')
+#     print(image_name)
