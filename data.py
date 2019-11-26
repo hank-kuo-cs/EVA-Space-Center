@@ -2,7 +2,7 @@ import json
 import cv2
 import ntpath
 import numpy as np
-from PIL import Image
+from PIL import Image, ImageFile
 import shutil
 from glob import glob
 from torch.utils.data import Dataset
@@ -62,6 +62,7 @@ def remove_filename_extension(base_name):
 
 
 def load_image(img_path):
+    ImageFile.LOAD_TRUNCATED_IMAGES = True
     img = cv2.imread(img_path, cv2.IMREAD_GRAYSCALE)
     if img is None:
         img = np.array(Image.open(img_path).convert('L'))
