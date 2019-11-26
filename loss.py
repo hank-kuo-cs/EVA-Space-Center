@@ -41,11 +41,9 @@ class BCMSELoss(torch.nn.Module):
 
                     if abs(outputs[i][j + k] - targets[i][j + k]) > 0.5:
                         if targets[i][j + k] < outputs[i][j + k]:
-                            if targets[i][j + k] < outputs[i][j + k]:
-                                if targets[i][j + k] < outputs[i][j + k]:
-                                    targets[i][j + k] = 1 + targets[i][j + k]
-                                else:
-                                    targets[i][j + k] = -1 + targets[i][j + k]
+                            targets[i][j + k] = 1 + targets[i][j + k]
+                        else:
+                            targets[i][j + k] = -1 + targets[i][j + k]
 
                 constant_penalties.append(constant_penalty)
 
