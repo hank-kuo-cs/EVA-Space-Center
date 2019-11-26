@@ -26,11 +26,12 @@ def read_json(file):
 
 
 def decompress_targz_file(mode, file):
-    file_path = os.path.join(DATASET_PATH, mode, 'images', file + '_*.tar.gz')
-    check_directory(os.path.join(DATASET_PATH, mode, file))
-    extract_dir = os.path.join(DATASET_PATH, mode, file)
-    shutil.unpack_archive(file_path, extract_dir, 'gztar')
-    logging.info('End decompress {}'.format(file_path))
+    for i in range(10):
+        file_path = os.path.join(DATASET_PATH, mode, 'images', file + '_{}.tar.gz'.format(i))
+        check_directory(os.path.join(DATASET_PATH, mode, file))
+        extract_dir = os.path.join(DATASET_PATH, mode, file)
+        shutil.unpack_archive(file_path, extract_dir, 'gztar')
+        logging.info('End decompress {}'.format(file_path))
 
 
 def normalize_label(label):
@@ -119,4 +120,4 @@ class MoonDataset(Dataset):
 if __name__ == '__main__':
     for i in range(8):
         decompress_targz_file('train', str(i))
-    
+
