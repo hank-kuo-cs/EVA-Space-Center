@@ -1,13 +1,33 @@
 # EVA-Space-Center
 ## Introduction
-- This is a ball coordinate regression of the moon.
+##### Time
+    - A project started from 2019 June. 
+##### Goal
+    - It's aims to predict the position and the pose of an aircraft from a single Moon image.
 - Data consists of 100,000 moon images from random angles and distance.
-- And the label(ground truth) is 3 parameters: `gamma`, `phi`, `theta`
-- The ranges of this 3 parameters list below:
-    - `gamma`: [1.7438903314, 1.7579369712]
-    - `phi`: [0, 2pi]
-    - `theta`: [0, pi]
-- The goal of this experiment is to predict the position of the camera in the ball coordinate based on the Moon image.
+- 80,000 train data；10,000 test data；10,000 valid data.
+- The label(target/ground truth): `c_gamma`, `c_theta`, `c_phi`, `p_gamma`, `p_theta`, `p_phi`, `u_x`, `u_y`, `u_z`
+- If not mentioned, the world ball coordinate is based on Moon center.  
+- The meaning of this 9 parameters list below:
+    - `c_gamma`: gamma of the camera position.
+    - `c_theta`: theta of the camera position.
+    - `c_phi`: phi of the camera position.
+    - `p_gamma`: gamma of the optical axis' end point.
+    - `p_theta`: theta of the optical axis' end point.
+    - `p_phi`: phi of the optical axis' end pount.
+    - `u_x`: x componet of camera's normal vecter, the coordinate is based on cemera's center.
+    - `u_y`: y componet of camera's normal vecter, the coordinate is based on cemera's center.
+    - `u_z`: z componet of camera's normal vecter, the coordinate is based on cemera's center.
+- The range of this 9 parameters list below:
+    - `c_gamma`: [1737.3,  1747.1] km, 200m ~ 10,000m above Moon surface.
+    - `c_theta`: [0, 2pi] radian
+    - `c_phi`: [0, pi] radian
+    - `p_gamma`: [0, 1737.1] km, radius of the Moon.
+    - `p_theta`: [0, 2pi] radian
+    - `p_phi`: [0, pi] radian
+    - `u_x`: [-1, 1] no unit, since the normal vector is normalized.
+    - `u_y`: [-1, 1] no unit , since the normal vector is normalized.
+    - `u_z`: [-1, 1] no unit, since the normal vector is normalized.
 
 ## Enviroment
 - Anaconda 3
@@ -33,10 +53,13 @@
 - Dataset
     - You can adjust your own split way on the train, test, validation set.
     - But advise you not change this setting, maybe a bug will happen when loading data.
-- Loss Function
+- Units
+    - Units about OpenGL and the Moon. 
+- Constraints
     - Only you can change is `CONSTANT_WEIGHT`. It means how much do we punish the constant of the predict direction. But advise not to change it.
     - For example, although the distance between 100 * 2pi and 1 * 2pi is zero, we want to predict 1 * 2pi more than 100 * 2pi, so `CONSTANT_WEIGHT` is to add a penalty to the constant of the direction.
     - As a result, 100 * 2pi will take more penalty than 1 * 2pi.
+    - `LIMIT` is about the range of each parameters.
 - Visualization
     - `LOG_STEP`: How many steps to record a loss on the tensorboard and print on the console.
     - `TSNE_EPOCH`: How many epochs to record one tsne on the tensorboard.
@@ -53,7 +76,7 @@
 <img src="https://github.com/hank-kuo-cs/EVA-Space-Center/blob/master/src/Equalization.png" height="80%" width="80%">
 
 ## Network Architecture
-- The network model is VGG19 + Global Average Pooling Layer + Fully Connected Network, you can see graph of architecture below. 
+- The network model is ResNet18 + Fully Connected Network, you can see graph of architecture below. 
 - Of course, you can choose your own model, but be aware that input image is of one channel, your model should handle that problem.
 <img src="https://github.com/hank-kuo-cs/EVA-Space-Center/blob/charles/src/VGG19.png" height="80%" width="80%">
 
@@ -115,6 +138,5 @@ tensorboard --logdir=<your dir> --bind_all
 - It means the error of the predicted distance between camera and moon is ± 0.380 km
 - And the error of the predicted angle between camera and moon, phi is ± 2.63°, and theats is ± 1.62°
 ## To Do List
-- [ ] Try other model (Resnet...)
-- [ ] Gamma tsne is bad, find the problem.
+
 
