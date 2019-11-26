@@ -2,6 +2,7 @@ import json
 import cv2
 import ntpath
 import numpy as np
+from PIL import Image
 import shutil
 from glob import glob
 from torch.utils.data import Dataset
@@ -63,7 +64,7 @@ def remove_filename_extension(base_name):
 def load_image(img_path):
     img = cv2.imread(img_path, cv2.IMREAD_GRAYSCALE)
     if img is None:
-        img = cv2.cv.LoadImage(img_path, cv2.IMREAD_GRAYSCALE)
+        img = np.array(Image.open(img_path).convert('L'))
     img = cv2.pyrDown(img)
     img = cv2.equalizeHist(img)
 
