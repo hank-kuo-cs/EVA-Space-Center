@@ -119,8 +119,8 @@ class MoonDataset(Dataset):
 
 
 if __name__ == '__main__':
-    for i in range(8):
-        decompress_targz_file('train', str(i))
+    # for i in range(8):
+    #     decompress_targz_file('train', str(i))
 
     decompress_targz_file('test', '8')
     decompress_targz_file('valid', '9')
