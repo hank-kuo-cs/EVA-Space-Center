@@ -6,6 +6,7 @@ def get_error_percentage(output, target):
     output = output.double()
 
     error_percentage = [0, 0, 0, 0, 0, 0, 0, 0, 0]
+    output[6:9], _ = get_scalar(output[6:9])
 
     for i in range(0, 4, 3):
         error_percentage[i] = (abs(output[i] - target[i])).item()
@@ -20,6 +21,16 @@ def get_error_percentage(output, target):
         error_percentage[i] = (abs(output[i] - target[i])).item()
 
     return np.array(error_percentage)
+
+
+def get_scalar(vector_list):
+    tmp = .0
+    for i in range(3):
+        tmp += vector_list[i] ** 2
+    scalar = torch.sqrt(tmp)
+    normal_vector = torch.remainder(vector_list, scalar)
+
+    return normal_vector, scalar
 
 
 class BCMSELoss(torch.nn.Module):
@@ -46,6 +57,8 @@ class BCMSELoss(torch.nn.Module):
                             targets[i][j + k] = -1 + targets[i][j + k]
 
                 constant_penalties.append(constant_penalty)
+
+            outputs[i][6: 9], scalar = get_scalar(outputs[i][6: 9])
 
         constant_penalties = np.array(constant_penalties).sum() / BATCH_SIZE / CONSTANT_WEIGHT
         amount_loss = torch.tensor(constant_penalties, dtype=torch.double)
