@@ -8,6 +8,7 @@ from glob import glob
 from torch.utils.data import Dataset
 from torchvision import transforms
 from config import *
+# Truncated Images allow
 ImageFile.LOAD_TRUNCATED_IMAGES = True
 
 def check_directory(directory):
