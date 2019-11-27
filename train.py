@@ -60,12 +60,15 @@ def save_net_work(net, epoch):
 def adjust_constant_weight(constant_weight, iters_num, iters_num_now):
 
     total = iters_num
-    if iters_num_now > 0.9 * total:
+    
+    if iters_num_now > 0.3 * total:
         constant_weight = 5 * constant_weight
-    elif iters_num_now > 0.95 * total:
+    elif iters_num_now > 0.5 * total:
         constant_weight = 10 * constant_weight
-    elif iters_num_now > 0.98 * total:
+    elif iters_num_now > 0.7 * total:
         constant_weight = 20 * constant_weight
+    elif iters_num_now > 0.9 * total:
+        constant_weight = 40 * constant_weight
 
     return constant_weight
 
