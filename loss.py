@@ -14,8 +14,8 @@ def get_error_percentage(output, target):
             if output[i + j] < 0:
                 output[i + j] = output[i + j] % 1
 
-            dis = abs(output[i] - target[i])
-            error_percentage[i] = (1 - dis).item() if dis > 0.5 else dis.item()
+            dis = abs(output[i + j] - target[i + j])
+            error_percentage[i + j] = (1 - dis).item() if dis > 0.5 else dis.item()
 
     for i in range(6, 9):
         error_percentage[i] = (abs(output[i] - target[i])).item()
