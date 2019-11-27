@@ -90,6 +90,7 @@ class MoonDataset(Dataset):
         file_index_lv2 = file_lv2 // LV_2_SPLIT_DATASET_SIZE[self.data_type]
         file_num = file_lv2 % LV_2_SPLIT_DATASET_SIZE[self.data_type]
 
+        print(item, file_index_lv1, file_index_lv2, file_num)
         image_path = self.image_files[file_index_lv1][file_index_lv2][file_num]
         image = load_image(image_path)
 
@@ -115,13 +116,26 @@ class MoonDataset(Dataset):
         lv1_num = DATASET_SIZE[self.data_type] // LV_1_SPLIT_DATASET_SIZE[self.data_type]
         lv2_num = LV_1_SPLIT_DATASET_SIZE[self.data_type] // LV_2_SPLIT_DATASET_SIZE[self.data_type]
 
-        for i in range(lv1_num):
+        if self.data_type == 'train':
+            for i in range(lv1_num):
+                lv1_image_file = []
+                for j in range(lv2_num):
+                    imgs_path = os.path.join(dataset_path, 'images', str(i), '{}_{}'.format(i, j), DATASET_NAME + '_*')
+                    lv1_image_file.append(sorted(glob(imgs_path)))
+                image_files.append(lv1_image_file)
+                # print(np.array(image_files).shape)
+        elif self.data_type == 'test':
             lv1_image_file = []
-            for j in range(lv2_num):
-                imgs_path = os.path.join(dataset_path, 'images', str(i), '{}_{}'.format(i, j), DATASET_NAME + '_*')
+            for i in range(lv2_num):
+                imgs_path = os.path.join(dataset_path, 'images', '0', '{}_{}'.format(8, i), DATASET_NAME + '_*')
                 lv1_image_file.append(sorted(glob(imgs_path)))
             image_files.append(lv1_image_file)
-            # print(np.array(image_files).shape)
+        else:
+            lv1_image_file = []
+            for i in range(lv2_num):
+                imgs_path = os.path.join(dataset_path, 'images', '0', '{}_{}'.format(9, i), DATASET_NAME + '_*')
+                lv1_image_file.append(sorted(glob(imgs_path)))
+            image_files.append(lv1_image_file)
 
         labels_path = os.path.join(dataset_path, 'labels', 'target_*')
         label_files = sorted(glob(labels_path))
