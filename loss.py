@@ -27,7 +27,7 @@ def get_scalar(vector_list):
     tmp = .0
     for i in range(3):
         tmp += vector_list[i] ** 2
-    scalar = torch.sqrt(tmp)
+    scalar = np.sqrt(tmp)
     normal_vector = torch.remainder(vector_list, scalar)
 
     return normal_vector, scalar
