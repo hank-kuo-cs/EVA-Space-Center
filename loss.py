@@ -37,7 +37,7 @@ class BCMSELoss(torch.nn.Module):
     def __init__(self):
         super(BCMSELoss, self).__init__()
 
-    def forward(self, outputs, targets):
+    def forward(self, outputs, targets, constant_weight):
         constant_penalties = []
 
         for i in range(BATCH_SIZE):
@@ -60,9 +60,9 @@ class BCMSELoss(torch.nn.Module):
 
             outputs[i][6: 9], scalar = get_scalar(outputs[i][6: 9])
 
-        constant_penalties = (np.array(constant_penalties).sum() + scalar) / BATCH_SIZE / CONSTANT_WEIGHT
+        constant_penalties = (np.array(constant_penalties).sum() + scalar) / BATCH_SIZE / constant_weight
         # amount_loss = torch.tensor(constant_penalties.clone().detach(), dtype=torch.double)
-        amount_loss = constant_penalties.clone().detach()
+        amount_loss = constant_penalties.clone().double().detach()
 
         mse_loss = torch.nn.MSELoss()(outputs, targets)
         loss = torch.add(mse_loss, amount_loss)

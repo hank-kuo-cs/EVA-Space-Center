@@ -57,6 +57,19 @@ def save_net_work(net, epoch):
     torch.save(net.state_dict(), save_model_path)
 
 
+def adjust_constant_weight(constant_weight, iters_num, iters_num_now):
+
+    total = iters_num
+    if iters_num_now > 0.9 * total:
+        constant_weight = 5 * constant_weight
+    elif iters_num_now > 0.95 * total:
+        constant_weight = 10 * constant_weight
+    elif iters_num_now > 0.98 * total:
+        constant_weight = 20 * constant_weight
+
+    return constant_weight
+
+
 def train(data_loader, model):
     net = set_net_work(model)
 
@@ -86,7 +99,9 @@ def train(data_loader, model):
                 add_tsne_data(tsne_data, features[0])
                 add_tsne_label(tsne_labels, labels.clone()[0])
 
-            loss = criterion(outputs.double(), labels)
+            constant_weight = adjust_constant_weight(CONSTANT_WEIGHT, EPOCH_NUM, epoch)
+
+            loss = criterion(outputs.double(), labels, constant_weight)
             loss.backward()
 
             optimizer.step()
