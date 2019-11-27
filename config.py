@@ -27,8 +27,8 @@ DATASET_PATH = '/data/space/' + DATASET_NAME
 WRITER_PATH = os.path.expanduser('~') + '/Tensorboard/ResNet'
 
 # Units
-UNIT_REAL = 996.679647  # in km
-MOON_RADIUS = 1.742887
+UNIT_REAL = 996.679647  # 1 OpenGL unit = 996.679647 km
+MOON_RADIUS = 1.742887  # in OpenGL unit
 OPENGL_1_METER = 0.001 / UNIT_REAL
 pi = np.pi
 
