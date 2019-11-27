@@ -63,7 +63,7 @@ def remove_filename_extension(base_name):
 
 def load_image(img_path):
     ImageFile.LOAD_TRUNCATED_IMAGES = True
-    print(img_path)
+    # print(img_path)
     img = cv2.imread(img_path, cv2.IMREAD_GRAYSCALE)
     if img is None:
         img = np.array(Image.open(img_path).convert('L'))
