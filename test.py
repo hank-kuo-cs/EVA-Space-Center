@@ -74,6 +74,8 @@ def test(loader, dataset_type, model, epoch=-1):
 
             features, outputs = net(images.float())
 
+            outputs = torch.remainder(outputs, 1)
+
             if (i * BATCH_SIZE) % TSNE_STEP == 0:
                 add_tsne_data(tsne_data, features[0])
                 add_tsne_label(tsne_labels, labels.clone()[0])

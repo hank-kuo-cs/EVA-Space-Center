@@ -33,21 +33,48 @@ def get_scalar(vector_list):
     return normal_vector, scalar
 
 
+def dynamic_constant_penalty(outputs, targets, constant_loss):
+    direction_loss = [[], [], []]
+    for i in range(BATCH_SIZE):
+        for j in range(0, 4, 3):
+            direction_loss[0].append(torch.nn.MSELoss()(outputs[i][j], targets[i][j]))
+            for k in range(1, 3):
+                direction_loss[1].append(torch.nn.MSELoss()(outputs[i][j + k], targets[i][j + k]))
+        for j in range(6, 9):
+            direction_loss[2].append(torch.nn.MSELoss()(outputs[i][j], targets[i][j]))
+
+    dir_percentage = []
+    for i in range(2):
+        dir_percentage.append(np.array(direction_loss[i]).sum())
+
+    if dir_percentage[0] > dir_percentage[1] and dir_percentage[2]:
+        constant_loss = 0
+    elif (dir_percentage[0] > dir_percentage[1]) and (dir_percentage[0] < dir_percentage[2]):
+        constant_loss = constant_loss[1]
+    elif (dir_percentage[0] < dir_percentage[1]) and (dir_percentage[0] > dir_percentage[2]):
+        constant_loss = constant_loss[0]
+    else:
+        constant_loss = constant_loss[0] + constant_loss[1]
+
+    return constant_loss
+
+
 class BCMSELoss(torch.nn.Module):
     def __init__(self):
         super(BCMSELoss, self).__init__()
 
-    def forward(self, outputs, targets, constant_weight):
-        constant_penalties = []
+    def forward(self, outputs, targets):
+        ectra_angles = []
+        extra_scalars = []
 
         for i in range(BATCH_SIZE):
 
             for j in range(0, 4, 3):
-                constant_penalty = np.array([0, 0], dtype=np.float64)
+                extra_angle = np.array([0, 0], dtype=np.float64)  # angle constant
 
                 for k in range(1, 3):
                     # print((outputs[i] == outputs[i][j + k]).nonzero())
-                    constant_penalty[k - 1] = abs(outputs[i][j + k] // 1)
+                    extra_angle[k - 1] = abs(outputs[i][j + k] // 1)
                     outputs[i][j + k] = torch.remainder(outputs[i][j + k], 1)
 
                     if abs(outputs[i][j + k] - targets[i][j + k]) > 0.5:
@@ -56,16 +83,22 @@ class BCMSELoss(torch.nn.Module):
                         else:
                             targets[i][j + k] = -1 + targets[i][j + k]
 
-                constant_penalties.append(constant_penalty)
+                ectra_angles.append(extra_angle)
 
-            outputs[i][6: 9], scalar = get_scalar(outputs[i][6: 9])
+            outputs[i][6: 9], extra_scalar = get_scalar(outputs[i][6: 9])
+            extra_scalars.append(extra_scalar)
 
-        constant_penalties = (np.array(constant_penalties).sum() + scalar) / BATCH_SIZE / constant_weight
-        # amount_loss = torch.tensor(constant_penalties.clone().detach(), dtype=torch.double)
-        amount_loss = constant_penalties.clone().double().detach()
+        constant_penalty = [ectra_angles, extra_scalars]
+        constant_penalties = [.0, .0]
+        constant_loss = [.0, .0]
+        for i in range(2):
+            constant = np.array(constant_penalty[i]).sum()
+            constant_penalties[i] = constant / BATCH_SIZE / CONSTANT_WEIGHT
+            constant_loss[i] = constant_penalties[i].clone().double().detach()
 
+        dynamic_amount_loss = dynamic_constant_penalty(outputs, targets, constant_loss)
         mse_loss = torch.nn.MSELoss()(outputs, targets)
-        loss = torch.add(mse_loss, amount_loss)
+        loss = torch.add(mse_loss, dynamic_amount_loss)
 
         return loss
 
