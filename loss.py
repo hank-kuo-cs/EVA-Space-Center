@@ -89,12 +89,12 @@ class BCMSELoss(torch.nn.Module):
             extra_scalars.append(extra_scalar)
 
         constant_penalty = [ectra_angles, extra_scalars]
-        constant_penalties = np.array([.0, .0]).astype(np.double)
-        constant_loss = np.array([.0, .0]).astype(np.double)
+        constant_penalties = np.array([.0, .0])
+        constant_loss = np.array([.0, .0])
         for i in range(2):
             constant = np.array(constant_penalty[i]).sum()
             constant_penalties[i] = constant / BATCH_SIZE / CONSTANT_WEIGHT
-            constant_loss[i] = constant_penalties[i].double()
+            constant_loss[i] = constant_penalties[i]
 
         dynamic_amount_loss = dynamic_constant_penalty(outputs, targets, constant_loss)
         mse_loss = torch.nn.MSELoss()(outputs, targets)
