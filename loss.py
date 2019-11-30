@@ -45,7 +45,7 @@ def dynamic_constant_penalty(outputs, targets, constant_loss):
             direction_loss[2].append(np.array(criterion(outputs[i][j], targets[i][j]).cpu().detach().numpy()))
 
     dir_percentage = []
-    for i in range(2):
+    for i in range(3):
         dir_percentage.append(np.array(direction_loss[i]).sum())
 
     if dir_percentage[0] > dir_percentage[1] and dir_percentage[2]:
