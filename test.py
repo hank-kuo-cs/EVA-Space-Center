@@ -89,7 +89,7 @@ def test(loader, dataset_type, model, epoch=-1):
             if i % LOG_STEP == LOG_STEP - 1:
                 logging.info('%d-th iter, check some predict value:' % (i * BATCH_SIZE))
                 logging.info('Predict: ' + str(outputs[0]))
-                logging.info('Target: ' + str(labels[0]) + '\n')
+                logging.info('Target:  ' + str(labels[0]) + '\n')
 
     error_percentages /= (DATASET_SIZE[dataset_type] / 100)
     running_loss /= (DATASET_SIZE[dataset_type] // BATCH_SIZE)
