@@ -35,13 +35,14 @@ def get_scalar(vector_list):
 
 def dynamic_constant_penalty(outputs, targets, constant_loss):
     direction_loss = [[], [], []]
+    criterion = torch.nn.MSELoss()
     for i in range(BATCH_SIZE):
         for j in range(0, 4, 3):
-            direction_loss[0].append(np.array(torch.nn.MSELoss()(outputs[i][j], targets[i][j])))
+            direction_loss[0].append(np.array(criterion(outputs[i][j], targets[i][j]).cpu().detach().numpy()))
             for k in range(1, 3):
-                direction_loss[1].append(np.array(torch.nn.MSELoss()(outputs[i][j + k], targets[i][j + k])))
+                direction_loss[1].append(np.array(criterion(outputs[i][j + k], targets[i][j + k]).cpu().detach().numpy()))
         for j in range(6, 9):
-            direction_loss[2].append(np.array(torch.nn.MSELoss()(outputs[i][j], targets[i][j])))
+            direction_loss[2].append(np.array(criterion(outputs[i][j], targets[i][j]).cpu().detach().numpy()))
 
     dir_percentage = []
     for i in range(2):
@@ -96,7 +97,7 @@ class BCMSELoss(torch.nn.Module):
             constant_penalties[i] = constant / BATCH_SIZE / CONSTANT_WEIGHT
             constant_loss[i] = constant_penalties[i]
 
-        dynamic_amount_loss = dynamic_constant_penalty(outputs.cpu().detach().numpy(), targets.cpu().detach().numpy(), constant_loss)
+        dynamic_amount_loss = dynamic_constant_penalty(outputs, targets, constant_loss)
         mse_loss = torch.nn.MSELoss()(outputs, targets)
         loss = torch.add(mse_loss, dynamic_amount_loss)
 
