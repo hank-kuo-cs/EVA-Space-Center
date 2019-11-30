@@ -24,7 +24,7 @@ DATASET_SIZE = {'train': 80000, 'test': 10000, 'validation': 10000}
 # PATH
 DATASET_PATH = '/data/space/' + DATASET_NAME
 # WRITER_PATH = os.path.expanduser('~') + '/Tensorboard/ResNet'
-WRITER_PATH = os.path.expanduser('~') + '/Tensorboard/ResNet'
+WRITER_PATH = os.path.expanduser('~') + '/Tensorboard/ResNet_const_penalty'
 
 # Units
 UNIT_REAL = 996.679647  # 1 OpenGL unit = 996.679647 km
