@@ -96,7 +96,7 @@ class BCMSELoss(torch.nn.Module):
             constant_penalties[i] = constant / BATCH_SIZE / CONSTANT_WEIGHT
             constant_loss[i] = constant_penalties[i]
 
-        dynamic_amount_loss = dynamic_constant_penalty(outputs, targets, constant_loss)
+        dynamic_amount_loss = dynamic_constant_penalty(outputs.cpu(), targets.cpu(), constant_loss)
         mse_loss = torch.nn.MSELoss()(outputs, targets)
         loss = torch.add(mse_loss, dynamic_amount_loss)
 
