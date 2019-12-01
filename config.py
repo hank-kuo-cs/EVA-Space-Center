@@ -6,7 +6,7 @@ from net import VGG19, ResNet18, ResNet50
 
 # Basic Setting
 logging.basicConfig(level=logging.INFO, format='%(asctime)s %(levelname)-8s %(message)s', datefmt='%m-%d %H:%M:%S')
-os.environ['CUDA_VISIBLE_DEVICES'] = '2'
+os.environ['CUDA_VISIBLE_DEVICES'] = '0'
 IS_PARALLEL = False
 PARALLEL_GPUS = [0, 2, 3]
 DEVICE = 'cuda' if torch.cuda.is_available() else 'cpu'
@@ -23,7 +23,7 @@ DATASET_SIZE = {'train': 80000, 'test': 10000, 'validation': 10000}
 
 # PATH
 DATASET_PATH = '/data/space/' + DATASET_NAME
-WRITER_PATH = os.path.expanduser('~') + '/Tensorboard/ResNet_no_cp'
+WRITER_PATH = os.path.expanduser('~') + '/Tensorboard/ResNet_little_cp'
 
 # Units
 UNIT_REAL = 996.679647  # 1 OpenGL unit = 996.679647 km
