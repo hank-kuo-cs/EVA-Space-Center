@@ -133,8 +133,8 @@ class CosSimiBCLoss(torch.nn.Module):
         super(CosSimiBCLoss, self).__init__()
 
     def forward(self, outputs, targets):
-        constant_penalties = torch.tensor([.0], dtype=torch.double, device=DEVICE, requires_grad=True)
-        similarity_loss = torch.tensor([.0], dtype=torch.double, device=DEVICE, requires_grad=True)
+        constant_penalties = torch.tensor([.0], dtype=torch.double, device=DEVICE, requires_grad=False)
+        similarity_loss = torch.tensor([.0], dtype=torch.double, device=DEVICE, requires_grad=False)
 
         for i in range(BATCH_SIZE):
 
@@ -152,6 +152,6 @@ class CosSimiBCLoss(torch.nn.Module):
         constant_loss = torch.remainder(constant_penalties, BATCH_SIZE)
         similarity_loss = torch.remainder(similarity_loss, BATCH_SIZE)
         loss = torch.add(similarity_loss, constant_loss)
-        print(loss)
+        loss = torch.tensor(loss.item(), dtype=torch.double, device=DEVICE, requires_grad=True)
 
         return loss
