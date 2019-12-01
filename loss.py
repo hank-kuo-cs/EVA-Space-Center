@@ -98,7 +98,7 @@ class BCMSELoss(torch.nn.Module):
             constant_loss[i] = constant_penalties[i]
 
         mse_loss = torch.nn.MSELoss()(outputs, targets)
-        mode = 'little_cp'
+        mode = 'dcp'
         if mode == 'dcp':
             amount_loss = dynamic_constant_penalty(outputs, targets, constant_loss)
         elif mode == 'cp':
