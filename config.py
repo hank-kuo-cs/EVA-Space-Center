@@ -23,7 +23,7 @@ DATASET_SIZE = {'train': 80000, 'test': 10000, 'validation': 10000}
 
 # PATH
 CONSTANT_PENALITY_MODE = 'dcp'  # 'dcp', 'cp', 'little_cp', 'no_cp'
-SAVE_POINT = 'ResNet_dcp'
+SAVE_POINT = 'ResNet_CosSimiBCLoss'
 DATASET_PATH = '/data/space/' + DATASET_NAME
 WRITER_PATH = os.path.expanduser('~') + '/Tensorboard/' + SAVE_POINT
 
@@ -47,7 +47,7 @@ CONSTANT_WEIGHT = 20000
 LOG_STEP = 100
 TSNE_EPOCH = 50
 TSNE_STEP = 20
-EXPERIMENT_NAME = 'BCMSE_SGD_lr_1e-3'
+EXPERIMENT_NAME = 'CosSimiBCLoss_Adam_lr_1e-3'
 
 # hyperparameters
 EPOCH_NUM = 300

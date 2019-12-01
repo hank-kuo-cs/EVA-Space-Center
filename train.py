@@ -6,7 +6,7 @@ from torch.utils.data import DataLoader
 
 from config import *
 from data import MoonDataset
-from loss import BCMSELoss
+from loss import CosSimiBCLoss
 from visualize import draw_loss_tensorboard, draw_tsne_tensorboard, add_tsne_label, add_tsne_data
 
 
@@ -60,8 +60,8 @@ def save_net_work(net, epoch):
 def train(data_loader, model):
     net = set_net_work(model)
 
-    criterion = BCMSELoss()
-    optimizer = torch.optim.SGD(net.parameters(), lr=LEARNING_RATE, momentum=MOMENTUM)
+    criterion = CosSimiBCLoss()
+    optimizer = torch.optim.Adam(net.parameters(), lr=LEARNING_RATE, eps=1e-8, weight_decay=1e-5)
 
     logging.info('Start training')
     train_start = time.time()
