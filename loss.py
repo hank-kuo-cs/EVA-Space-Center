@@ -152,5 +152,6 @@ class CosSimiBCLoss(torch.nn.Module):
         constant_loss = torch.remainder(constant_penalties, BATCH_SIZE)
         similarity_loss = torch.remainder(similarity_loss, BATCH_SIZE)
         loss = torch.add(similarity_loss, constant_loss)
+        print(loss)
 
         return loss
