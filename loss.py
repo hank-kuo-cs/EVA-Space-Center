@@ -133,25 +133,24 @@ class CosSimiBCLoss(torch.nn.Module):
         super(CosSimiBCLoss, self).__init__()
 
     def forward(self, outputs, targets):
-        with torch.autograd.set_detect_anomaly(True):
-            constant_penalties = torch.tensor([.0], dtype=torch.double, device=DEVICE, requires_grad=False)
-            similarity_loss = torch.tensor([.0], dtype=torch.double, device=DEVICE, requires_grad=False)
+        constant_penalties = torch.tensor([.0], dtype=torch.double, device=DEVICE, requires_grad=False)
+        similarity_loss = torch.tensor([.0], dtype=torch.double, device=DEVICE, requires_grad=False)
 
-            for i in range(BATCH_SIZE):
+        for i in range(BATCH_SIZE):
 
-                outputs[i][0:3] = ball_coordinates_to_cassette_coordinates(outputs[i][0:3].detach())
-                outputs[i][3:6] = ball_coordinates_to_cassette_coordinates(outputs[i][3:6].detach())
+            outputs[i][0:3] = ball_coordinates_to_cassette_coordinates(outputs[i][0:3].detach())
+            outputs[i][3:6] = ball_coordinates_to_cassette_coordinates(outputs[i][3:6].detach())
 
-                for j in range(0, 7, 3):
-                    outputs[i][j:j + 3], outputs_scalar = get_scalar(outputs[i][j:j + 3].detach())
-                    targets[i][j:j + 3], targets_scalar = get_scalar(targets[i][j:j + 3].detach())
-                    constant_penalties += -1 * (targets_scalar - outputs_scalar)
-                    similarity_loss += -1 * torch.nn.CosineSimilarity(dim=1, eps=1e-6)(
-                                                torch.reshape(outputs[i][j:j + 3].detach(), (1, 3)),
-                                                torch.reshape(targets[i][j:j + 3].detach(), (1, 3)))
+            for j in range(0, 7, 3):
+                outputs[i][j:j + 3], outputs_scalar = get_scalar(outputs[i][j:j + 3].detach())
+                targets[i][j:j + 3], targets_scalar = get_scalar(targets[i][j:j + 3].detach())
+                constant_penalties += -1 * (targets_scalar - outputs_scalar)
+                similarity_loss += -1 * torch.nn.CosineSimilarity(dim=1, eps=1e-6)(
+                                            torch.reshape(outputs[i][j:j + 3].detach(), (1, 3)),
+                                            torch.reshape(targets[i][j:j + 3].detach(), (1, 3)))
 
-            constant_loss = torch.remainder(constant_penalties, BATCH_SIZE)
-            similarity_loss = torch.remainder(similarity_loss, BATCH_SIZE)
-            loss = torch.add(similarity_loss, constant_loss)
+        constant_loss = torch.remainder(constant_penalties, BATCH_SIZE)
+        similarity_loss = torch.remainder(similarity_loss, BATCH_SIZE)
+        loss = torch.add(similarity_loss, constant_loss)
 
         return loss
