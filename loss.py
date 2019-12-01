@@ -133,7 +133,7 @@ class CosSimiBCLoss(torch.nn.Module):
         super(CosSimiBCLoss, self).__init__()
 
     def forward(self, outputs, targets):
-        with torch.autograd.set_detect_anomaly(True)
+        with torch.autograd.set_detect_anomaly(True):
             constant_penalties = torch.tensor([.0], dtype=torch.double, device=DEVICE, requires_grad=False)
             similarity_loss = torch.tensor([.0], dtype=torch.double, device=DEVICE, requires_grad=False)
 
