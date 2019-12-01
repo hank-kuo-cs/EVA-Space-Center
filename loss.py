@@ -60,6 +60,18 @@ def dynamic_constant_penalty(outputs, targets, constant_loss):
     return constant_loss
 
 
+def set_constant_oenalty_mode(mode, outputs, targets, mse_loss, constant_loss):
+    if mode == 'dcp':
+        amount_loss = dynamic_constant_penalty(outputs, targets, constant_loss)
+    elif mode == 'cp':
+        amount_loss = constant_loss.sum()
+    elif mode == 'little_cp':
+        amount_loss = constant_loss.sum() * mse_loss.clone().double().detach().cpu()
+    elif mode == 'no_cp':
+        amount_loss = 0
+
+    return amount_loss
+
 class BCMSELoss(torch.nn.Module):
     def __init__(self):
         super(BCMSELoss, self).__init__()
@@ -98,16 +110,7 @@ class BCMSELoss(torch.nn.Module):
             constant_loss[i] = constant_penalties[i]
 
         mse_loss = torch.nn.MSELoss()(outputs, targets)
-        mode = 'dcp'
-        if mode == 'dcp':
-            amount_loss = dynamic_constant_penalty(outputs, targets, constant_loss)
-        elif mode == 'cp':
-            amount_loss = constant_loss.sum()
-        elif mode == 'little_cp':
-            amount_loss = constant_loss.sum() * mse_loss.clone().double().detach().cpu()
-        elif mode == 'no_cp':
-            amount_loss = 0
-
+        amount_loss = set_constant_oenalty_mode(CONSTANT_PENALITY_MODE, outputs, targets, mse_loss, constant_loss)
         loss = torch.add(mse_loss, amount_loss)
 
         return loss
