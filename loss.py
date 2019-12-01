@@ -142,7 +142,7 @@ class CosSimiBCLoss(torch.nn.Module):
             outputs[i][3:6] = ball_coordinates_to_cassette_coordinates(outputs[i][3:6])
 
             for j in range(0, 7, 3):
-                outputs[i][j:j + 3], scalar = get_scalar(outputs[i][7:9])
+                outputs[i][j:j + 3], scalar = get_scalar(outputs[i][j:j + 3])
                 constant_penalties += -1 * scalar
                 similarity_loss += -1 * torch.nn.CosineSimilarity(dim=1, eps=1e-6)(outputs[i][j:j + 3],
                                                                                    targets[i][j:j + 3])
