@@ -48,7 +48,7 @@ def dynamic_constant_penalty(outputs, targets, constant_loss):
     for i in range(3):
         dir_percentage.append(np.array(direction_loss[i]).sum())
 
-    if dir_percentage[0] > dir_percentage[1] and dir_percentage[2]:
+    if (dir_percentage[0] > dir_percentage[1]) and (dir_percentage[0] > dir_percentage[2]):
         constant_loss = 0
     elif (dir_percentage[0] > dir_percentage[1]) and (dir_percentage[0] < dir_percentage[2]):
         constant_loss = constant_loss[1]
@@ -97,9 +97,18 @@ class BCMSELoss(torch.nn.Module):
             constant_penalties[i] = constant / BATCH_SIZE / CONSTANT_WEIGHT
             constant_loss[i] = constant_penalties[i]
 
-        dynamic_amount_loss = dynamic_constant_penalty(outputs, targets, constant_loss)
         mse_loss = torch.nn.MSELoss()(outputs, targets)
-        loss = torch.add(mse_loss, dynamic_amount_loss)
+        mode = 'no_cp'
+        if mode == 'dcp':
+            amount_loss = dynamic_constant_penalty(outputs, targets, constant_loss)
+        elif mode == 'cp':
+            amount_loss = constant_loss.sum()
+        elif mode == 'little_cp':
+            amount_loss = constant_loss.sum() * mse_loss.clone().double().detach().cpu()
+        elif mode == 'no_cp':
+            amount_loss = 0
+
+        loss = torch.add(mse_loss, amount_loss)
 
         return loss
 
