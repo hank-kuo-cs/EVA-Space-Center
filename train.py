@@ -50,10 +50,10 @@ def set_net_work(model):
 
 
 def save_net_work(net, epoch):
-    if not os.path.exists('checkpoint/'):
-        os.makedirs('checkpoint/')
+    if not os.path.exists('checkpoint/' + SAVE_POINT + '/'):
+        os.makedirs('checkpoint/' + SAVE_POINT + '/')
 
-    save_model_path = 'checkpoint/model_epoch%.3d.pth' % (epoch + 1)
+    save_model_path = 'checkpoint/' + SAVE_POINT + '/model_epoch%.3d.pth' % (epoch + 1)
     torch.save(net.state_dict(), save_model_path)
 
 

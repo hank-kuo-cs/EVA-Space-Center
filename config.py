@@ -22,8 +22,9 @@ LV_2_SPLIT_DATASET_SIZE = {'train': 1000, 'test': 1000, 'validation': 1000}
 DATASET_SIZE = {'train': 80000, 'test': 10000, 'validation': 10000}
 
 # PATH
+SAVE_POINT = 'ResNet_little_cp'
 DATASET_PATH = '/data/space/' + DATASET_NAME
-WRITER_PATH = os.path.expanduser('~') + '/Tensorboard/ResNet_little_cp'
+WRITER_PATH = os.path.expanduser('~') + '/Tensorboard/' + SAVE_POINT
 
 # Units
 UNIT_REAL = 996.679647  # 1 OpenGL unit = 996.679647 km
