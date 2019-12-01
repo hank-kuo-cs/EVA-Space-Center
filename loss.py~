@@ -23,31 +23,23 @@ def get_error_percentage(output, target):
     return np.array(error_percentage)
 
 
-def get_scalar(vector_list):
-    tmp = .0
-    for i in range(3):
-        tmp += vector_list[i] ** 2
-    scalar = torch.sqrt(tmp)
-    normal_vector = torch.remainder(vector_list, scalar.clone().detach())
-
-    return normal_vector, scalar
-
-
 def dynamic_constant_penalty(outputs, targets, constant_loss):
     direction_loss = [[], [], []]
+    criterion = torch.nn.MSELoss()
     for i in range(BATCH_SIZE):
         for j in range(0, 4, 3):
-            direction_loss[0].append(np.array(torch.nn.MSELoss()(outputs[i][j], targets[i][j])))
+            direction_loss[0].append(np.array(criterion(outputs[i][j], targets[i][j]).cpu().detach().numpy()))
             for k in range(1, 3):
-                direction_loss[1].append(np.array(torch.nn.MSELoss()(outputs[i][j + k], targets[i][j + k])))
+                direction_loss[1].append(
+                    np.array(criterion(outputs[i][j + k], targets[i][j + k]).cpu().detach().numpy()))
         for j in range(6, 9):
-            direction_loss[2].append(np.array(torch.nn.MSELoss()(outputs[i][j], targets[i][j])))
+            direction_loss[2].append(np.array(criterion(outputs[i][j], targets[i][j]).cpu().detach().numpy()))
 
     dir_percentage = []
-    for i in range(2):
+    for i in range(3):
         dir_percentage.append(np.array(direction_loss[i]).sum())
 
-    if dir_percentage[0] > dir_percentage[1] and dir_percentage[2]:
+    if (dir_percentage[0] > dir_percentage[1]) and (dir_percentage[0] > dir_percentage[2]):
         constant_loss = 0
     elif (dir_percentage[0] > dir_percentage[1]) and (dir_percentage[0] < dir_percentage[2]):
         constant_loss = constant_loss[1]
@@ -57,6 +49,19 @@ def dynamic_constant_penalty(outputs, targets, constant_loss):
         constant_loss = constant_loss[0] + constant_loss[1]
 
     return constant_loss
+
+
+def set_constant_oenalty_mode(mode, outputs, targets, mse_loss, constant_loss):
+    if mode == 'dcp':
+        amount_loss = dynamic_constant_penalty(outputs, targets, constant_loss)
+    elif mode == 'cp':
+        amount_loss = constant_loss.sum()
+    elif mode == 'little_cp':
+        amount_loss = constant_loss.sum() * mse_loss.clone().double().detach().cpu()
+    elif mode == 'no_cp':
+        amount_loss = 0
+
+    return amount_loss
 
 
 class BCMSELoss(torch.nn.Module):
@@ -96,36 +101,54 @@ class BCMSELoss(torch.nn.Module):
             constant_penalties[i] = constant / BATCH_SIZE / CONSTANT_WEIGHT
             constant_loss[i] = constant_penalties[i]
 
-        dynamic_amount_loss = dynamic_constant_penalty(outputs.cpu().detach().numpy(), targets.cpu().detach().numpy(), constant_loss)
         mse_loss = torch.nn.MSELoss()(outputs, targets)
-        loss = torch.add(mse_loss, dynamic_amount_loss)
+        amount_loss = set_constant_oenalty_mode(CONSTANT_PENALITY_MODE, outputs, targets, mse_loss, constant_loss)
+        loss = torch.add(mse_loss, amount_loss)
 
         return loss
 
 
-class BCL1Loss(torch.nn.Module):
+def ball_coordinates_to_cassette_coordinates(ball_coordinate_vector):
+    cassette_coordinate_vector = torch.tensor([.0, .0, .0], dtype=torch.double, requires_grad=True)
+
+    gamma = ball_coordinate_vector[0]
+    theta = ball_coordinate_vector[1]
+    phi = ball_coordinate_vector[2]
+    cassette_coordinate_vector[0] = gamma * torch.sin(theta) * torch.cos(phi)
+    cassette_coordinate_vector[1] = gamma * torch.sin(theta) * torch.sin(phi)
+    cassette_coordinate_vector[2] = gamma * torch.cos(theta)
+
+    return cassette_coordinate_vector
+
+
+def get_scalar(vector_list):
+    scalar = torch.sqrt(torch.dot(vector_list, vector_list))
+    normal_vector = torch.remainder(vector_list, scalar.clone().detach())
+
+    return normal_vector, scalar
+
+
+class CosSimiBCLoss(torch.nn.Module):
     def __init__(self):
-        super(BCL1Loss, self).__init__()
+        super(CosSimiBCLoss, self).__init__()
 
     def forward(self, outputs, targets):
-        constant_penalties = []
+        constant_penalties = torch.tensor([.0], dtype=torch.double, requires_grad=False)
+        similarity_loss = torch.tensor([.0], dtype=torch.double, requires_grad=False)
 
         for i in range(BATCH_SIZE):
-            constant_penalty = np.array([0, 0], dtype=np.float64)
 
-            for j in range(1, 3):
-                constant_penalty[j - 1] = abs(outputs[i][j] // 1)
-                outputs[i][j] = torch.remainder(outputs[i][j], 1)
+            outputs[i][0:3] = ball_coordinates_to_cassette_coordinates(outputs[i][0:3])
+            outputs[i][3:6] = ball_coordinates_to_cassette_coordinates(outputs[i][3:6])
 
-                if abs(outputs[i][j] - targets[i][j]) > 0.5:
-                    targets[i][j] = 1 + targets[i][j] if targets[i][j] < outputs[i][j] else -1 + targets[i][j]
+            for j in range(0, 7, 3):
+                outputs[i][j:j + 3], scalar = get_scalar(outputs[i][j:j + 3])
+                constant_penalties += -1 * scalar
+                similarity_loss += -1 * torch.nn.CosineSimilarity(dim=1, eps=1e-6)(outputs[i][j:j + 3],
+                                                                                   targets[i][j:j + 3])
 
-            constant_penalties.append(constant_penalty)
-
-        constant_penalties = np.array(constant_penalties).sum() / BATCH_SIZE / 2 / 10000
-        amount_loss = torch.tensor(constant_penalties, dtype=torch.double)
-
-        l1_loss = torch.nn.L1Loss()(outputs, targets)
-        loss = torch.add(l1_loss, amount_loss)
+        constant_loss = torch.remainder(constant_penalties, BATCH_SIZE)
+        similarity_loss = torch.remainder(similarity_loss, BATCH_SIZE)
+        loss = torch.add(similarity_loss, constant_loss)
 
         return loss
