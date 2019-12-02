@@ -190,6 +190,7 @@ if __name__ == '__main__':
     for i, data in enumerate(train_loader):
         _, labels = data[0].to(DEVICE), data[1].to(DEVICE)
         unnormalize_targets = unnormalize(labels)
+        print("unnormalize: {}".format(unnormalize_targets))
         camera_targets, optic_targets, nor_targets = torch.split(unnormalize_targets, 3, dim=1)
         camera_cas_targets = sphere2cartesian(camera_targets)
         print("ball: {}".format(camera_targets))
