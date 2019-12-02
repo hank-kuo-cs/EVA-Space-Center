@@ -118,17 +118,14 @@ def sphere2cartesian(ball_coordinate_vector):
     z = gamma * torch.cos(theta)
     tmp = torch.stack((x, y, z), dim=1)
     cassette_coordinate_vector = torch.squeeze(tmp)
-    print(cassette_coordinate_vector.shape)
 
     return cassette_coordinate_vector
 
 
 def get_scalar(vectors):
-    print(vectors.shape)
-    print(torch.transpose(vectors, 0, 1).shape)
     matmul_vector = torch.matmul(vectors, torch.transpose(vectors, 0, 1))
     scalar = torch.sqrt(matmul_vector)
-    normal_vector = torch.remainder(vectors, scalar)
+    normal_vector = torch.remainder(vectors, scalar.clone().detach())
 
     return normal_vector, scalar
 
