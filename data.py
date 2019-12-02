@@ -96,7 +96,7 @@ class MoonDataset(Dataset):
         image = load_image(image_path)
 
         image_name = remove_filename_extension(path_leaf(image_path))
-        label = np.array(read_json(self.label_files[file_index_lv1])[image_name])
+        label = np.array(read_json(self.label_files[file_index_lv1])[image_name], dtype=np.double)
         label = normalize_label(label)
 
         transform = transforms.Compose([
@@ -144,8 +144,4 @@ class MoonDataset(Dataset):
 
 
 # if __name__ == '__main__':
-    # for i in range(8):
-    #     decompress_targz_file('train', str(i))
 
-    # decompress_targz_file('test', '8')
-    # decompress_targz_file('valid', '9')

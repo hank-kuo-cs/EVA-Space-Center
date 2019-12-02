@@ -183,13 +183,13 @@ class CosSimiSphericalLoss(torch.nn.Module):
         return loss
 
 
-if __name__ == '__main__':
-    train_set = MoonDataset('train')
-    train_loader = DataLoader(dataset=train_set, batch_size=BATCH_SIZE, shuffle=True, num_workers=2)
-    for i, data in enumerate(train_loader):
-        _, labels = data[0].to(DEVICE), data[1].to(DEVICE)
-        unnormalize_targets = unnormalize(labels)
-        camera_targets, optic_targets, nor_targets = torch.split(unnormalize_targets, 3, dim=1)
-        camera_cas_targets = sphere2cartesian(camera_targets)
-        print("ball: {}".format(camera_targets))
-        print("cas: {}".format(camera_cas_targets))
+# if __name__ == '__main__':
+#     train_set = MoonDataset('train')
+#     train_loader = DataLoader(dataset=train_set, batch_size=BATCH_SIZE, shuffle=True, num_workers=2)
+#     for i, data in enumerate(train_loader):
+#         _, labels = data[0].to(DEVICE), data[1].to(DEVICE)
+#         unnormalize_targets = unnormalize(labels)
+#         camera_targets, optic_targets, nor_targets = torch.split(unnormalize_targets, 3, dim=1)
+#         camera_cas_targets = sphere2cartesian(camera_targets)
+#         print("ball: {}".format(camera_targets))
+#         print("cas: {}".format(camera_cas_targets))
