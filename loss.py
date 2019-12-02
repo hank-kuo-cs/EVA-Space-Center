@@ -138,6 +138,7 @@ def unnormalize(normalized_vector):
     unnormalize_vector = torch.mul(normalized_vector, limit)
     remainder_vector = torch.add(unnormalize_vector, remainder)
     print("normalized: {}".format(normalized_vector))
+    print("range: {}".format(limit))
     print('unnormalize: {}'.format(unnormalize_vector))
     print("remainder: {}".format(remainder))
     print("reminder_vector: {}".format(remainder_vector))
