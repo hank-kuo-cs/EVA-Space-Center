@@ -140,7 +140,7 @@ class ResNet(nn.Module):
         out = self.linear2(out)
         out = self.linear3(out)
         out = self.linear4(out)
-        out = torch.nn.functional.sigmoid(out)
+        # out = torch.nn.functional.sigmoid(out)
 
         return feature, out
 
