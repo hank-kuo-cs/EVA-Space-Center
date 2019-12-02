@@ -135,14 +135,11 @@ class CosSimiBCLoss(torch.nn.Module):
     def forward(self, outputs, targets):
         constant_penalties = torch.tensor([.0], dtype=torch.double, device=DEVICE, requires_grad=False)
         similarity_loss = torch.tensor([.0], dtype=torch.double, device=DEVICE, requires_grad=False)
-        cas_outputs = torch.tensor([[.0, .0, .0, .0, .0, .0, .0, .0, .0] * 10],
-                                   dtype=torch.double, device=DEVICE, requires_grad=False)
-        cas_targets = torch.tensor([[.0, .0, .0, .0, .0, .0, .0, .0, .0] * 10],
-                                   dtype=torch.double, device=DEVICE, requires_grad=False)
-        unit_cas_outputs = torch.tensor([[.0, .0, .0, .0, .0, .0, .0, .0, .0] * 10],
-                                        dtype=torch.double, device=DEVICE, requires_grad=False)
-        unit_cas_targets = torch.tensor([[.0, .0, .0, .0, .0, .0, .0, .0, .0] * 10],
-                                        dtype=torch.double, device=DEVICE, requires_grad=False)
+        tmp = np.array([[.0, .0, .0, .0, .0, .0, .0, .0, .0] * BATCH_SIZE])
+        cas_outputs = torch.tensor(tmp, dtype=torch.double, device=DEVICE, requires_grad=False)
+        cas_targets = torch.tensor(tmp, dtype=torch.double, device=DEVICE, requires_grad=False)
+        unit_cas_outputs = torch.tensor(tmp, dtype=torch.double, device=DEVICE, requires_grad=False)
+        unit_cas_targets = torch.tensor(tmp, dtype=torch.double, device=DEVICE, requires_grad=False)
 
         for i in range(BATCH_SIZE):
 
