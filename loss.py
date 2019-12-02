@@ -165,15 +165,16 @@ class CosSimiSphericalLoss(torch.nn.Module):
         camera_scalar = targets_camera_scalar - outputs_camera_scalar
         optic_scalar = targets_optic_scalar - outputs_optic_scalar
         u_scalar = targets_u_scalar - outputs_u_scalar
+        vector_shape = (BATCH_SIZE, 3)
         camera_similarity = torch.nn.CosineSimilarity(dim=1, eps=1e-6)(
-            torch.reshape(unit_camera_cas_targets, (1, 3)),
-            torch.reshape(unit_camera_cas_outputs, (1, 3)))
+            torch.reshape(unit_camera_cas_targets, vector_shape),
+            torch.reshape(unit_camera_cas_outputs, vector_shape))
         optic_similarity = torch.nn.CosineSimilarity(dim=1, eps=1e-6)(
-            torch.reshape(unit_optic_cas_targets, (1, 3)),
-            torch.reshape(unit_optic_cas_outputs, (1, 3)))
+            torch.reshape(unit_optic_cas_targets, vector_shape),
+            torch.reshape(unit_optic_cas_outputs, vector_shape))
         u_similarity = torch.nn.CosineSimilarity(dim=1, eps=1e-6)(
-            torch.reshape(unit_u_cas_targets, (1, 3)),
-            torch.reshape(unit_u_cas_outputs, (1, 3)))
+            torch.reshape(unit_u_cas_targets, vector_shape),
+            torch.reshape(unit_u_cas_outputs, vector_shape))
 
         similarity = torch.add(torch.add(camera_similarity, optic_similarity), u_similarity)
         constant_penalty = torch.add(torch.add(camera_scalar, optic_scalar), u_scalar)
