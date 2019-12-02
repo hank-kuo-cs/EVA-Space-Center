@@ -1,6 +1,9 @@
 import numpy as np
 from config import *
 
+from torch.utils.data import DataLoader
+from data import MoonDataset
+
 
 def get_error_percentage(output, target):
     output = output.double()
@@ -109,14 +112,14 @@ class BCMSELoss(torch.nn.Module):
 
 
 def ball_coordinates_to_cassette_coordinates(ball_coordinate_vector):
-    cassette_coordinate_vector = torch.tensor([.0, .0, .0], dtype=torch.double, requires_grad=True)
 
-    gamma = ball_coordinate_vector[0]
-    theta = ball_coordinate_vector[1]
-    phi = ball_coordinate_vector[2]
-    cassette_coordinate_vector[0] = gamma * torch.sin(theta) * torch.cos(phi)
-    cassette_coordinate_vector[1] = gamma * torch.sin(theta) * torch.sin(phi)
-    cassette_coordinate_vector[2] = gamma * torch.cos(theta)
+    gamma = ball_coordinate_vector[:, 0]
+    theta = ball_coordinate_vector[:, 1]
+    phi = ball_coordinate_vector[:, 2]
+    x = gamma * torch.sin(theta) * torch.cos(phi)
+    y = gamma * torch.sin(theta) * torch.sin(phi)
+    z = gamma * torch.cos(theta)
+    cassette_coordinate_vector = torch.tensor([x, y, z], dtype=torch.double, device=DEVICE, requires_grad=True)
 
     return cassette_coordinate_vector
 
@@ -136,30 +139,29 @@ class CosSimiBCLoss(torch.nn.Module):
         constant_penalties = []
         similarity = torch.tensor([], dtype=torch.double, device=DEVICE, requires_grad=True)
 
-        for i in range(BATCH_SIZE):
-            camera_cas_outputs = ball_coordinates_to_cassette_coordinates(outputs[i][0:3])
-            optic_cas_outputs = ball_coordinates_to_cassette_coordinates(outputs[i][3:6])
-            nor_cas_outputs = outputs[i][6:9]
-            camera_cas_targets = ball_coordinates_to_cassette_coordinates(targets[i][0:3])
-            optic_cas_targets = ball_coordinates_to_cassette_coordinates(targets[i][3:6])
-            nor_cas_targets = targets[i][6:9]
+        camera_outputs, optic_outputs, nor_outputs = torch.split(outputs, 3, dim=1)
+        camera_targets, optic_targets, nor_targets = torch.split(targets, 3, dim=1)
+        camera_cas_outputs = ball_coordinates_to_cassette_coordinates(camera_outputs)
+        optic_cas_outputs = ball_coordinates_to_cassette_coordinates(optic_outputs)
+        camera_cas_targets = ball_coordinates_to_cassette_coordinates(camera_targets)
+        optic_cas_targets = ball_coordinates_to_cassette_coordinates(optic_targets)
 
-            cas_outputs = [camera_cas_outputs, optic_cas_outputs, nor_cas_outputs]
-            cas_targets = [camera_cas_targets, optic_cas_targets, nor_cas_targets]
-            for j in range(3):
-                unit_cas_outputs, outputs_scalar = get_scalar(cas_outputs[j])
-                unit_cas_targets, targets_scalar = get_scalar(cas_targets[j])
-                scalar_tmp = (targets_scalar - outputs_scalar).cuda().clone().detach().requires_grad_(True)
-                vector_tmp = torch.nn.CosineSimilarity(dim=1, eps=1e-6)(
-                    torch.reshape(unit_cas_targets, (1, 3)),
-                    torch.reshape(unit_cas_outputs, (1, 3))).cuda().clone().detach().requires_grad_(True)
-                if j == 0:
-                    constant_penalties = torch.tensor(scalar_tmp,
-                                                      dtype=torch.double, device=DEVICE, requires_grad=True)
-                    similarity = torch.tensor(vector_tmp, dtype=torch.double, device=DEVICE, requires_grad=True)
-                else:
-                    constant_penalties = torch.add(constant_penalties, scalar_tmp)
-                    similarity = torch.add(similarity, vector_tmp)
+        cas_outputs = [camera_cas_outputs, optic_cas_outputs, nor_outputs]
+        cas_targets = [camera_cas_targets, optic_cas_targets, nor_targets]
+        for j in range(3):
+            unit_cas_outputs, outputs_scalar = get_scalar(cas_outputs[j])
+            unit_cas_targets, targets_scalar = get_scalar(cas_targets[j])
+            scalar_tmp = (targets_scalar - outputs_scalar).cuda().clone().detach().requires_grad_(True)
+            vector_tmp = torch.nn.CosineSimilarity(dim=1, eps=1e-6)(
+                torch.reshape(unit_cas_targets, (1, 3)),
+                torch.reshape(unit_cas_outputs, (1, 3))).cuda().clone().detach().requires_grad_(True)
+            if j == 0:
+                constant_penalties = torch.tensor(scalar_tmp,
+                                                  dtype=torch.double, device=DEVICE, requires_grad=True)
+                similarity = torch.tensor(vector_tmp, dtype=torch.double, device=DEVICE, requires_grad=True)
+            else:
+                constant_penalties = torch.add(constant_penalties, scalar_tmp)
+                similarity = torch.add(similarity, vector_tmp)
 
         print("similarity_loss: {}".format(torch.remainder(similarity, BATCH_SIZE).item()))
 
@@ -168,3 +170,13 @@ class CosSimiBCLoss(torch.nn.Module):
         loss = torch.add(similarity_loss, constant_loss)
 
         return loss
+
+
+if __name__ == '__main__':
+    train_set = MoonDataset('train')
+    train_loader = DataLoader(dataset=train_set, batch_size=BATCH_SIZE, shuffle=True, num_workers=2)
+    for i, data in enumerate(train_loader):
+        _, labels = data[0].to(DEVICE), data[1].to(DEVICE)
+        camera_targets, optic_targets, nor_targets = torch.split(labels, 3, dim=1)
+        camera_cas_targets = ball_coordinates_to_cassette_coordinates(camera_targets)
+        print(camera_cas_targets)
