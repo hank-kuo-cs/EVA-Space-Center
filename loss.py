@@ -141,6 +141,7 @@ class CosSimiBCLoss(torch.nn.Module):
         cas_targets = torch.tensor(tmp, dtype=torch.double, device=DEVICE, requires_grad=False)
         unit_cas_outputs = torch.tensor(tmp, dtype=torch.double, device=DEVICE, requires_grad=False)
         unit_cas_targets = torch.tensor(tmp, dtype=torch.double, device=DEVICE, requires_grad=False)
+        print(unit_cas_targets.cpu().detach().numpy().shape)
 
         for i in range(BATCH_SIZE):
 
