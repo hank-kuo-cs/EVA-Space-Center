@@ -113,12 +113,10 @@ class BCMSELoss(torch.nn.Module):
 
 def sphere2cartesian(ball_coordinate_vector):
 
-    gamma = ball_coordinate_vector[:, 0]
-    theta = ball_coordinate_vector[:, 1]
-    phi = ball_coordinate_vector[:, 2]
-    x = gamma * torch.sin(phi) * torch.cos(theta)
-    y = gamma * torch.sin(phi) * torch.sin(theta)
-    z = gamma * torch.cos(phi)
+    gamma, theta, phi = torch.split(ball_coordinate_vector, 3, dim=1)
+    x = gamma * torch.sin(theta) * torch.cos(phi)
+    y = gamma * torch.sin(theta) * torch.sin(phi)
+    z = gamma * torch.cos(theta)
     cassette_coordinate_vector = torch.tensor([x, y, z], dtype=torch.double, device=DEVICE, requires_grad=True)
 
     return cassette_coordinate_vector
