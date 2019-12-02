@@ -179,4 +179,6 @@ if __name__ == '__main__':
         _, labels = data[0].to(DEVICE), data[1].to(DEVICE)
         camera_targets, optic_targets, nor_targets = torch.split(labels, 3, dim=1)
         camera_cas_targets = ball_coordinates_to_cassette_coordinates(camera_targets)
-        print(camera_cas_targets)
+        print("ball: {}".format(camera_targets))
+        print("cas: {}".format(camera_cas_targets))
+        exit(1)
