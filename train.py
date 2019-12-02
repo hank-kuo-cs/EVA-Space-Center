@@ -89,6 +89,7 @@ def train(data_loader, model):
 
             loss = criterion(outputs.double(), labels.double())
             loss.backward()
+            exit(1)
 
             optimizer.step()
 
