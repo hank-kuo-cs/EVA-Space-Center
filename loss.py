@@ -123,8 +123,8 @@ def sphere2cartesian(ball_coordinate_vector):
 
 
 def get_scalar(vectors):
-    dot_vector = torch.dot(vectors, vectors)
-    scalar = torch.sqrt(dot_vector)
+    matmul_vector = torch.matmul(vectors, torch.transpose(vectors))
+    scalar = torch.sqrt(matmul_vector)
     normal_vector = torch.remainder(vectors, scalar)
 
     return normal_vector, scalar
