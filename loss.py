@@ -122,7 +122,9 @@ def sphere2cartesian(ball_coordinate_vector):
 
 
 def get_scalar(vectors):
-    matmul_vector = torch.matmul(vectors, torch.transpose(vectors, 0, 1))
+    print(vectors.shape)
+    print(torch.transpose(vectors, 1, 2).shape)
+    matmul_vector = torch.matmul(vectors, torch.transpose(vectors, 1, 2))
     scalar = torch.sqrt(matmul_vector)
     normal_vector = torch.remainder(vectors, scalar)
 
@@ -133,10 +135,9 @@ def unnormalize(normalized_vector):
     remainder = torch.tensor([MOON_RADIUS, 0, 0, 0, 0, 0, -1, -1, -1],
                              dtype=torch.double, device=DEVICE, requires_grad=False)
     limit = torch.tensor(LIMIT, dtype=torch.double, device=DEVICE, requires_grad=False)
-    unnormalize_vector = torch.mul(normalized_vector, limit)
-    remainder_vector = torch.add(unnormalize_vector, remainder)
+    unnormalized_vector = torch.add(torch.mul(normalized_vector, limit), remainder)
 
-    return remainder_vector
+    return unnormalized_vector
 
 
 class CosSimiSphericalLoss(torch.nn.Module):
