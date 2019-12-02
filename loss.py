@@ -133,36 +133,33 @@ class CosSimiBCLoss(torch.nn.Module):
         super(CosSimiBCLoss, self).__init__()
 
     def forward(self, outputs, targets):
-        constant_penalties = torch.tensor([.0], dtype=torch.double, device=DEVICE, requires_grad=False)
-        similarity_loss = torch.tensor([.0], dtype=torch.double, device=DEVICE, requires_grad=False)
-        tmp = np.array([[.0] * (BATCH_SIZE * len(LABEL_TYPE))]).reshape((5, 9))
-        print(outputs.cpu().detach().numpy().shape)
-        cas_outputs = torch.tensor(tmp, dtype=torch.double, device=DEVICE, requires_grad=False)
-        cas_targets = torch.tensor(tmp, dtype=torch.double, device=DEVICE, requires_grad=False)
-        unit_cas_outputs = torch.tensor(tmp, dtype=torch.double, device=DEVICE, requires_grad=False)
-        unit_cas_targets = torch.tensor(tmp, dtype=torch.double, device=DEVICE, requires_grad=False)
-        print(unit_cas_targets.cpu().detach().numpy().shape)
+        constant_penalties = []
+        similarity = []
 
         for i in range(BATCH_SIZE):
+            camera_cas_outputs = ball_coordinates_to_cassette_coordinates(outputs[i][0:3])
+            optic_cas_outputs = ball_coordinates_to_cassette_coordinates(outputs[i][3:6])
+            nor_cas_outputs = outputs[i][7:9]
+            camera_cas_targets = ball_coordinates_to_cassette_coordinates(targets[i][0:3])
+            optic_cas_targets = ball_coordinates_to_cassette_coordinates(targets[i][3:6])
+            nor_cas_targets = targets[i][7:9]
 
-            cas_outputs[i][0:3] = ball_coordinates_to_cassette_coordinates(outputs[i][0:3].detach())
-            cas_outputs[i][3:6] = ball_coordinates_to_cassette_coordinates(outputs[i][3:6].detach())
-            cas_targets[i][0:3] = ball_coordinates_to_cassette_coordinates(targets[i][0:3].detach())
-            cas_targets[i][3:6] = ball_coordinates_to_cassette_coordinates(targets[i][3:6].detach())
+            cas_outputs = [camera_cas_outputs, optic_cas_outputs, nor_cas_outputs]
+            cas_targets = [camera_cas_targets, optic_cas_targets, nor_cas_targets]
+            for j in range(3):
+                unit_cas_outputs, outputs_scalar = get_scalar(cas_outputs[j])
+                unit_cas_targets, targets_scalar = get_scalar(cas_targets[j])
+                constant_penalties.append(targets_scalar - outputs_scalar)
+                similarity.append(
+                                    torch.nn.CosineSimilarity(dim=1, eps=1e-6)(
+                                        torch.reshape(unit_cas_targets.detach(), (1, 3)),
+                                        torch.reshape(unit_cas_outputs.detach(), (1, 3)))
+                                    )
 
-            for j in range(0, 7, 3):
-                unit_cas_outputs[i][j:j + 3], outputs_scalar = get_scalar(cas_outputs[i][j:j + 3].detach())
-                unit_cas_targets[i][j:j + 3], targets_scalar = get_scalar(cas_targets[i][j:j + 3].detach())
-                constant_penalties += (targets_scalar - outputs_scalar)
-                similarity_loss += torch.nn.CosineSimilarity(dim=1, eps=1e-6)(
-                                        torch.reshape(unit_cas_targets[i][j:j + 3].detach(), (1, 3)),
-                                        torch.reshape(unit_cas_outputs[i][j:j + 3].detach(), (1, 3)))
+        print("similarity_loss: {}".format(torch.mean(torch.stack(similarity)).item()))
 
-        print("similarity_loss: {}".format(similarity_loss))
-
-        constant_loss = torch.remainder(constant_penalties, BATCH_SIZE)
-        similarity_loss = torch.remainder(similarity_loss, BATCH_SIZE)
+        constant_loss = torch.mean(torch.stack(constant_penalties))
+        similarity_loss = torch.mean(torch.stack(similarity))
         loss = torch.add(similarity_loss, constant_loss)
-        loss = torch.tensor(loss.item(), dtype=torch.double, device=DEVICE, requires_grad=True)
 
         return loss
