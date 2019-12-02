@@ -122,10 +122,10 @@ def sphere2cartesian(ball_coordinate_vector):
     return cassette_coordinate_vector
 
 
-def get_scalar(vector_list):
-    dot_vector = torch.dot(vector_list, vector_list)
+def get_scalar(vectors):
+    dot_vector = torch.dot(vectors, vectors)
     scalar = torch.sqrt(dot_vector)
-    normal_vector = torch.remainder(vector_list, scalar)
+    normal_vector = torch.remainder(vectors, scalar)
 
     return normal_vector, scalar
 
@@ -159,20 +159,21 @@ class CosSimiSphericalLoss(torch.nn.Module):
 
         cas_outputs = [camera_cas_outputs, optic_cas_outputs, nor_outputs]
         cas_targets = [camera_cas_targets, optic_cas_targets, nor_targets]
-        for j in range(3):
-            unit_cas_outputs, outputs_scalar = get_scalar(cas_outputs[j])
-            unit_cas_targets, targets_scalar = get_scalar(cas_targets[j])
-            scalar_tmp = (targets_scalar - outputs_scalar).cuda().clone().detach().requires_grad_(True)
-            vector_tmp = torch.nn.CosineSimilarity(dim=1, eps=1e-6)(
-                torch.reshape(unit_cas_targets, (1, 3)),
-                torch.reshape(unit_cas_outputs, (1, 3))).cuda().clone().detach().requires_grad_(True)
-            if j == 0:
-                constant_penalties = torch.tensor(scalar_tmp,
-                                                  dtype=torch.double, device=DEVICE, requires_grad=True)
-                similarity = torch.tensor(vector_tmp, dtype=torch.double, device=DEVICE, requires_grad=True)
-            else:
-                constant_penalties = torch.add(constant_penalties, scalar_tmp)
-                similarity = torch.add(similarity, vector_tmp)
+        unit_camera_cas_outputs, outputs_camera_scalar = get_scalar(camera_cas_outputs)
+        unit_camera_cas_targets, targets_camera_scalar = get_scalar(camera_cas_targets)
+        unit_optic_cas_outputs, outputs_optic_scalar = get_scalar(optic_cas_outputs)
+        unit_optic_cas_targets, targets_optic_scalar = get_scalar(optic_cas_targets)
+        scalar_tmp = (targets_scalar - outputs_scalar).cuda().clone().detach().requires_grad_(True)
+        vector_tmp = torch.nn.CosineSimilarity(dim=1, eps=1e-6)(
+            torch.reshape(unit_cas_targets, (1, 3)),
+            torch.reshape(unit_cas_outputs, (1, 3))).cuda().clone().detach().requires_grad_(True)
+        if j == 0:
+            constant_penalties = torch.tensor(scalar_tmp,
+                                              dtype=torch.double, device=DEVICE, requires_grad=True)
+            similarity = torch.tensor(vector_tmp, dtype=torch.double, device=DEVICE, requires_grad=True)
+        else:
+            constant_penalties = torch.add(constant_penalties, scalar_tmp)
+            similarity = torch.add(similarity, vector_tmp)
 
         print("similarity_loss: {}".format(torch.remainder(similarity, BATCH_SIZE).item()))
 
@@ -193,4 +194,5 @@ if __name__ == '__main__':
         camera_cas_targets = sphere2cartesian(camera_targets)
         print("ball: {}".format(camera_targets))
         print("cas: {}".format(camera_cas_targets))
+        print("unit: {}".format(nor_targets))
         exit(1)

@@ -98,7 +98,6 @@ class MoonDataset(Dataset):
         image_name = remove_filename_extension(path_leaf(image_path))
         label = np.array(read_json(self.label_files[file_index_lv1])[image_name], dtype=np.double)
         label = normalize_label(label)
-        print(label.dtype)
 
         transform = transforms.Compose([
             transforms.ToTensor(),
@@ -107,7 +106,6 @@ class MoonDataset(Dataset):
         )
 
         sample = transform(image), torch.from_numpy(label)
-        print(sample[1].dtype)
 
         return sample
 
