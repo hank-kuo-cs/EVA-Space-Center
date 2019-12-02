@@ -112,7 +112,6 @@ class BCMSELoss(torch.nn.Module):
 
 
 def sphere2cartesian(ball_coordinate_vector):
-
     gamma, theta, phi = torch.split(ball_coordinate_vector, 1, dim=1)
     x = gamma * torch.sin(theta) * torch.cos(phi)
     y = gamma * torch.sin(theta) * torch.sin(phi)
@@ -123,8 +122,6 @@ def sphere2cartesian(ball_coordinate_vector):
 
 
 def get_scalar(vectors):
-    print(vectors.shape)
-    print(torch.transpose(vectors, 0, 1).shape)
     matmul_vector = torch.matmul(vectors, torch.transpose(vectors, 0, 1))
     scalar = torch.sqrt(matmul_vector)
     normal_vector = torch.remainder(vectors, scalar)
@@ -147,56 +144,56 @@ class CosSimiSphericalLoss(torch.nn.Module):
         super(CosSimiSphericalLoss, self).__init__()
 
     def forward(self, outputs, targets):
-        constant_penalties = []
-        similarity = torch.tensor([], dtype=torch.double, device=DEVICE, requires_grad=True)
-
         unnormalize_outputs = unnormalize(outputs)
         unnormalize_targets = unnormalize(targets)
-        camera_outputs, optic_outputs, nor_outputs = torch.split(unnormalize_outputs, 3, dim=1)
-        camera_targets, optic_targets, nor_targets = torch.split(unnormalize_targets, 3, dim=1)
+        camera_outputs, optic_outputs, u_outputs = torch.split(unnormalize_outputs, 3, dim=1)
+        camera_targets, optic_targets, u_targets = torch.split(unnormalize_targets, 3, dim=1)
         camera_cas_outputs = sphere2cartesian(camera_outputs)
         optic_cas_outputs = sphere2cartesian(optic_outputs)
         camera_cas_targets = sphere2cartesian(camera_targets)
         optic_cas_targets = sphere2cartesian(optic_targets)
 
-        cas_outputs = [camera_cas_outputs, optic_cas_outputs, nor_outputs]
-        cas_targets = [camera_cas_targets, optic_cas_targets, nor_targets]
         unit_camera_cas_outputs, outputs_camera_scalar = get_scalar(camera_cas_outputs)
         unit_camera_cas_targets, targets_camera_scalar = get_scalar(camera_cas_targets)
         unit_optic_cas_outputs, outputs_optic_scalar = get_scalar(optic_cas_outputs)
         unit_optic_cas_targets, targets_optic_scalar = get_scalar(optic_cas_targets)
-        scalar_tmp = (targets_scalar - outputs_scalar).cuda().clone().detach().requires_grad_(True)
-        vector_tmp = torch.nn.CosineSimilarity(dim=1, eps=1e-6)(
-            torch.reshape(unit_cas_targets, (1, 3)),
-            torch.reshape(unit_cas_outputs, (1, 3))).cuda().clone().detach().requires_grad_(True)
-        if j == 0:
-            constant_penalties = torch.tensor(scalar_tmp,
-                                              dtype=torch.double, device=DEVICE, requires_grad=True)
-            similarity = torch.tensor(vector_tmp, dtype=torch.double, device=DEVICE, requires_grad=True)
-        else:
-            constant_penalties = torch.add(constant_penalties, scalar_tmp)
-            similarity = torch.add(similarity, vector_tmp)
+        unit_u_cas_outputs, outputs_u_scalar = get_scalar(u_outputs)
+        unit_u_cas_targets, targets_u_scalar = get_scalar(u_targets)
 
-        print("similarity_loss: {}".format(torch.remainder(similarity, BATCH_SIZE).item()))
+        camera_scalar = targets_camera_scalar - outputs_camera_scalar
+        optic_scalar = targets_optic_scalar - outputs_optic_scalar
+        u_scalar = targets_u_scalar - outputs_u_scalar
+        camera_similarity = torch.nn.CosineSimilarity(dim=1, eps=1e-6)(
+            torch.reshape(unit_camera_cas_targets, (1, 3)),
+            torch.reshape(unit_camera_cas_outputs, (1, 3)))
+        optic_similarity = torch.nn.CosineSimilarity(dim=1, eps=1e-6)(
+            torch.reshape(unit_optic_cas_targets, (1, 3)),
+            torch.reshape(unit_optic_cas_outputs, (1, 3)))
+        u_similarity = torch.nn.CosineSimilarity(dim=1, eps=1e-6)(
+            torch.reshape(unit_u_cas_targets, (1, 3)),
+            torch.reshape(unit_u_cas_outputs, (1, 3)))
 
-        constant_loss = torch.remainder(constant_penalties, BATCH_SIZE)
+        similarity = torch.add(torch.add(camera_similarity, optic_similarity), u_similarity)
+        constant_penalty = torch.add(torch.add(camera_scalar, optic_scalar), u_scalar)
+        constant_loss = torch.remainder(constant_penalty, BATCH_SIZE)
         similarity_loss = torch.remainder(similarity, BATCH_SIZE)
+        print("constant_loss: {}".format(constant_loss))
+        print("similarity_loss: {}".format(similarity_loss))
         loss = torch.add(similarity_loss, constant_loss)
 
         return loss
 
-
-if __name__ == '__main__':
-    train_set = MoonDataset('train')
-    train_loader = DataLoader(dataset=train_set, batch_size=BATCH_SIZE, shuffle=True, num_workers=2)
-    for i, data in enumerate(train_loader):
-        _, labels = data[0].to(DEVICE), data[1].to(DEVICE)
-        unnormalize_targets = unnormalize(labels)
-        camera_targets, optic_targets, nor_targets = torch.split(unnormalize_targets, 3, dim=1)
-        camera_cas_targets = sphere2cartesian(camera_targets)
-        print("ball: {}".format(camera_targets))
-        print("cas: {}".format(camera_cas_targets))
-        print("unit: {}".format(nor_targets))
-        unit_nor_targets, targets_nor_scalar = get_scalar(nor_targets)
-        print(unit_nor_targets, targets_nor_scalar)
-        exit(1)
+# if __name__ == '__main__':
+#     train_set = MoonDataset('train')
+#     train_loader = DataLoader(dataset=train_set, batch_size=BATCH_SIZE, shuffle=True, num_workers=2)
+#     for i, data in enumerate(train_loader):
+#         _, labels = data[0].to(DEVICE), data[1].to(DEVICE)
+#         unnormalize_targets = unnormalize(labels)
+#         camera_targets, optic_targets, nor_targets = torch.split(unnormalize_targets, 3, dim=1)
+#         camera_cas_targets = sphere2cartesian(camera_targets)
+#         print("ball: {}".format(camera_targets))
+#         print("cas: {}".format(camera_cas_targets))
+#         print("unit: {}".format(nor_targets))
+#         unit_nor_targets, targets_nor_scalar = get_scalar(nor_targets)
+#         print(unit_nor_targets, targets_nor_scalar)
+#         exit(1)
