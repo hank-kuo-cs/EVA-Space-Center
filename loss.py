@@ -135,13 +135,13 @@ def unnormalize(normalized_vector):
     remainder = torch.tensor([MOON_RADIUS, 0, 0, 0, 0, 0, -1, -1, -1],
                              dtype=torch.double, device=DEVICE, requires_grad=False)
     limit = torch.tensor(LIMIT, dtype=torch.double, device=DEVICE, requires_grad=False)
-    remaind_vector = torch.add(normalized_vector, remainder)
+    unnormalize_vector = torch.mul(normalized_vector, limit)
+    remainder_vector = torch.add(unnormalize_vector, remainder)
     print("normalized: {}".format(normalized_vector))
     print("remainder: {}".format(remainder))
-    print("reminder_vector: {}".format(remaind_vector))
-    unnormalize_vector = torch.mul(remaind_vector, limit)
+    print("reminder_vector: {}".format(remainder_vector))
 
-    return unnormalize_vector
+    return remainder_vector
 
 
 class CosSimiSphericalLoss(torch.nn.Module):
