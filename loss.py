@@ -140,6 +140,8 @@ class CosSimiBCLoss(torch.nn.Module):
 
             outputs[i][0:3] = ball_coordinates_to_cassette_coordinates(outputs[i][0:3].detach())
             outputs[i][3:6] = ball_coordinates_to_cassette_coordinates(outputs[i][3:6].detach())
+            targets[i][0:3] = ball_coordinates_to_cassette_coordinates(targets[i][0:3].detach())
+            targets[i][3:6] = ball_coordinates_to_cassette_coordinates(targets[i][3:6].detach())
 
             for j in range(0, 7, 3):
                 outputs[i][j:j + 3], outputs_scalar = get_scalar(outputs[i][j:j + 3].detach())
