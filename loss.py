@@ -154,10 +154,10 @@ class CosSimiBCLoss(torch.nn.Module):
                                         torch.reshape(unit_cas_targets, (1, 3)),
                                         torch.reshape(unit_cas_outputs, (1, 3))))
 
-        print("similarity_loss: {}".format(torch.mean(torch.stack(torch.cuda.DoubleTensor(similarity))).item()))
+        print("similarity_loss: {}".format(torch.mean(torch.stack(torch.tensor(similarity, device=DEVICE))).item()))
 
-        constant_loss = torch.mean(torch.stack(torch.cuda.DoubleTensor(constant_penalties)))
-        similarity_loss = torch.mean(torch.stack(torch.cuda.DoubleTensor(similarity)))
+        constant_loss = torch.mean(torch.stack(torch.tensor(constant_penalties, device=DEVICE)))
+        similarity_loss = torch.mean(torch.stack(torch.tensor(similarity, device=DEVICE)))
         loss = torch.add(similarity_loss, constant_loss)
 
         return loss
