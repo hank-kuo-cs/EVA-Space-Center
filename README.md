@@ -138,5 +138,7 @@ tensorboard --logdir=<your dir> --bind_all
 - It means the error of the predicted distance between camera and moon is ± 0.380 km
 - And the error of the predicted angle between camera and moon, phi is ± 2.63°, and theats is ± 1.62°
 ## To Do List
+- [ ] Add check NaN function
+- [ ] Check vector if it is in positive domain 
 
 

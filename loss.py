@@ -186,8 +186,8 @@ class CosSimiSphericalLoss(torch.nn.Module):
         loss = torch.sum(torch.add(torch.unsqueeze(similarity_loss, dim=1), constant_loss), dim=0)
         print(loss)
 
-
         return loss
+
 
 # if __name__ == '__main__':
 #     train_set = MoonDataset('train')
