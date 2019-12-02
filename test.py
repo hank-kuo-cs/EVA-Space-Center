@@ -27,13 +27,13 @@ def get_epoch_num(model):
 
 
 def get_newest_model():
-    model_paths = sorted(glob('./checkpoint/model*'))
+    model_paths = sorted(glob('./checkpoint/' + SAVE_POINT + '/model*'))
 
     return model_paths[-1]
 
 
 def get_all_model():
-    return sorted(glob('./checkpoint/model*'))
+    return sorted(glob('./checkpoint/' + SAVE_POINT + '/model*'))
 
 
 def print_error_percentage(error_percentage):
