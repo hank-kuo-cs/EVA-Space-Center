@@ -128,9 +128,10 @@ def get_scalar(vectors):
     print(matmul_vector.shape)
     sum_vector = torch.sum(matmul_vector, dim=1)
     print(sum_vector)
-    scalar = torch.sqrt(sum_vector)
-    print(scalar.shape)
-    normal_vector = torch.remainder(vectors, torch.transpose(scalar.clone().detach(), 0, 1))
+    scalar_tmp = torch.sqrt(sum_vector)
+    print(scalar_tmp.shape)
+    scalar = torch.transpose(torch.squeeze(scalar_tmp).clone().detach(), 0, 1)
+    normal_vector = torch.remainder(vectors, scalar)
 
     return normal_vector, scalar
 
