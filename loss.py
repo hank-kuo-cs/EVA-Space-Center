@@ -134,7 +134,7 @@ class CosSimiBCLoss(torch.nn.Module):
 
     def forward(self, outputs, targets):
         constant_penalties = []
-        similarity = []
+        similarity = torch.tensor([], dtype=torch.double, device=DEVICE, requires_grad=True)
 
         for i in range(BATCH_SIZE):
             camera_cas_outputs = ball_coordinates_to_cassette_coordinates(outputs[i][0:3])
@@ -149,15 +149,21 @@ class CosSimiBCLoss(torch.nn.Module):
             for j in range(3):
                 unit_cas_outputs, outputs_scalar = get_scalar(cas_outputs[j])
                 unit_cas_targets, targets_scalar = get_scalar(cas_targets[j])
-                constant_penalties.append((targets_scalar - outputs_scalar))
-                similarity.append(torch.nn.CosineSimilarity(dim=1, eps=1e-6)(
-                                        torch.reshape(unit_cas_targets, (1, 3)),
-                                        torch.reshape(unit_cas_outputs, (1, 3))))
+                tmp = torch.nn.CosineSimilarity(dim=1, eps=1e-6)(
+                    torch.reshape(unit_cas_targets, (1, 3)),
+                    torch.reshape(unit_cas_outputs, (1, 3)))
+                if j == 0:
+                    constant_penalties = torch.tensor((targets_scalar - outputs_scalar),
+                                                      dtype=torch.double, device=DEVICE, requires_grad=True)
+                    similarity = torch.tensor(tmp, dtype=torch.double, device=DEVICE, requires_grad=True)
+                else:
+                    constant_penalties = torch.add(constant_penalties, (targets_scalar - outputs_scalar))
+                    similarity = torch.add(similarity, tmp)
 
-        print("similarity_loss: {}".format(torch.mean(torch.stack(torch.tensor(similarity, device=DEVICE))).item()))
+        print("similarity_loss: {}".format(torch.remainder(similarity, BATCH_SIZE).item()))
 
-        constant_loss = torch.mean(torch.stack(torch.tensor(constant_penalties, device=DEVICE)))
-        similarity_loss = torch.mean(torch.stack(torch.tensor(similarity, device=DEVICE)))
+        constant_loss = torch.remainder(constant_penalties, BATCH_SIZE)
+        similarity_loss = torch.remainder(similarity, BATCH_SIZE)
         loss = torch.add(similarity_loss, constant_loss)
 
         return loss
