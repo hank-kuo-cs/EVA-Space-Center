@@ -117,6 +117,8 @@ def sphere2cartesian(ball_coordinate_vector):
     y = gamma * torch.sin(theta) * torch.sin(phi)
     z = gamma * torch.cos(theta)
     cassette_coordinate_vector = torch.stack((x, y, z), dim=1)
+    print(x)
+    print(cassette_coordinate_vector)
     print(cassette_coordinate_vector.shape)
 
     return cassette_coordinate_vector
