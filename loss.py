@@ -149,17 +149,17 @@ class CosSimiBCLoss(torch.nn.Module):
             for j in range(3):
                 unit_cas_outputs, outputs_scalar = get_scalar(cas_outputs[j])
                 unit_cas_targets, targets_scalar = get_scalar(cas_targets[j])
-                scalar_tmp = (targets_scalar - outputs_scalar).clone().detach().requires_grad_(True)
+                scalar_tmp = (targets_scalar - outputs_scalar).cuda().clone().detach().requires_grad_(True)
                 vector_tmp = torch.nn.CosineSimilarity(dim=1, eps=1e-6)(
                     torch.reshape(unit_cas_targets, (1, 3)),
-                    torch.reshape(unit_cas_outputs, (1, 3))).clone().detach().requires_grad_(True)
+                    torch.reshape(unit_cas_outputs, (1, 3))).cuda().clone().detach().requires_grad_(True)
                 if j == 0:
                     constant_penalties = torch.tensor(scalar_tmp,
                                                       dtype=torch.double, device=DEVICE, requires_grad=True)
                     similarity = torch.tensor(vector_tmp, dtype=torch.double, device=DEVICE, requires_grad=True)
                 else:
                     constant_penalties = torch.add(constant_penalties, scalar_tmp)
-                    similarity = torch.add(similarity, vector_tmp.clone().detach().requires_grad_(True))
+                    similarity = torch.add(similarity, vector_tmp)
 
         print("similarity_loss: {}".format(torch.remainder(similarity, BATCH_SIZE).item()))
 
