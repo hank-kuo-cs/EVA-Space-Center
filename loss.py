@@ -116,9 +116,9 @@ def sphere2cartesian(ball_coordinate_vector):
     gamma = ball_coordinate_vector[:, 0]
     theta = ball_coordinate_vector[:, 1]
     phi = ball_coordinate_vector[:, 2]
-    x = gamma * torch.sin(theta) * torch.cos(phi)
-    y = gamma * torch.sin(theta) * torch.sin(phi)
-    z = gamma * torch.cos(theta)
+    x = gamma * torch.sin(phi) * torch.cos(theta)
+    y = gamma * torch.sin(phi) * torch.sin(theta)
+    z = gamma * torch.cos(phi)
     cassette_coordinate_vector = torch.tensor([x, y, z], dtype=torch.double, device=DEVICE, requires_grad=True)
 
     return cassette_coordinate_vector
@@ -200,4 +200,4 @@ if __name__ == '__main__':
         camera_cas_targets = sphere2cartesian(camera_targets)
         print("ball: {}".format(camera_targets))
         print("cas: {}".format(camera_cas_targets))
-        exit(1)
+    exit(1)
