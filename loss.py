@@ -135,8 +135,11 @@ def unnormalize(normalized_vector):
     remainder = torch.tensor([MOON_RADIUS, 0, 0, 0, 0, 0, -1, -1, -1],
                              dtype=torch.double, device=DEVICE, requires_grad=False)
     limit = torch.tensor(LIMIT, dtype=torch.double, device=DEVICE, requires_grad=False)
-    remind_vector = torch.add(normalized_vector, remainder)
-    unnormalize_vector = torch.mul(remind_vector, limit)
+    remaind_vector = torch.add(normalized_vector, remainder)
+    print("normalized: {}".format(normalized_vector))
+    print("remainder: {}".format(remainder))
+    print("reminder_vector: {}".format(remaind_vector))
+    unnormalize_vector = torch.mul(remaind_vector, limit)
 
     return unnormalize_vector
 
