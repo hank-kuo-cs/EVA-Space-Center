@@ -81,6 +81,7 @@ def train(data_loader, model):
             optimizer.zero_grad()
 
             features, outputs = net(inputs.float())
+            print("outputs: {}".format(outputs))
 
             if (i * BATCH_SIZE) % TSNE_STEP == 0:
                 add_tsne_data(tsne_data, features[0])
