@@ -130,9 +130,9 @@ def get_scalar(vectors):
     print(sum_vector)
     scalar_tmp = torch.sqrt(sum_vector)
     print(scalar_tmp.shape)
-    scalar = torch.transpose(torch.squeeze(scalar_tmp).clone().detach(), 0, 1)
+    scalar = torch.transpose(torch.unsqueeze(scalar_tmp, 0).clone().detach(), 0, 1)
     print(scalar.shape)
-    normal_vector = torch.remainder(vectors, scalar_tmp)
+    normal_vector = torch.remainder(vectors, scalar)
 
     return normal_vector, scalar
 
