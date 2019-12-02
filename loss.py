@@ -181,8 +181,8 @@ class CosSimiSphericalLoss(torch.nn.Module):
         constant_loss = torch.remainder(constant_penalty, BATCH_SIZE)
         similarity_loss = torch.remainder(similarity, BATCH_SIZE)
         print("constant_loss: {}".format(constant_loss))
-        print("similarity_loss: {}".format(similarity_loss))
-        loss = torch.add(similarity_loss, constant_loss)
+        print("similarity_loss: {}".format(torch.unsqueeze(similarity_loss, dim=0)))
+        loss = torch.add(torch.unsqueeze(similarity_loss, dim=0), constant_loss)
 
         return loss
 
