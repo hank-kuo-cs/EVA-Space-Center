@@ -123,8 +123,9 @@ def sphere2cartesian(ball_coordinate_vector):
 
 
 def get_scalar(vector_list):
-    scalar = torch.sqrt(torch.dot(vector_list, vector_list))
-    normal_vector = torch.remainder(vector_list, scalar.clone().detach())
+    dot_vector = torch.dot(vector_list, vector_list)
+    scalar = torch.sqrt(dot_vector)
+    normal_vector = torch.remainder(vector_list, scalar)
 
     return normal_vector, scalar
 
@@ -135,11 +136,6 @@ def unnormalize(normalized_vector):
     limit = torch.tensor(LIMIT, dtype=torch.double, device=DEVICE, requires_grad=False)
     unnormalize_vector = torch.mul(normalized_vector, limit)
     remainder_vector = torch.add(unnormalize_vector, remainder)
-    print("normalized: {}".format(normalized_vector))
-    print("range: {}".format(limit))
-    print('unnormalize: {}'.format(unnormalize_vector))
-    print("remainder: {}".format(remainder))
-    print("reminder_vector: {}".format(remainder_vector))
 
     return remainder_vector
 
@@ -193,9 +189,7 @@ if __name__ == '__main__':
     for i, data in enumerate(train_loader):
         _, labels = data[0].to(DEVICE), data[1].to(DEVICE)
         unnormalize_targets = unnormalize(labels)
-        print("unnormalize: {}".format(unnormalize_targets))
         camera_targets, optic_targets, nor_targets = torch.split(unnormalize_targets, 3, dim=1)
         camera_cas_targets = sphere2cartesian(camera_targets)
         print("ball: {}".format(camera_targets))
         print("cas: {}".format(camera_cas_targets))
-        exit(BATCH_SIZE)
