@@ -195,4 +195,6 @@ if __name__ == '__main__':
         print("ball: {}".format(camera_targets))
         print("cas: {}".format(camera_cas_targets))
         print("unit: {}".format(nor_targets))
+        unit_nor_targets, targets_nor_scalar = get_scalar(nor_targets)
+        print(unit_nor_targets, targets_nor_scalar)
         exit(1)
