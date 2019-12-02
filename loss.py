@@ -152,8 +152,8 @@ class CosSimiBCLoss(torch.nn.Module):
                 constant_penalties.append(targets_scalar - outputs_scalar)
                 similarity.append(
                                     torch.nn.CosineSimilarity(dim=1, eps=1e-6)(
-                                        torch.reshape(unit_cas_targets.detach(), (1, 3)),
-                                        torch.reshape(unit_cas_outputs.detach(), (1, 3)))
+                                        torch.reshape(unit_cas_targets, (1, 3)),
+                                        torch.reshape(unit_cas_outputs, (1, 3)))
                                     )
 
         print("similarity_loss: {}".format(torch.mean(torch.stack(similarity)).item()))
