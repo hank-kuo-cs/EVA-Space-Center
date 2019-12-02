@@ -111,7 +111,7 @@ class BCMSELoss(torch.nn.Module):
         return loss
 
 
-def ball_coordinates_to_cassette_coordinates(ball_coordinate_vector):
+def sphere2cartesian(ball_coordinate_vector):
 
     gamma = ball_coordinate_vector[:, 0]
     theta = ball_coordinate_vector[:, 1]
@@ -131,20 +131,32 @@ def get_scalar(vector_list):
     return normal_vector, scalar
 
 
-class CosSimiBCLoss(torch.nn.Module):
+def unnormalize(normalized_vector):
+    remainder = torch.tensor([MOON_RADIUS, 0, 0, 0, 0, 0, -1, -1, -1],
+                             dtype=torch.double, device=DEVICE, requires_grad=False)
+    limit = torch.tensor(LIMIT, dtype=torch.double, device=DEVICE, requires_grad=False)
+    remind_vector = torch.add(normalized_vector, remainder)
+    unnormalize_vector = torch.mul(remind_vector, limit)
+
+    return unnormalize_vector
+
+
+class CosSimiSphericalLoss(torch.nn.Module):
     def __init__(self):
-        super(CosSimiBCLoss, self).__init__()
+        super(CosSimiSphericalLoss, self).__init__()
 
     def forward(self, outputs, targets):
         constant_penalties = []
         similarity = torch.tensor([], dtype=torch.double, device=DEVICE, requires_grad=True)
 
-        camera_outputs, optic_outputs, nor_outputs = torch.split(outputs, 3, dim=1)
-        camera_targets, optic_targets, nor_targets = torch.split(targets, 3, dim=1)
-        camera_cas_outputs = ball_coordinates_to_cassette_coordinates(camera_outputs)
-        optic_cas_outputs = ball_coordinates_to_cassette_coordinates(optic_outputs)
-        camera_cas_targets = ball_coordinates_to_cassette_coordinates(camera_targets)
-        optic_cas_targets = ball_coordinates_to_cassette_coordinates(optic_targets)
+        unnormalize_outputs = unnormalize(outputs)
+        unnormalize_targets = unnormalize(targets)
+        camera_outputs, optic_outputs, nor_outputs = torch.split(unnormalize_outputs, 3, dim=1)
+        camera_targets, optic_targets, nor_targets = torch.split(unnormalize_targets, 3, dim=1)
+        camera_cas_outputs = sphere2cartesian(camera_outputs)
+        optic_cas_outputs = sphere2cartesian(optic_outputs)
+        camera_cas_targets = sphere2cartesian(camera_targets)
+        optic_cas_targets = sphere2cartesian(optic_targets)
 
         cas_outputs = [camera_cas_outputs, optic_cas_outputs, nor_outputs]
         cas_targets = [camera_cas_targets, optic_cas_targets, nor_targets]
@@ -177,8 +189,9 @@ if __name__ == '__main__':
     train_loader = DataLoader(dataset=train_set, batch_size=BATCH_SIZE, shuffle=True, num_workers=2)
     for i, data in enumerate(train_loader):
         _, labels = data[0].to(DEVICE), data[1].to(DEVICE)
-        camera_targets, optic_targets, nor_targets = torch.split(labels, 3, dim=1)
-        camera_cas_targets = ball_coordinates_to_cassette_coordinates(camera_targets)
+        unnormalize_targets = unnormalize(labels)
+        camera_targets, optic_targets, nor_targets = torch.split(unnormalize_targets, 3, dim=1)
+        camera_cas_targets = sphere2cartesian(camera_targets)
         print("ball: {}".format(camera_targets))
         print("cas: {}".format(camera_cas_targets))
         exit(1)
