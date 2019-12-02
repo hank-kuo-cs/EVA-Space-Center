@@ -136,7 +136,7 @@ class CosSimiBCLoss(torch.nn.Module):
         constant_penalties = torch.tensor([.0], dtype=torch.double, device=DEVICE, requires_grad=False)
         similarity_loss = torch.tensor([.0], dtype=torch.double, device=DEVICE, requires_grad=False)
         tmp = np.array([[.0, .0, .0, .0, .0, .0, .0, .0, .0] * BATCH_SIZE])
-        print(np.array(outputs.cpu()).shape)
+        print(np.array(outputs.cpu().item()).shape)
         cas_outputs = torch.tensor(tmp, dtype=torch.double, device=DEVICE, requires_grad=False)
         cas_targets = torch.tensor(tmp, dtype=torch.double, device=DEVICE, requires_grad=False)
         unit_cas_outputs = torch.tensor(tmp, dtype=torch.double, device=DEVICE, requires_grad=False)
