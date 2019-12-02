@@ -139,10 +139,10 @@ class CosSimiBCLoss(torch.nn.Module):
         for i in range(BATCH_SIZE):
             camera_cas_outputs = ball_coordinates_to_cassette_coordinates(outputs[i][0:3])
             optic_cas_outputs = ball_coordinates_to_cassette_coordinates(outputs[i][3:6])
-            nor_cas_outputs = outputs[i][7:9]
+            nor_cas_outputs = outputs[i][6:9]
             camera_cas_targets = ball_coordinates_to_cassette_coordinates(targets[i][0:3])
             optic_cas_targets = ball_coordinates_to_cassette_coordinates(targets[i][3:6])
-            nor_cas_targets = targets[i][7:9]
+            nor_cas_targets = targets[i][6:9]
 
             cas_outputs = [camera_cas_outputs, optic_cas_outputs, nor_cas_outputs]
             cas_targets = [camera_cas_targets, optic_cas_targets, nor_cas_targets]
