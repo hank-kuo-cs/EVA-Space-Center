@@ -200,4 +200,4 @@ if __name__ == '__main__':
         camera_cas_targets = sphere2cartesian(camera_targets)
         print("ball: {}".format(camera_targets))
         print("cas: {}".format(camera_cas_targets))
-        exit(i)
+        exit(BATCH_SIZE)
