@@ -123,6 +123,7 @@ def sphere2cartesian(ball_coordinate_vector):
 
 
 def get_scalar(vectors):
+    print(vectors.shape)
     matmul_vector = torch.matmul(vectors, torch.transpose(vectors, 0, 1))
     print(matmul_vector.shape)
     sum_vector = torch.sum(matmul_vector, dim=1)
