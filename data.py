@@ -1,3 +1,4 @@
+import re
 import cv2
 import json
 import ntpath
@@ -56,7 +57,6 @@ def load_image(img_path):
 
     return img / 255
 
-
 class MoonDataset(Dataset):
     def __init__(self, data_type):
         self.data_type = data_type
@@ -65,13 +65,13 @@ class MoonDataset(Dataset):
         self.data_type = data_type
 
     def __len__(self):
-        return self.data_size
+        return 10
 
     def __getitem__(self, item):
         image_path = self.image_files[item]
         image = load_image(image_path)
 
-        image_name = image_path[:-4]
+        image_name = re.split('/', image_path)[-1][:-4]
         target_num = item // SPLIT_DATASET_SIZE[self.data_type]
 
         label = load_label(self.label_files[target_num], image_name)
