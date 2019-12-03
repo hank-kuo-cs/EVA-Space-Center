@@ -18,7 +18,8 @@ def unpickle(file):
 
 
 def load_label(label_path, image_name):
-    labels = json.loads(label_path)
+    with open(label_path, 'r') as f:
+        labels = json.load(f)
     label = np.array(labels[image_name], dtype=np.double)
 
     label[0] = (label[0] - GAMMA_RADIUS) / GAMMA_RANGE
@@ -56,6 +57,7 @@ def load_image(img_path):
     img = cv2.equalizeHist(img)
 
     return img / 255
+
 
 class MoonDataset(Dataset):
     def __init__(self, data_type):

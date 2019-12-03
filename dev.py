@@ -7,6 +7,8 @@ dev_dataset = MoonDataset('train')
 
 train_loader = DataLoader(dataset=dev_dataset, batch_size=BATCH_SIZE, shuffle=True, num_workers=2)
 
-
 for i, data in enumerate(train_loader):
-    print(data[0])
+    labels = data[1]
+
+    print(labels[0])
+

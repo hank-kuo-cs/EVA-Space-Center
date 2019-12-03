@@ -14,7 +14,7 @@ DEVICE = 'cuda' if torch.cuda.is_available() else 'cpu'
 NET_MODEL = VGG19
 
 # PATH
-DATASET_PATH ='/data/space/Dataset_all_random/'
+DATASET_PATH = '/data/space/Dataset_all_random/'
 WRITER_PATH = os.path.expanduser('~') + '/Tensorboard/VGG19'
 
 # Dataset
@@ -40,6 +40,6 @@ EXPERIMENT_NAME = 'SGD_lr_1e-3'
 
 # hyperparameters
 EPOCH_NUM = 300
-BATCH_SIZE = 10
+BATCH_SIZE = 100
 LEARNING_RATE = 0.001
 MOMENTUM = 0.9
