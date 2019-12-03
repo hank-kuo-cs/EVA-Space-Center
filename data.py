@@ -1,4 +1,5 @@
 import cv2
+import json
 import ntpath
 import pickle
 import numpy as np
@@ -13,6 +14,25 @@ def unpickle(file):
         data = pickle.load(fo)
 
     return data
+
+
+def load_label(label_path, image_name):
+    labels = json.loads(label_path)
+    label = np.array(labels[image_name], dtype=np.double)
+
+    label[0] = (label[0] - GAMMA_RADIUS) / GAMMA_RANGE
+    label[3] = (label[3] - GAMMA_RADIUS) / GAMMA_RANGE
+
+    label[1] /= (2 * np.pi)
+    label[2] /= (2 * np.pi)
+    label[4] /= (2 * np.pi)
+    label[5] /= (2 * np.pi)
+
+    label[6] = (label[6] + 1) / 2
+    label[7] = (label[7] + 1) / 2
+    label[8] = (label[8] + 1) / 2
+
+    return label
 
 
 def normalize_label(label):
@@ -48,17 +68,13 @@ class MoonDataset(Dataset):
         return self.data_size
 
     def __getitem__(self, item):
-        dir_index = item // SPLIT_DATASET_SIZE[self.data_type]
-        subdir_index = 0
-
-        file_num = item % SPLIT_DATASET_SIZE[self.data_type]
-
-        image_path = self.image_files[file_index][file_num]
+        image_path = self.image_files[item]
         image = load_image(image_path)
 
-        image_name = path_leaf(image_path)
-        label = np.array(unpickle(self.label_files[file_index])[image_name])
-        label = normalize_label(label)
+        image_name = image_path[:-4]
+        target_num = item // SPLIT_DATASET_SIZE
+
+        label = load_label(self.label_files[target_num], image_name)
 
         transform = transforms.Compose([
             transforms.ToTensor(),
