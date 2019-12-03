@@ -9,17 +9,18 @@ os.environ['CUDA_VISIBLE_DEVICES'] = '2'
 IS_PARALLEL = False
 PARALLEL_GPUS = [0, 2, 3]
 DEVICE = 'cuda' if torch.cuda.is_available() else 'cpu'
-NET_MODEL = ResNet18
+NET_MODEL = VGG19
 
 # PATH
-DATASET_PATH = os.path.expanduser('~') + '/dataset_random/'
-WRITER_PATH = os.path.expanduser('~') + '/Tensorboard/Resnet'
+DATASET_PATH = os.path.expanduser('~') + '/data/space/Dataset_all_random/'
+WRITER_PATH = os.path.expanduser('~') + '/Tensorboard/VGG19'
 
 # Dataset
-LABEL_TYPE = ['gamma', 'phi', 'theta']
+LABEL_TYPE = ['c_gamma', 'c_theta', 'c_phi', 'p_gamma', 'p_theta', 'p_phi', 'u_x', 'u_y', 'u_z']
 LABEL_NUM = len(LABEL_TYPE)
 DATASET_TYPE = {'train', 'test', 'validation'}
 SPLIT_DATASET_SIZE = {'train': 10000, 'test': 10000, 'validation': 10000}
+SUBDIR_NUM = 10
 DATASET_SIZE = {'train': 80000, 'test': 10000, 'validation': 10000}
 
 # Loss Function
@@ -32,10 +33,10 @@ CONSTANT_WEIGHT = 20000
 LOG_STEP = 100
 TSNE_EPOCH = 50
 TSNE_STEP = 20
-EXPERIMENT_NAME = 'BCMSE_SGD_lr_1e-3'
+EXPERIMENT_NAME = 'SGD_lr_1e-3'
 
 # hyperparameters
 EPOCH_NUM = 300
-BATCH_SIZE = 5
+BATCH_SIZE = 10
 LEARNING_RATE = 0.001
 MOMENTUM = 0.9

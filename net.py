@@ -12,7 +12,7 @@ class VGG19(nn.Module):
         self.regression1 = nn.Linear(512, 256)
         self.regression2 = nn.Linear(256, 128)
         self.regression3 = nn.Linear(128, 64)
-        self.regression4 = nn.Linear(64, 3)
+        self.regression4 = nn.Linear(64, 9)
 
     def forward(self, x):
         out = self.network(x)

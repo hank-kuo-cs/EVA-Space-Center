@@ -48,7 +48,9 @@ class MoonDataset(Dataset):
         return self.data_size
 
     def __getitem__(self, item):
-        file_index = item // SPLIT_DATASET_SIZE[self.data_type]
+        dir_index = item // SPLIT_DATASET_SIZE[self.data_type]
+        subdir_index = 0
+
         file_num = item % SPLIT_DATASET_SIZE[self.data_type]
 
         image_path = self.image_files[file_index][file_num]
@@ -76,10 +78,11 @@ class MoonDataset(Dataset):
         dir_num = DATASET_SIZE[self.data_type] // SPLIT_DATASET_SIZE[self.data_type]
 
         for i in range(dir_num):
-            imgs_path = dataset_path + '/images/' + str(i) + '/train*'
-            image_files.append(sorted(glob(imgs_path)))
+            for j in range(SUBDIR_NUM):
+                imgs_path = dataset_path + '/images/' + '%d/%d_%d' % (i, i, j) + '/Dataset*'
+                image_files += (sorted(glob(imgs_path)))
 
-        labels_path = dataset_path + '/labels/gt*'
+        labels_path = dataset_path + '/labels/target*'
         label_files = sorted(glob(labels_path))
 
         return image_files, label_files
