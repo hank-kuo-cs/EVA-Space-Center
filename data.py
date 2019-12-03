@@ -72,7 +72,7 @@ class MoonDataset(Dataset):
         image = load_image(image_path)
 
         image_name = image_path[:-4]
-        target_num = item // SPLIT_DATASET_SIZE
+        target_num = item // SPLIT_DATASET_SIZE[self.data_type]
 
         label = load_label(self.label_files[target_num], image_name)
 
