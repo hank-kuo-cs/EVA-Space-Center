@@ -67,6 +67,13 @@ def set_constant_oenalty_mode(mode, outputs, targets, mse_loss, constant_loss):
     return amount_loss
 
 
+def get_one_vector_scalar(vector):
+    scalar = torch.sqrt(torch.dot(vector, vector))
+    normal_vector = torch.remainder(vector, scalar.clone().detach())
+
+    return normal_vector, scalar
+
+
 class BCMSELoss(torch.nn.Module):
     def __init__(self):
         super(BCMSELoss, self).__init__()
@@ -93,7 +100,7 @@ class BCMSELoss(torch.nn.Module):
 
                 ectra_angles.append(extra_angle)
 
-            outputs[i][6: 9], extra_scalar = get_scalar(outputs[i][6: 9])
+            outputs[i][6: 9], extra_scalar = get_one_vector_scalar(outputs[i][6: 9])
             extra_scalars.append(extra_scalar)
 
         constant_penalty = [ectra_angles, extra_scalars]
