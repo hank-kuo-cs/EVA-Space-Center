@@ -67,7 +67,7 @@ class MoonDataset(Dataset):
         self.data_type = data_type
 
     def __len__(self):
-        return 10
+        return self.data_size
 
     def __getitem__(self, item):
         image_path = self.image_files[item]
