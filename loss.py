@@ -9,7 +9,7 @@ def get_error_percentage(output, target):
     output = output.double()
 
     error_percentage = [0, 0, 0, 0, 0, 0, 0, 0, 0]
-    output[6:9], _ = get_scalar(output[6:9])
+    output[6:9], _ = get_one_vector_scalar(output[6:9])
 
     for i in range(0, 4, 3):
         error_percentage[i] = (abs(output[i] - target[i])).item()
