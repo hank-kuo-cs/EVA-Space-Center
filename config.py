@@ -14,7 +14,7 @@ DEVICE = 'cuda' if torch.cuda.is_available() else 'cpu'
 NET_MODEL = VGG19
 
 # PATH
-DATASET_PATH = os.path.expanduser('~') + '/Dataset_all_random/'
+DATASET_PATH = '/data/space/Dataset_all_random/'
 WRITER_PATH = os.path.expanduser('~') + '/Tensorboard/VGG19'
 
 # Dataset
