@@ -23,7 +23,7 @@ def load_label(label_path, image_name):
     label = np.array(labels[image_name], dtype=np.double)
 
     label[0] = (label[0] - GAMMA_RADIUS) / GAMMA_RANGE
-    label[3] = (label[3] - GAMMA_RADIUS) / GAMMA_RANGE
+    label[3] /= GAMMA_RADIUS
 
     label[1] /= (2 * np.pi)
     label[2] /= (2 * np.pi)
