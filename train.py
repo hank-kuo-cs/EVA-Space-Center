@@ -6,7 +6,7 @@ from torch.utils.data import DataLoader
 
 from config import *
 from data import MoonDataset
-from loss import BCMSELoss
+from loss import BCMSELoss, MoonLoss
 from visualize import draw_loss_tensorboard, draw_tsne_tensorboard, add_tsne_label, add_tsne_data
 
 
@@ -60,7 +60,7 @@ def save_net_work(net, epoch):
 def train(data_loader, model):
     net = set_net_work(model)
 
-    criterion = BCMSELoss()
+    criterion = MoonLoss()
     optimizer = torch.optim.SGD(net.parameters(), lr=LEARNING_RATE, momentum=MOMENTUM)
 
     logging.info('Start training')

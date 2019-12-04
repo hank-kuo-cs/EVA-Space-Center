@@ -20,7 +20,7 @@ def unpickle(file):
 def load_label(label_path, image_name):
     with open(label_path, 'r') as f:
         labels = json.load(f)
-    label = np.array(labels[image_name], dtype=np.double)
+    label = np.array(labels[image_name][:6], dtype=np.double)
 
     label[0] = (label[0] - GAMMA_RADIUS) / GAMMA_RANGE
     label[3] /= GAMMA_RADIUS
@@ -29,10 +29,6 @@ def load_label(label_path, image_name):
     label[2] /= (2 * np.pi)
     label[4] /= (2 * np.pi)
     label[5] /= (2 * np.pi)
-
-    label[6] = (label[6] + 1) / 2
-    label[7] = (label[7] + 1) / 2
-    label[8] = (label[8] + 1) / 2
 
     return label
 

@@ -18,7 +18,7 @@ DATASET_PATH = '/data/space/Dataset_all_random/'
 WRITER_PATH = os.path.expanduser('~') + '/Tensorboard/VGG19'
 
 # Dataset
-LABEL_TYPE = ['c_gamma', 'c_theta', 'c_phi', 'p_gamma', 'p_theta', 'p_phi', 'u_x', 'u_y', 'u_z']
+LABEL_TYPE = ['c_gamma', 'c_theta', 'c_phi', 'p_gamma', 'p_theta', 'p_phi']
 LABEL_RANGE = [[1737.3, 1747.1], [0, 2 * np.pi], [0, np.pi], [0, 1737.1], [0, 2 * np.pi], [0, np.pi], [-1, 1], [-1, 1], [-1, 1]]
 LABEL_NUM = len(LABEL_TYPE)
 DATASET_TYPE = {'train', 'test', 'validation'}

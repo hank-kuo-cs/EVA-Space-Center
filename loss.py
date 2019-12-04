@@ -1,5 +1,6 @@
 import numpy as np
-from config import *
+import torch
+from config import BATCH_SIZE
 
 
 def get_error_percentage(output, target):
@@ -72,4 +73,26 @@ class BCL1Loss(torch.nn.Module):
         l1_loss = torch.nn.L1Loss()(outputs, targets)
         loss = torch.add(l1_loss, amount_loss)
 
+        return loss
+
+
+class MoonLoss(torch.nn.Module):
+    def __init__(self):
+        super(MoonLoss, self).__init__()
+
+    def forward(self, outputs, targets):
+        for i in range(BATCH_SIZE):
+            for j in range(1, 3):
+                outputs[i][j] = torch.remainder(outputs[i][j], 1)
+
+                if abs(outputs[i][j] - targets[i][j]) > 0.5:
+                    targets[i][j] = 1 + targets[i][j] if targets[i][j] < outputs[i][j] else -1 + targets[i][j]
+
+            for j in range(4, 6):
+                outputs[i][j] = torch.remainder(outputs[i][j], 1)
+
+                if abs(outputs[i][j] - targets[i][j]) > 0.5:
+                    targets[i][j] = 1 + targets[i][j] if targets[i][j] < outputs[i][j] else -1 + targets[i][j]
+
+        loss = torch.nn.MSELoss()(outputs, targets)
         return loss
