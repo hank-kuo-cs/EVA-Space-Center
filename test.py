@@ -6,7 +6,7 @@ from glob import glob
 
 from config import *
 from data import MoonDataset
-from loss import get_error_percentage, BCMSELoss
+from loss import get_error_percentage, MoonLoss
 from visualize import draw_error_percentage_tensorboard, draw_tsne_tensorboard, draw_loss_tensorboard, add_tsne_label, add_tsne_data
 
 
@@ -78,7 +78,7 @@ def test(loader, dataset_type, model, epoch=-1):
                 add_tsne_data(tsne_data, features[0])
                 add_tsne_label(tsne_labels, labels.clone()[0])
 
-            running_loss += BCMSELoss()(outputs.clone().double(), labels.clone()).item()
+            running_loss += MoonLoss()(outputs.clone().double(), labels.clone()).item()
 
             for b in range(BATCH_SIZE):
                 e_percentage = get_error_percentage(outputs[b].clone(), labels[b].clone())
