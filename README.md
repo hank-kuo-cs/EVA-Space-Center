@@ -7,7 +7,8 @@
 - Data consists of 100,000 moon images from random angles and distance.
 - 80,000 train data；10,000 test data；10,000 valid data.
 - The label(target/ground truth): `c_gamma`, `c_theta`, `c_phi`, `p_gamma`, `p_theta`, `p_phi`, `u_x`, `u_y`, `u_z`
-- If not mentioned, the world ball coordinate is based on Moon center.  
+- If not mentioned, the world ball coordinate is based on Moon center. 
+- <img src="https://github.com/charleschiu2012/EVA-Space-Center-Data-Generate/blob/master/src/360px-3D_Spherical.svg.png"  height="20%" width="20%">
 - The meaning of this 9 parameters list below:
     - `c_gamma`: gamma of the camera position.
     - `c_theta`: theta of the camera position.
@@ -19,10 +20,10 @@
     - `u_y`: y componet of camera's normal vecter, the coordinate is based on cemera's center.
     - `u_z`: z componet of camera's normal vecter, the coordinate is based on cemera's center.
 - The range of this 9 parameters list below:
-    - `c_gamma`: [1737.3,  1747.1] km, 200m ~ 10,000m above Moon surface.
+    - `c_gamma`: [1.74308766628, 1.75292031414] in OpenGL unit --> [1737.3,  1747.1] km, 200m ~ 10,000m above Moon surface.
     - `c_theta`: [0, 2pi] radian
     - `c_phi`: [0, pi] radian
-    - `p_gamma`: [0, 1737.1] km, radius of the Moon.
+    - `p_gamma`: [0, 1.742887] in OpenGL unit --> [0, 1737.1] km, radius of the Moon.
     - `p_theta`: [0, 2pi] radian
     - `p_phi`: [0, pi] radian
     - `u_x`: [-1, 1] no unit, since the normal vector is normalized.
