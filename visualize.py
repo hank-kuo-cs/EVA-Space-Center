@@ -1,19 +1,19 @@
 from tensorboardX import SummaryWriter
-from config import *
-
-
-writer = SummaryWriter(WRITER_PATH)
+from config import WRITER_PATH, DATASET_SIZE, BATCH_SIZE, EXPERIMENT_NAME, LABEL_NUM, LABEL_TYPE, DEVICE
 
 
 def draw_loss_tensorboard(loss, epoch, step, dataset_type):
+    writer = SummaryWriter(WRITER_PATH)
     x = epoch + 1 if step < 0 else step + epoch * (DATASET_SIZE[dataset_type] // BATCH_SIZE)
     y = loss
     tag = '%s/%s/loss_with_%s' % (EXPERIMENT_NAME, dataset_type, 'epoch' if step < 0 else 'step')
 
     writer.add_scalar(tag, y, x)
+    writer.close()
 
 
 def draw_error_percentage_tensorboard(error_percentage, epoch, dataset_type):
+    writer = SummaryWriter(WRITER_PATH)
     total_error_percentage = 0
 
     for e in error_percentage:
@@ -29,11 +29,15 @@ def draw_error_percentage_tensorboard(error_percentage, epoch, dataset_type):
     tag = '%s/%s/total_error_percentage' % (EXPERIMENT_NAME, dataset_type)
 
     writer.add_scalar(tag, total_error_percentage, epoch)
+    writer.close()
 
 
 def draw_tsne_tensorboard(data, labels, epoch, dataset_type):
+    writer = SummaryWriter(WRITER_PATH)
     for i in range(labels.shape[1]):
         writer.add_embedding(data, labels[:, i], tag='%s/%s/epoch%d/%s' % (EXPERIMENT_NAME, dataset_type, epoch, LABEL_TYPE[i]))
+
+    writer.close()
 
 
 def add_tsne_data(tsne_data, feature):
