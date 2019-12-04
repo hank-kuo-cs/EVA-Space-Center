@@ -7,7 +7,7 @@
 - Data consists of 100,000 moon images from random angles and distance.
 - 80,000 train data；10,000 test data；10,000 valid data.
 - The label(target/ground truth): `c_gamma`, `c_theta`, `c_phi`, `p_gamma`, `p_theta`, `p_phi`, `u_x`, `u_y`, `u_z`
-- If not mentioned, the world ball coordinate is based on Moon center. 
+- The world ball coordinate is based on Moon center, all vectors are based on the origin of the global world coordinate. 
 - <img src="https://github.com/charleschiu2012/EVA-Space-Center-Data-Generate/blob/master/src/360px-3D_Spherical.svg.png"  height="20%" width="20%">
 - The meaning of this 9 parameters list below:
     - `c_gamma`: gamma of the camera position.
@@ -16,9 +16,9 @@
     - `p_gamma`: gamma of the optical axis' end point.
     - `p_theta`: theta of the optical axis' end point.
     - `p_phi`: phi of the optical axis' end pount.
-    - `u_x`: x componet of camera's normal vecter, the coordinate is based on cemera's center.
-    - `u_y`: y componet of camera's normal vecter, the coordinate is based on cemera's center.
-    - `u_z`: z componet of camera's normal vecter, the coordinate is based on cemera's center.
+    - `u_x`: x componet of camera's normal vecter.
+    - `u_y`: y componet of camera's normal vecter.
+    - `u_z`: z componet of camera's normal vecter.
 - The range of this 9 parameters list below:
     - `c_gamma`: [1.74308766628, 1.75292031414] in OpenGL unit --> [1737.3,  1747.1] km, 200m ~ 10,000m above Moon surface.
     - `c_theta`: [0, 2pi] radian
@@ -29,6 +29,20 @@
     - `u_x`: [-1, 1] no unit, since the normal vector is normalized.
     - `u_y`: [-1, 1] no unit , since the normal vector is normalized.
     - `u_z`: [-1, 1] no unit, since the normal vector is normalized.
+```c++
+    void gluLookAt(	GLdouble eyeX, GLdouble eyeY, GLdouble eyeZ,
+                        GLdouble centerX, GLdouble centerY, GLdouble centerZ,
+                        GLdouble upX, GLdouble upY, GLdouble upZ
+                   );
+```
+- gluLookAt Parameters Meaning:
+    - eyeX, eyeY, eyeZ
+        - Specifies the position of the eye point.
+    - centerX, centerY, centerZ
+        - Specifies the position of the reference point.
+    - upX, upY, upZ
+        - Specifies the direction of the up vector.
+- See more definition of gluLookAt at https://www.khronos.org/registry/OpenGL-Refpages/gl2.1/xhtml/gluLookAt.xml
 
 ## Enviroment
 - Anaconda 3
