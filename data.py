@@ -58,12 +58,10 @@ def load_image(img_path):
 class MoonDataset(Dataset):
     def __init__(self, data_type):
         self.data_type = data_type
-        self.data_size = DATASET_SIZE[data_type]
         self.image_files, self.label_files = self.load_data()
-        self.data_type = data_type
 
     def __len__(self):
-        return self.data_size
+        return len(self.image_files)
 
     def __getitem__(self, item):
         image_path = self.image_files[item]

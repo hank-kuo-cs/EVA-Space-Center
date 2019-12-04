@@ -1,18 +1,24 @@
 import numpy as np
 import torch
-from config import BATCH_SIZE
+from config import BATCH_SIZE, LABEL_TYPE
 
 
 def get_error_percentage(output, target):
     output = output.double()
 
-    error_percentage = [0, 0, 0]
+    error_percentage = [0 for i in range(len(LABEL_TYPE))]
 
     error_percentage[0] = (abs(output[0] - target[0])).item()
+    error_percentage[3] = (abs(output[0] - target[0])).item()
 
     for i in range(1, 3):
-        if output[i] < 0:
-            output[i] = output[i] % 1
+        output[i] = output[i] % 1
+
+        dis = abs(output[i] - target[i])
+        error_percentage[i] = (1 - dis).item() if dis > 0.5 else dis.item()
+
+    for i in range(4, 6):
+        output[i] = output[i] % 1
 
         dis = abs(output[i] - target[i])
         error_percentage[i] = (1 - dis).item() if dis > 0.5 else dis.item()
