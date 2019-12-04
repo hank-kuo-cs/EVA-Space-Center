@@ -13,7 +13,7 @@
     - `c_gamma`: gamma of the camera position.
     - `c_theta`: theta of the camera position.
     - `c_phi`: phi of the camera position.
-    - `p_gamma`: gamma of the optical axis' end point.
+    - `p_gamma`: gamma of the optical axis' end point. However, the setting of p_gamma doesn't cause any difference of where cemera look at nor the image.
     - `p_theta`: theta of the optical axis' end point.
     - `p_phi`: phi of the optical axis' end pount.
     - `u_x`: x componet of camera's normal vecter.
