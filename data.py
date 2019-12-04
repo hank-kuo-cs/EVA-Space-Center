@@ -1,50 +1,26 @@
 import re
 import cv2
 import json
-import ntpath
-import pickle
+import torch
 import numpy as np
 from glob import glob
 from torch.utils.data import Dataset
 from torchvision import transforms
-from config import *
-
-
-def unpickle(file):
-    with open(file, 'rb') as fo:
-        data = pickle.load(fo)
-
-    return data
+from config import GAMMA_RADIUS, GAMMA_RANGE, SPLIT_DATASET_SIZE, DATASET_SIZE, DATASET_PATH, SUBDIR_NUM
 
 
 def load_label(label_path, image_name):
     with open(label_path, 'r') as f:
         labels = json.load(f)
-    label = np.array(labels[image_name][:6], dtype=np.double)
+    label = np.array(labels[image_name], dtype=np.double)
+    label = label[:3] + label[4:6]
 
     label[0] = (label[0] - GAMMA_RADIUS) / GAMMA_RANGE
-    label[3] /= GAMMA_RADIUS
 
-    label[1] /= (2 * np.pi)
-    label[2] /= (2 * np.pi)
-    label[4] /= (2 * np.pi)
-    label[5] /= (2 * np.pi)
+    for i in range(1, 5):
+        label[i] /= 2 * np.pi
 
     return label
-
-
-def normalize_label(label):
-    label[0] = (label[0] - GAMMA_RADIUS) / GAMMA_RANGE
-    label[1] /= (2 * np.pi)
-    label[2] /= (2 * np.pi)
-
-    return label
-
-
-def path_leaf(path):
-    head, tail = ntpath.split(path)
-
-    return tail or ntpath.basename(head)
 
 
 def load_image(img_path):

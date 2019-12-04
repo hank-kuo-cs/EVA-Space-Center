@@ -9,7 +9,6 @@ def get_error_percentage(output, target):
     error_percentage = [0 for i in range(len(LABEL_TYPE))]
 
     error_percentage[0] = (abs(output[0] - target[0])).item()
-    error_percentage[3] = (abs(output[0] - target[0])).item()
 
     for i in range(1, 3):
         output[i] = output[i] % 1
@@ -17,7 +16,7 @@ def get_error_percentage(output, target):
         dis = abs(output[i] - target[i])
         error_percentage[i] = (1 - dis).item() if dis > 0.5 else dis.item()
 
-    for i in range(4, 6):
+    for i in range(3, 5):
         output[i] = output[i] % 1
 
         dis = abs(output[i] - target[i])
@@ -94,7 +93,7 @@ class MoonLoss(torch.nn.Module):
                 if abs(outputs[i][j] - targets[i][j]) > 0.5:
                     targets[i][j] = 1 + targets[i][j] if targets[i][j] < outputs[i][j] else -1 + targets[i][j]
 
-            for j in range(4, 6):
+            for j in range(3, 5):
                 outputs[i][j] = torch.remainder(outputs[i][j], 1)
 
                 if abs(outputs[i][j] - targets[i][j]) > 0.5:

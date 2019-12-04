@@ -15,10 +15,10 @@ NET_MODEL = VGG19
 
 # PATH
 DATASET_PATH = '/data/space/Dataset_all_random/'
-WRITER_PATH = os.path.expanduser('~') + '/Tensorboard/VGG19'
+WRITER_PATH = os.path.expanduser('~') + '/ShowTensorboard/five_parameters'
 
 # Dataset
-LABEL_TYPE = ['c_gamma', 'c_theta', 'c_phi', 'p_gamma', 'p_theta', 'p_phi']
+LABEL_TYPE = ['c_gamma', 'c_theta', 'c_phi', 'p_theta', 'p_phi']
 LABEL_RANGE = [[1737.3, 1747.1], [0, 2 * np.pi], [0, np.pi], [0, 1737.1], [0, 2 * np.pi], [0, np.pi], [-1, 1], [-1, 1], [-1, 1]]
 LABEL_NUM = len(LABEL_TYPE)
 DATASET_TYPE = {'train', 'test', 'validation'}
@@ -40,6 +40,6 @@ EXPERIMENT_NAME = 'SGD_lr_1e-3'
 
 # hyperparameters
 EPOCH_NUM = 300
-BATCH_SIZE = 100
+BATCH_SIZE = 10
 LEARNING_RATE = 0.001
 MOMENTUM = 0.9
