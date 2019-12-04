@@ -7,7 +7,7 @@
 - Data consists of 100,000 moon images from random angles and distance.
 - 80,000 train data；10,000 test data；10,000 valid data.
 - The label(target/ground truth): `c_gamma`, `c_theta`, `c_phi`, `p_gamma`, `p_theta`, `p_phi`, `u_x`, `u_y`, `u_z`
-- The world ball coordinate is based on Moon center, all vectors are based on the origin of the global world coordinate. 
+- The gobal world coordinate is based on Moon center, all vectors are based on the origin of the global world coordinate. 
 - We consider the spherical coordinate in physics view.   <img src="https://github.com/charleschiu2012/EVA-Space-Center-Data-Generate/blob/master/src/360px-3D_Spherical.svg.png"  height="20%" width="20%">
 - The meaning of this 9 parameters list below:
     - `c_gamma`: gamma of the camera position.
