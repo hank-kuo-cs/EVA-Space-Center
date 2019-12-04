@@ -12,8 +12,9 @@ from config import GAMMA_RADIUS, GAMMA_RANGE, SPLIT_DATASET_SIZE, DATASET_SIZE, 
 def load_label(label_path, image_name):
     with open(label_path, 'r') as f:
         labels = json.load(f)
-    label = np.array(labels[image_name], dtype=np.double)
+    label = labels[image_name]
     label = label[:3] + label[4:6]
+    label = np.array(label, dtype=np.double)
 
     label[0] = (label[0] - GAMMA_RADIUS) / GAMMA_RANGE
 
