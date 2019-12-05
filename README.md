@@ -130,6 +130,7 @@ tensorboard --logdir=<your dir> --bind_all
 - And the error of the predicted angle between camera and moon, phi is ± 2.63°, and theats is ± 1.62°
 ## To Do List
 - [ ] Change dataset from ball coordinate to xyz coordinate. Because u is in the xyz coordinate and c & p are in the ball coordinate.
+- [ ] The range of gamma distance in the OpenGL is too small, it would loss detail information when calculating, because there are too many digits after decimal point.
 - [ ] Regress 5 parameters (c_gamma, c_theta, c_phi, p_theta, p_phi).
 - [ ] Regress 8 parameters (c_gamma, c_theta, c_phi, p_theta, p_phi, u_x, u_y, u_z).
 
