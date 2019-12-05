@@ -2,6 +2,7 @@ import re
 import cv2
 import json
 import torch
+import random
 import numpy as np
 from glob import glob
 from torch.utils.data import Dataset
@@ -27,9 +28,26 @@ def load_label(label_path, image_name):
 def load_image(img_path):
     img = cv2.imread(img_path, cv2.IMREAD_GRAYSCALE)
     img = cv2.pyrDown(img)
-    img = cv2.equalizeHist(img)
+
+    augmentation = [cv2.equalizeHist, sobel, original]
+    n = random.randint(0, 2)
+
+    img = augmentation[n](img)
 
     return img / 255
+
+
+def sobel(img):
+    x = cv2.Sobel(img, cv2.CV_16S, 1, 0)
+    y = cv2.Sobel(img, cv2.CV_16S, 0, 1)
+    x = cv2.convertScaleAbs(x)
+    y = cv2.convertScaleAbs(y)
+
+    return cv2.addWeighted(x, 0.5, y, 0.5, 0)
+
+
+def original(img):
+    return img
 
 
 class MoonDataset(Dataset):

@@ -1,12 +1,16 @@
+import os
 import time
+import torch
 import argparse
+import logging
 import numpy as np
 from glob import glob
 from torch.utils.data import DataLoader
 
-from config import *
+from config import NET_MODEL, IS_PARALLEL, DEVICE, PARALLEL_GPUS, LEARNING_RATE, MOMENTUM
+from config import EPOCH_NUM, BATCH_SIZE, TSNE_STEP, TSNE_EPOCH, LOG_STEP, DATASET_SIZE
 from data import MoonDataset
-from loss import BCMSELoss, MoonLoss
+from loss import MoonLoss
 from visualize import draw_loss_tensorboard, draw_tsne_tensorboard, add_tsne_label, add_tsne_data
 
 

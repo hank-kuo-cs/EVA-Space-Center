@@ -1,10 +1,12 @@
 import time
+import torch
+import logging
 import argparse
 import numpy as np
 from torch.utils.data import DataLoader
 from glob import glob
 
-from config import *
+from config import DATASET_SIZE, TSNE_STEP, TSNE_EPOCH, BATCH_SIZE, LABEL_TYPE, LABEL_NUM, NET_MODEL, DEVICE, LOG_STEP
 from data import MoonDataset
 from loss import get_error_percentage, MoonLoss
 from visualize import draw_error_percentage_tensorboard, draw_tsne_tensorboard, draw_loss_tensorboard, add_tsne_label, add_tsne_data
@@ -122,4 +124,3 @@ if __name__ == '__main__':
     else:
         for model in get_all_model():
             test(test_loader, dataset_type, model, get_epoch_num(model))
-
