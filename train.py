@@ -77,44 +77,44 @@ def train(data_loader, model):
 
         for i, data in enumerate(data_loader):
             inputs, labels = data[0].to(DEVICE), data[1].to(DEVICE)
-            # print("labels: {}".format(labels))
+            print("labels: {}".format(labels))
 
-    #         optimizer.zero_grad()
-    #
-    #         features, outputs = net(inputs.float())
-    #
-    #         if (i * BATCH_SIZE) % TSNE_STEP == 0:
-    #             add_tsne_data(tsne_data, features[0])
-    #             add_tsne_label(tsne_labels, labels.clone()[0])
-    #
-    #         loss = criterion(outputs.double(), labels.double())
-    #         loss.backward()
-    #         exit(1)
-    #
-    #         optimizer.step()
-    #
-    #         running_loss += loss.item()
-    #         epoch_loss += loss.item()
-    #
-    #         if i % LOG_STEP == LOG_STEP - 1:
-    #             running_loss /= LOG_STEP
-    #
-    #             logging.info('[%d epoch, %5d step] loss: %.6f' % (epoch + 1, i + 1, running_loss))
-    #             draw_loss_tensorboard(running_loss, epoch, i, 'train')
-    #
-    #             running_loss = 0.0
-    #
+            optimizer.zero_grad()
+
+            features, outputs = net(inputs.float())
+
+            if (i * BATCH_SIZE) % TSNE_STEP == 0:
+                add_tsne_data(tsne_data, features[0])
+                add_tsne_label(tsne_labels, labels.clone()[0])
+
+            loss = criterion(outputs.double(), labels.double())
+            loss.backward()
+            exit(1)
+
+            optimizer.step()
+
+            running_loss += loss.item()
+            epoch_loss += loss.item()
+
+            if i % LOG_STEP == LOG_STEP - 1:
+                running_loss /= LOG_STEP
+
+                logging.info('[%d epoch, %5d step] loss: %.6f' % (epoch + 1, i + 1, running_loss))
+                draw_loss_tensorboard(running_loss, epoch, i, 'train')
+
+                running_loss = 0.0
+
         save_net_work(net, epoch)
-    #
-    #     logging.info('Draw loss & tsne onto the tensorboard')
-    #     draw_loss_tensorboard(epoch_loss / (DATASET_SIZE['train'] // BATCH_SIZE), epoch, -1, 'train')
-    #
-    #     if epoch % TSNE_EPOCH == TSNE_EPOCH - 1:
-    #         draw_tsne_tensorboard(np.array(tsne_data), np.array(tsne_labels), epoch + 1, 'train')
-    #
-    #     logging.info('Finish one epoch, time = %s' % str(time.time() - epoch_start))
-    #
-    # logging.info('Finished training, time = %s' % str(time.time() - train_start))
+
+        logging.info('Draw loss & tsne onto the tensorboard')
+        draw_loss_tensorboard(epoch_loss / (DATASET_SIZE['train'] // BATCH_SIZE), epoch, -1, 'train')
+
+        if epoch % TSNE_EPOCH == TSNE_EPOCH - 1:
+            draw_tsne_tensorboard(np.array(tsne_data), np.array(tsne_labels), epoch + 1, 'train')
+
+        logging.info('Finish one epoch, time = %s' % str(time.time() - epoch_start))
+
+    logging.info('Finished training, time = %s' % str(time.time() - train_start))
 
 
 if __name__ == '__main__':
