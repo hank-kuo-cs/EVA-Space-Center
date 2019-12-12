@@ -40,7 +40,7 @@ Z_NEAR = 1.0
 Z_FAR = 100.0
 LOWER_BOUND = MOON_RADIUS + (OPENGL_1_METER * 200)  # 200m above moon surface
 UPPER_BOUND = MOON_RADIUS + (OPENGL_1_METER * 10000)   # 10,000m above moon surface
-LIMIT = [OPENGL_1_METER * 10000, 2 * pi, 2 * pi, MOON_RADIUS, 2 * pi, 2 * pi, 2, 2, 2]
+LIMIT = [OPENGL_1_METER * 10000, 2 * pi, 2 * pi, MOON_RADIUS, 2 * pi, 2 * pi, 2.0, 2.0, 2.0]
 CONSTANT_WEIGHT = 20000
 
 # Visualization

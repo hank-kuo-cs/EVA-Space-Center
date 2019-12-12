@@ -11,6 +11,7 @@ from config import *
 # Truncated Images allow
 ImageFile.LOAD_TRUNCATED_IMAGES = True
 
+
 def check_directory(directory):
     directory_path = os.path.join(DATASET_PATH, directory)
     if not os.path.exists(directory_path):
@@ -30,14 +31,20 @@ def read_json(file):
 def decompress_targz_file(mode, file):
     if mode == 'train':
         lv1_dir = file
+        for i in range(10):
+            file_path = os.path.join(DATASET_PATH, mode, 'images', file + '_{}.tar.gz'.format(i))
+            check_directory(os.path.join(DATASET_PATH, mode, 'images', lv1_dir, file + '_{}'.format(i)))
+            extract_dir = os.path.join(DATASET_PATH, mode, 'images', lv1_dir, file + '_{}'.format(i))
+            shutil.unpack_archive(file_path, extract_dir, 'gztar')
+            logging.info('End decompress {}'.format(file_path))
     else:
         lv1_dir = '0'
-    for i in range(10):
-        file_path = os.path.join(DATASET_PATH, mode, 'images', file + '_{}.tar.gz'.format(i))
-        check_directory(os.path.join(DATASET_PATH, mode, 'images', lv1_dir, file + '_{}'.format(i)))
-        extract_dir = os.path.join(DATASET_PATH, mode, 'images', lv1_dir, file + '_{}'.format(i))
-        shutil.unpack_archive(file_path, extract_dir, 'gztar')
-        logging.info('End decompress {}'.format(file_path))
+        for i in range(10):
+            file_path = os.path.join(DATASET_PATH, mode, 'images', '0_{}.tar.gz'.format(i))
+            check_directory(os.path.join(DATASET_PATH, mode, 'images', lv1_dir, '0_{}'.format(i)))
+            extract_dir = os.path.join(DATASET_PATH, mode, 'images', lv1_dir, '0_{}'.format(i))
+            shutil.unpack_archive(file_path, extract_dir, 'gztar')
+            logging.info('End decompress {}'.format(file_path))
 
 
 def normalize_label(label):
@@ -130,5 +137,7 @@ class MoonDataset(Dataset):
         return image_files, label_files
 
 
-# if __name__ == '__main__':
-
+if __name__ == '__main__':
+    decompress_targz_file("test", 8)
+    for i in range(8):
+        decompress_targz_file("train", i)
