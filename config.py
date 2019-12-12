@@ -51,6 +51,6 @@ EXPERIMENT_NAME = 'CosSimiBCLoss_Adam_lr_1e-3'
 
 # hyperparameters
 EPOCH_NUM = 300
-BATCH_SIZE = 10
+BATCH_SIZE = 30
 LEARNING_RATE = 0.001
 MOMENTUM = 0.9
