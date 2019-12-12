@@ -104,7 +104,7 @@ def train(data_loader, model):
     #
     #             running_loss = 0.0
     #
-    #     save_net_work(net, epoch)
+        save_net_work(net, epoch)
     #
     #     logging.info('Draw loss & tsne onto the tensorboard')
     #     draw_loss_tensorboard(epoch_loss / (DATASET_SIZE['train'] // BATCH_SIZE), epoch, -1, 'train')

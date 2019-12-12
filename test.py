@@ -72,40 +72,40 @@ def test(loader, dataset_type, model, epoch=-1):
         for i, data in enumerate(loader):
             images, labels = data[0].to(DEVICE), data[1].to(DEVICE)
 
-            features, outputs = net(images.float())
-
-            outputs = torch.remainder(outputs, 1)
-
-            if (i * BATCH_SIZE) % TSNE_STEP == 0:
-                add_tsne_data(tsne_data, features[0])
-                add_tsne_label(tsne_labels, labels.clone()[0])
-
-            running_loss += BCMSELoss()(outputs.clone().double(), labels.clone()).item()
-
-            for b in range(BATCH_SIZE):
-                e_percentage = get_error_percentage(outputs[b].clone(), labels[b].clone())
-                error_percentages += e_percentage
-
-            if i % LOG_STEP == LOG_STEP - 1:
-                logging.info('%d-th iter, check some predict value:' % (i * BATCH_SIZE))
-                logging.info('Predict: ' + str(outputs[0]))
-                logging.info('Target:  ' + str(labels[0]) + '\n')
-
-    error_percentages /= (DATASET_SIZE[dataset_type] / 100)
-    running_loss /= (DATASET_SIZE[dataset_type] // BATCH_SIZE)
-
-    logging.info('Finish testing ' + dataset_type + ' dataset, time = ' + str(time.time() - test_start))
-    logging.info('Loss = %.10f' % running_loss)
-    print_error_percentage(error_percentages)
-
-    if epoch > 0:
-        logging.info('Draw error percentage & tsne onto the tensorboard')
-
-        draw_error_percentage_tensorboard(error_percentages, epoch, dataset_type)
-        draw_loss_tensorboard(running_loss, epoch-1, -1, 'test')
-
-        if epoch % TSNE_EPOCH == 1:
-            draw_tsne_tensorboard(np.array(tsne_data), np.array(tsne_labels), epoch, dataset_type)
+    #         features, outputs = net(images.float())
+    #
+    #         outputs = torch.remainder(outputs, 1)
+    #
+    #         if (i * BATCH_SIZE) % TSNE_STEP == 0:
+    #             add_tsne_data(tsne_data, features[0])
+    #             add_tsne_label(tsne_labels, labels.clone()[0])
+    #
+    #         running_loss += BCMSELoss()(outputs.clone().double(), labels.clone()).item()
+    #
+    #         for b in range(BATCH_SIZE):
+    #             e_percentage = get_error_percentage(outputs[b].clone(), labels[b].clone())
+    #             error_percentages += e_percentage
+    #
+    #         if i % LOG_STEP == LOG_STEP - 1:
+    #             logging.info('%d-th iter, check some predict value:' % (i * BATCH_SIZE))
+    #             logging.info('Predict: ' + str(outputs[0]))
+    #             logging.info('Target:  ' + str(labels[0]) + '\n')
+    #
+    # error_percentages /= (DATASET_SIZE[dataset_type] / 100)
+    # running_loss /= (DATASET_SIZE[dataset_type] // BATCH_SIZE)
+    #
+    # logging.info('Finish testing ' + dataset_type + ' dataset, time = ' + str(time.time() - test_start))
+    # logging.info('Loss = %.10f' % running_loss)
+    # print_error_percentage(error_percentages)
+    #
+    # if epoch > 0:
+    #     logging.info('Draw error percentage & tsne onto the tensorboard')
+    #
+    #     draw_error_percentage_tensorboard(error_percentages, epoch, dataset_type)
+    #     draw_loss_tensorboard(running_loss, epoch-1, -1, 'test')
+    #
+    #     if epoch % TSNE_EPOCH == 1:
+    #         draw_tsne_tensorboard(np.array(tsne_data), np.array(tsne_labels), epoch, dataset_type)
 
 
 if __name__ == '__main__':
