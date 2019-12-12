@@ -77,7 +77,7 @@ def train(data_loader, model):
 
         for i, data in enumerate(data_loader):
             inputs, labels = data[0].to(DEVICE), data[1].to(DEVICE)
-            print("labels: {}".format(labels))
+            # print("labels: {}".format(labels))
 
     #         optimizer.zero_grad()
     #
