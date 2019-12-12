@@ -5,7 +5,7 @@
 - And the label(ground truth) is 5 parameters: `c_gamma`, `c_theta`, `c_phi`, `p_theta`, `p_phi`
 - The ranges of this 5 parameters list below:
     - c is about the camera, and p is about the optical axis (which direction the camera look forward).
-    - `c_gamma`: [1.7438903314, 1.7579369712], means the distance between camera and moon in OPENGL unit. The real distance is 200m ~ 10,000m.
+    - `c_gamma`: [1.74308766628, 1.75292031414], means the distance between camera and moon in OPENGL unit. The real distance is 200m ~ 10,000m.
     - `c_theta`: [0, 2pi], means the theta angle of the camera in the ball coordinate of moon.
     - `c_phi`: [0, pi], means the phi angle of the camera in the ball coordinate of moon.
     - `p_theta`: [0, 2pi], means the theta angle of the reference point about the optical axis in the ball coordinate of moon.
