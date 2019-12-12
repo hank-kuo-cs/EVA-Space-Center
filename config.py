@@ -13,7 +13,7 @@ DEVICE = 'cuda' if torch.cuda.is_available() else 'cpu'
 NET_MODEL = ResNet18
 
 # Dataset
-DATASET_NAME = 'Dataset_all_random'
+DATASET_NAME = 'Dataset_all_random_2'
 LABEL_TYPE = ['c_gamma', 'c_theta', 'c_phi', 'p_gamma', 'p_theta', 'p_phi', 'u_x', 'u_y', 'u_z']
 LABEL_NUM = len(LABEL_TYPE)
 DATASET_TYPE = {'train', 'test', 'validation'}

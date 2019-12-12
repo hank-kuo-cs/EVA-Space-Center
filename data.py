@@ -32,7 +32,7 @@ def decompress_targz_file(mode, file):
     if mode == 'train':
         lv1_dir = file
         for i in range(10):
-            file_path = os.path.join(DATASET_PATH, mode, 'images', file + '_{}.tar.gz'.format(i))
+            file_path = os.path.join(DATASET_PATH, file + '_{}.tar.gz'.format(i))
             check_directory(os.path.join(DATASET_PATH, mode, 'images', lv1_dir, file + '_{}'.format(i)))
             extract_dir = os.path.join(DATASET_PATH, mode, 'images', lv1_dir, file + '_{}'.format(i))
             shutil.unpack_archive(file_path, extract_dir, 'gztar')
@@ -40,7 +40,7 @@ def decompress_targz_file(mode, file):
     else:
         lv1_dir = '0'
         for i in range(10):
-            file_path = os.path.join(DATASET_PATH, mode, 'images', '0_{}.tar.gz'.format(i))
+            file_path = os.path.join(DATASET_PATH, file + '_{}.tar.gz'.format(i))
             check_directory(os.path.join(DATASET_PATH, mode, 'images', lv1_dir, '0_{}'.format(i)))
             extract_dir = os.path.join(DATASET_PATH, mode, 'images', lv1_dir, '0_{}'.format(i))
             shutil.unpack_archive(file_path, extract_dir, 'gztar')
