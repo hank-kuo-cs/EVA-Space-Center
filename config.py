@@ -23,7 +23,7 @@ DATASET_SIZE = {'train': 1000, 'test': 10000, 'validation': 10000}
 
 # PATH
 CONSTANT_PENALITY_MODE = 'dcp'  # 'dcp', 'cp', 'little_cp', 'no_cp'
-SAVE_POINT = 'ResNet_CosSimiBCLoss'
+SAVE_POINT = 'find_defect_images'
 DATASET_PATH = '/data/space/' + DATASET_NAME
 WRITER_PATH = os.path.expanduser('~') + '/Tensorboard/' + SAVE_POINT
 
