@@ -103,7 +103,7 @@ class MoonDataset(Dataset):
         image = load_image(image_path)
 
         image_name = remove_filename_extension(path_leaf(image_path))
-        label = np.array(read_json(self.label_files[file_index_lv1])[image_name], dtype=np.double)
+        label = np.array(read_json(self.label_files[file_index_lv1])[image_name]['spherical'], dtype=np.double)
         label = normalize_label(label)
 
         transform = transforms.Compose([
@@ -137,7 +137,7 @@ class MoonDataset(Dataset):
         return image_files, label_files
 
 
-if __name__ == '__main__':
-    decompress_targz_file("test", str(8))
-    for i in range(8):
-        decompress_targz_file("train", str(i))
+# if __name__ == '__main__':
+#     decompress_targz_file("test", str(8))
+#     for i in range(8):
+#         decompress_targz_file("train", str(i))
