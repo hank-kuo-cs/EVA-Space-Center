@@ -9,7 +9,7 @@ from torch.utils.data import Dataset
 from torchvision import transforms
 from config import *
 # Truncated Images allow
-ImageFile.LOAD_TRUNCATED_IMAGES = True
+# ImageFile.LOAD_TRUNCATED_IMAGES = True
 
 
 def check_directory(directory):
@@ -70,16 +70,21 @@ def remove_filename_extension(base_name):
 
 
 def load_image(img_path):
-    ImageFile.LOAD_TRUNCATED_IMAGES = True
+    # ImageFile.LOAD_TRUNCATED_IMAGES = True
     # print(img_path)
     img = cv2.imread(img_path, cv2.IMREAD_GRAYSCALE)
-    if img is None:
-        print(img_path)
-        img = np.array(Image.open(img_path).convert('L'))
-        print(img.shape)
-        logging.info('cv2.imread() return None, Use PIL instead')
-    img = cv2.pyrDown(img)
-    img = cv2.equalizeHist(img)
+
+    try:
+        img = cv2.pyrDown(img)
+        img = cv2.equalizeHist(img)
+    except Exception as e:
+        logging.error('Error: ' + str(e))
+        logging.error('Image path = ' + str(img_path))
+    # if img is None:
+    #     print(img_path)
+    #     img = np.array(Image.open(img_path).convert('L'))
+    #     print(img.shape)
+    #     logging.info('cv2.imread() return None, Use PIL instead')
 
     return img / 255
 

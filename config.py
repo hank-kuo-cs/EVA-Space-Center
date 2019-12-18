@@ -19,7 +19,7 @@ LABEL_NUM = len(LABEL_TYPE)
 DATASET_TYPE = {'train', 'test', 'validation'}
 LV_1_SPLIT_DATASET_SIZE = {'train': 1000, 'test': 10000, 'validation': 10000}
 LV_2_SPLIT_DATASET_SIZE = {'train': 1000, 'test': 1000, 'validation': 1000}
-DATASET_SIZE = {'train': 1000, 'test': 10000, 'validation': 10000}
+DATASET_SIZE = {'train': 80000, 'test': 10000, 'validation': 10000}
 
 # PATH
 CONSTANT_PENALITY_MODE = 'dcp'  # 'dcp', 'cp', 'little_cp', 'no_cp'
