@@ -27,6 +27,7 @@ def get_error_percentage(output, target):
     dist = get_gamma(output)
 
     gamma_error = abs(dist - c_gamma)
+    gamma_error = (gamma_error - GAMMA_RADIUS) / GAMMA_RANGE
 
     # for i in range(1, 3):
     #     output[i] = output[i] % 1
