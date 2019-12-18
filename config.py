@@ -51,6 +51,6 @@ EXPERIMENT_NAME = 'find_defect_image'
 
 # hyperparameters
 EPOCH_NUM = 300
-BATCH_SIZE = 10
+BATCH_SIZE = 300
 LEARNING_RATE = 0.001
 MOMENTUM = 0.9
