@@ -6,7 +6,7 @@ from config import BATCH_SIZE, LABEL_TYPE, LABEL_NUM, GAMMA_RANGE, GAMMA_RADIUS
 def get_error_percentage(output, target):
     output = output.double()
 
-    error_percentage = (abs(output - target[:3])).item()
+    error_percentage = (abs(output - target[:3])).numpy()
 
     c_gamma = target[3]
 
