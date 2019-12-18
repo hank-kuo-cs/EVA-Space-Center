@@ -6,7 +6,7 @@ from net import VGG19, ResNet18, ResNet50
 
 # Basic Setting
 logging.basicConfig(level=logging.INFO, format='%(asctime)s %(levelname)-8s %(message)s', datefmt='%m-%d %H:%M:%S')
-os.environ['CUDA_VISIBLE_DEVICES'] = '3'
+os.environ['CUDA_VISIBLE_DEVICES'] = '2'
 IS_PARALLEL = False
 PARALLEL_GPUS = [0, 2, 3]
 DEVICE = 'cuda' if torch.cuda.is_available() else 'cpu'
