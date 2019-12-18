@@ -5,14 +5,17 @@ from config import BATCH_SIZE, LABEL_TYPE, LABEL_NUM, GAMMA_RANGE, GAMMA_RADIUS
 
 def get_error_percentage(output, target):
     output = output.double()
+    error_percentage = []
 
-    error_percentage = (abs(output - target[:3])).numpy()
+    for i in range(LABEL_NUM):
+        error = (abs(output[i] - target[i])).item()
+        error_percentage.append(error)
 
-    c_gamma = target[3]
+    c_gamma = target[3].item()
 
     dist = 0
     for i in range(LABEL_NUM):
-        dist += (output[i] * (GAMMA_RANGE + GAMMA_RADIUS)) ** 2
+        dist += ((output[i] * (GAMMA_RANGE + GAMMA_RADIUS)) ** 2).item()
 
     dist = np.array(dist)
     dist = np.sqrt(dist)
