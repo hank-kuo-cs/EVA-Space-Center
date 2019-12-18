@@ -8,7 +8,7 @@ from glob import glob
 
 from config import DATASET_SIZE, TSNE_STEP, TSNE_EPOCH, BATCH_SIZE, LABEL_TYPE, LABEL_NUM, NET_MODEL, DEVICE, LOG_STEP
 from data import MoonDataset
-from loss import get_error_percentage, MoonLoss
+from loss import get_error_percentage, MoonLoss, get_gamma
 from visualize import draw_error_percentage_tensorboard, draw_tsne_tensorboard, draw_loss_tensorboard, add_tsne_label, add_tsne_data
 
 
@@ -91,7 +91,7 @@ def test(loader, dataset_type, model, epoch=-1):
 
             if i % LOG_STEP == LOG_STEP - 1:
                 logging.info('%d-th iter, check some predict value:' % (i * BATCH_SIZE))
-                logging.info('Predict: ' + str(outputs[0]))
+                logging.info('Predict: ' + str(outputs[0]) + str(get_gamma(outputs[0])))
                 logging.info('Target: ' + str(labels[0]) + '\n')
 
     error_percentages /= (DATASET_SIZE[dataset_type] / 100)

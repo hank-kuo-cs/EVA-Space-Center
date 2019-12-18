@@ -3,6 +3,17 @@ import torch
 from config import BATCH_SIZE, LABEL_TYPE, LABEL_NUM, GAMMA_RANGE, GAMMA_RADIUS
 
 
+def get_gamma(output):
+    dist = 0
+    for i in range(LABEL_NUM):
+        dist += ((output[i] * (GAMMA_RANGE + GAMMA_RADIUS)) ** 2).item()
+
+    dist = np.array(dist)
+    dist = np.sqrt(dist)
+
+    return dist
+
+
 def get_error_percentage(output, target):
     output = output.double()
     error_percentage = []
@@ -13,12 +24,7 @@ def get_error_percentage(output, target):
 
     c_gamma = target[3].item()
 
-    dist = 0
-    for i in range(LABEL_NUM):
-        dist += ((output[i] * (GAMMA_RANGE + GAMMA_RADIUS)) ** 2).item()
-
-    dist = np.array(dist)
-    dist = np.sqrt(dist)
+    dist = get_gamma(output)
 
     gamma_error = abs(dist - c_gamma)
 
