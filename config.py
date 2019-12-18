@@ -47,7 +47,7 @@ CONSTANT_WEIGHT = 20000
 LOG_STEP = 100
 TSNE_EPOCH = 50
 TSNE_STEP = 20
-EXPERIMENT_NAME = 'CosSimiBCLoss_Adam_lr_1e-3'
+EXPERIMENT_NAME = 'find_defect_image'
 
 # hyperparameters
 EPOCH_NUM = 300
