@@ -3,6 +3,7 @@ import cv2
 import json
 import torch
 import random
+import logging
 import numpy as np
 from glob import glob
 from torch.utils.data import Dataset
@@ -26,7 +27,12 @@ def load_label(label_path, image_name):
 
 def load_image(img_path):
     img = cv2.imread(img_path, cv2.IMREAD_GRAYSCALE)
-    img = cv2.pyrDown(img)
+    try:
+        img = cv2.pyrDown(img)
+    except Exception as e:
+        logging.error('Load image error: %s' % str(e))
+        logging.error('Image path = %s' % img_path)
+        return np.zeros((300, 400), dtype=np.float)
 
     augmentation = [cv2.equalizeHist, sobel, original]
     n = random.randint(0, 2)

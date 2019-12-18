@@ -100,7 +100,6 @@ def train(data_loader, model):
 
             if i % LOG_STEP == LOG_STEP - 1:
                 running_loss /= LOG_STEP
-
                 logging.info('[%d epoch, %5d step] loss: %.6f' % (epoch + 1, i + 1, running_loss))
                 draw_loss_tensorboard(running_loss, epoch, i + 1, 'train')
 
