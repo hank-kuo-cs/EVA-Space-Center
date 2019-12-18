@@ -76,13 +76,13 @@ def train(data_loader, model):
         running_loss, epoch_loss = 0.0, 0.0
 
         for i, data in enumerate(data_loader):
-            # inputs, labels = data[0].to(DEVICE), data[1].to(DEVICE)
+            inputs, labels = data[0].to(DEVICE), data[1].to(DEVICE)
             # print("labels: {}".format(labels))
-            try:
-                inputs, labels = data[0].to(DEVICE), data[1].to(DEVICE)
-            except Exception as e:
-                logging.error('Error: ' + str(e))
-                logging.error('tensor size = ' + inputs.size())
+            # try:
+            #     inputs, labels = data[0].to(DEVICE), data[1].to(DEVICE)
+            # except Exception as e:
+            #     logging.error('Error: ' + str(e))
+            #     logging.error('tensor size = ' + inputs.size())
 
             optimizer.zero_grad()
 
