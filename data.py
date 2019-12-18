@@ -13,14 +13,16 @@ from config import GAMMA_RADIUS, GAMMA_RANGE, SPLIT_DATASET_SIZE, DATASET_SIZE, 
 def load_label(label_path, image_name):
     with open(label_path, 'r') as f:
         labels = json.load(f)
-    label = labels[image_name]
-    label = label[:3] + label[4:6]
+    c_gamma = labels[image_name]['spherical'][0]
+    label = labels[image_name]['cartesian'][:3]
+    label.append(c_gamma)
     label = np.array(label, dtype=np.double)
 
-    label[0] = (label[0] - GAMMA_RADIUS) / GAMMA_RANGE
-
-    for i in range(1, 5):
-        label[i] /= 2 * np.pi
+    for i in range(4):
+        if label[i] < 0:
+            label[i] = (label[i] + GAMMA_RADIUS) / GAMMA_RANGE
+        else:
+            label[i] = (label[i] - GAMMA_RADIUS) / GAMMA_RANGE
 
     return label
 
@@ -32,7 +34,7 @@ def load_image(img_path):
     augmentation = [cv2.equalizeHist, sobel, original]
     n = random.randint(0, 2)
 
-    img = augmentation[n](img)
+    img = augmentation[0](img)
 
     return img / 255
 

@@ -102,7 +102,7 @@ def train(data_loader, model):
                 running_loss /= LOG_STEP
 
                 logging.info('[%d epoch, %5d step] loss: %.6f' % (epoch + 1, i + 1, running_loss))
-                draw_loss_tensorboard(running_loss, epoch, i, 'train')
+                draw_loss_tensorboard(running_loss, epoch, i + 1, 'train')
 
                 running_loss = 0.0
 
@@ -111,8 +111,8 @@ def train(data_loader, model):
         logging.info('Draw loss & tsne onto the tensorboard')
         draw_loss_tensorboard(epoch_loss / (DATASET_SIZE['train'] // BATCH_SIZE), epoch, -1, 'train')
 
-        if epoch % TSNE_EPOCH == TSNE_EPOCH - 1:
-            draw_tsne_tensorboard(np.array(tsne_data), np.array(tsne_labels), epoch + 1, 'train')
+        # if epoch % TSNE_EPOCH == TSNE_EPOCH - 1:
+            # draw_tsne_tensorboard(np.array(tsne_data), np.array(tsne_labels), epoch + 1, 'train')
 
         logging.info('Finish one epoch, time = %s' % str(time.time() - epoch_start))
 

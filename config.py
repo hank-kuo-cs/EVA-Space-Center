@@ -13,11 +13,11 @@ DEVICE = 'cuda' if torch.cuda.is_available() else 'cpu'
 NET_MODEL = VGG19
 
 # PATH
-DATASET_PATH = '/data/space/Dataset_all_random/'
-WRITER_PATH = os.path.expanduser('~') + '/ShowTensorboard/five_parameters_augmentation'
+DATASET_PATH = '/data/space/Dataset_all_random_2/'
+WRITER_PATH = os.path.expanduser('~') + '/ShowTensorboard/xyz_gamma'
 
 # Dataset
-LABEL_TYPE = ['c_gamma', 'c_theta', 'c_phi', 'p_theta', 'p_phi']
+LABEL_TYPE = ['c_x', 'c_y', 'c_z']
 LABEL_NUM = len(LABEL_TYPE)
 DATASET_TYPE = {'train', 'test', 'validation'}
 SPLIT_DATASET_SIZE = {'train': 10000, 'test': 10000, 'validation': 10000}

@@ -8,7 +8,7 @@ from glob import glob
 
 from config import DATASET_SIZE, TSNE_STEP, TSNE_EPOCH, BATCH_SIZE, LABEL_TYPE, LABEL_NUM, NET_MODEL, DEVICE, LOG_STEP
 from data import MoonDataset
-from loss import get_error_percentage, MoonLoss
+from loss import get_error_percentage, get_gamma_error_pencentage, MoonLoss
 from visualize import draw_error_percentage_tensorboard, draw_tsne_tensorboard, draw_loss_tensorboard, add_tsne_label, add_tsne_data
 
 
@@ -67,6 +67,7 @@ def test(loader, dataset_type, model, epoch=-1):
     test_start = time.time()
 
     error_percentages = np.zeros(LABEL_NUM, dtype=np.double)
+    gamma_error = 0
     tsne_data, tsne_labels = [], []
     running_loss = 0.0
 
@@ -86,26 +87,31 @@ def test(loader, dataset_type, model, epoch=-1):
                 e_percentage = get_error_percentage(outputs[b].clone(), labels[b].clone())
                 error_percentages += e_percentage
 
+                g_error = get_gamma_error_pencentage(outputs[b].clone(), labels[b][3].clone())
+                gamma_error += g_error
+
             if i % LOG_STEP == LOG_STEP - 1:
                 logging.info('%d-th iter, check some predict value:' % (i * BATCH_SIZE))
                 logging.info('Predict: ' + str(outputs[0]))
                 logging.info('Target: ' + str(labels[0]) + '\n')
 
     error_percentages /= (DATASET_SIZE[dataset_type] / 100)
+    g_error /= (DATASET_SIZE[dataset_type] / 100)
     running_loss /= (DATASET_SIZE[dataset_type] // BATCH_SIZE)
 
     logging.info('Finish testing ' + dataset_type + ' dataset, time = ' + str(time.time() - test_start))
     logging.info('Loss = %.10f' % running_loss)
     print_error_percentage(error_percentages)
+    logging.info('Gamma error percentage = %s' % str(gamma_error))
 
     if epoch > 0:
         logging.info('Draw error percentage & tsne onto the tensorboard')
 
-        draw_error_percentage_tensorboard(error_percentages, epoch, dataset_type)
+        # draw_error_percentage_tensorboard(error_percentages, epoch, dataset_type)
         draw_loss_tensorboard(running_loss, epoch-1, -1, 'test')
 
-        if epoch % TSNE_EPOCH == 1:
-            draw_tsne_tensorboard(np.array(tsne_data), np.array(tsne_labels), epoch, dataset_type)
+        # if epoch % TSNE_EPOCH == 1:
+            # draw_tsne_tensorboard(np.array(tsne_data), np.array(tsne_labels), epoch, dataset_type)
 
 
 if __name__ == '__main__':
