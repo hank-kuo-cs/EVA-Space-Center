@@ -18,11 +18,8 @@ def load_label(label_path, image_name):
     label.append(c_gamma)
     label = np.array(label, dtype=np.double)
 
-    for i in range(4):
-        if label[i] < 0:
-            label[i] = (label[i] + GAMMA_RADIUS) / GAMMA_RANGE
-        else:
-            label[i] = (label[i] - GAMMA_RADIUS) / GAMMA_RANGE
+    for i in range(3):
+        label[i] /= GAMMA_RADIUS + GAMMA_RANGE
 
     return label
 

@@ -1,6 +1,6 @@
 import numpy as np
 import torch
-from config import BATCH_SIZE, LABEL_TYPE, LABEL_NUM
+from config import BATCH_SIZE, LABEL_TYPE, LABEL_NUM, GAMMA_RANGE, GAMMA_RADIUS
 
 
 def get_error_percentage(output, target):
@@ -28,7 +28,7 @@ def get_gamma_error_pencentage(output, c_gamma):
 
     dist = 0
     for i in range(LABEL_NUM):
-        dist += output[i] ** 2
+        dist += (output[i] * (GAMMA_RANGE + GAMMA_RADIUS)) ** 2
 
     dist = np.array(dist)
     dist = np.sqrt(dist)
@@ -71,8 +71,5 @@ class MoonLoss(torch.nn.Module):
         super(MoonLoss, self).__init__()
 
     def forward(self, outputs, targets):
-        # for i in range(BATCH_SIZE):
-        #     targets[i] = targets[i][:3]
-
-        loss = torch.nn.MSELoss()(outputs, targets[:][:3])
+        loss = torch.nn.MSELoss()(outputs, targets[:, :3])
         return loss
