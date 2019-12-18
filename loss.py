@@ -8,6 +8,17 @@ def get_error_percentage(output, target):
 
     error_percentage = (abs(output - target[:3])).item()
 
+    c_gamma = target[3]
+
+    dist = 0
+    for i in range(LABEL_NUM):
+        dist += (output[i] * (GAMMA_RANGE + GAMMA_RADIUS)) ** 2
+
+    dist = np.array(dist)
+    dist = np.sqrt(dist)
+
+    gamma_error = abs(dist - c_gamma)
+
     # for i in range(1, 3):
     #     output[i] = output[i] % 1
     #
@@ -20,22 +31,7 @@ def get_error_percentage(output, target):
     #     dis = abs(output[i] - target[i])
     #     error_percentage[i] = (1 - dis).item() if dis > 0.5 else dis.item()
 
-    return np.array(error_percentage)
-
-
-def get_gamma_error_pencentage(output, c_gamma):
-    output = output.double()
-
-    dist = 0
-    for i in range(LABEL_NUM):
-        dist += (output[i] * (GAMMA_RANGE + GAMMA_RADIUS)) ** 2
-
-    dist = np.array(dist)
-    dist = np.sqrt(dist)
-
-    error = abs(dist - c_gamma)
-
-    return error
+    return np.array(error_percentage), gamma_error
 
 
 class BCMSELoss(torch.nn.Module):
