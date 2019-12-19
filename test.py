@@ -6,7 +6,8 @@ import numpy as np
 from torch.utils.data import DataLoader
 from glob import glob
 
-from config import DATASET_SIZE, TSNE_STEP, TSNE_EPOCH, BATCH_SIZE, LABEL_TYPE, LABEL_NUM, NET_MODEL, DEVICE, LOG_STEP
+from config import DATASET_SIZE, TSNE_STEP, TSNE_EPOCH, BATCH_SIZE, \
+    LABEL_TYPE, LABEL_NUM, NET_MODEL, DEVICE, LOG_STEP, IS_PARALLEL, PARALLEL_GPUS
 from data import MoonDataset
 from loss import get_error_percentage, MoonLoss, get_gamma
 from visualize import draw_error_percentage_tensorboard, draw_tsne_tensorboard, draw_loss_tensorboard, add_tsne_label, add_tsne_data
@@ -52,6 +53,8 @@ def print_error_percentage(error_percentage):
 def set_net_work(model):
     logging.info('Set up network')
     net = NET_MODEL().to(DEVICE)
+    if IS_PARALLEL:
+        net = torch.nn.DataParallel(net, device_ids=PARALLEL_GPUS)
 
     if model:
         net.load_state_dict(torch.load(model))
