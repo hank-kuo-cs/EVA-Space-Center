@@ -98,13 +98,13 @@ def test(loader, dataset_type, model, epoch=-1):
                 logging.info('Target: ' + str(labels[0]) + '\n')
 
     error_percentages /= (DATASET_SIZE[dataset_type] / 100)
-    gamma_error_percentages /= (DATASET_SIZE[dataset_type] / 100)
+    gamma_error_percentages /= DATASET_SIZE[dataset_type]
     running_loss /= (DATASET_SIZE[dataset_type] // BATCH_SIZE)
 
     logging.info('Finish testing ' + dataset_type + ' dataset, time = ' + str(time.time() - test_start))
     logging.info('Loss = %.10f' % running_loss)
     print_error_percentage(error_percentages)
-    logging.info('Gamma error percentage = %s' % str(gamma_error))
+    logging.info('Gamma average error = %s km' % str(gamma_error))
 
     if epoch > 0:
         logging.info('Draw error percentage & tsne onto the tensorboard')
