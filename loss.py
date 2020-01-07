@@ -22,12 +22,12 @@ def get_error_percentage(output, target):
         error = (abs(output[i] - target[i])).item()
         error_percentage.append(error)
 
-    c_gamma = target[3].item()
+    # c_gamma = target[0].item()
 
-    dist = get_gamma(output)
+    # dist = get_gamma(output)
 
-    gamma_error = abs(dist - c_gamma)
-    gamma_error *= GAMMA_UNIT
+    gamma_error = abs(output[0] - target[0]).item()
+    # gamma_error *= GAMMA_UNIT
 
     # for i in range(1, 3):
     #     output[i] = output[i] % 1
@@ -77,5 +77,5 @@ class MoonLoss(torch.nn.Module):
         super(MoonLoss, self).__init__()
 
     def forward(self, outputs, targets):
-        loss = torch.nn.MSELoss()(outputs, targets[:, :3])
+        loss = torch.nn.MSELoss()(outputs, targets)
         return loss
