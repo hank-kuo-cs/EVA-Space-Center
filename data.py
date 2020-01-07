@@ -14,7 +14,7 @@ from config import GAMMA_RADIUS, GAMMA_RANGE, SPLIT_DATASET_SIZE, DATASET_SIZE, 
 def load_label(label_path, image_name):
     with open(label_path, 'r') as f:
         labels = json.load(f)
-    c_gamma = labels[image_name]['spherical'][0]
+    c_gamma = (labels[image_name]['spherical'][0] - GAMMA_RADIUS) / GAMMA_RANGE
     # label = labels[image_name]['cartesian'][:3]
     label = [c_gamma]
     label = np.array(label, dtype=np.double)
