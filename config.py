@@ -10,24 +10,24 @@ if not IS_PARALLEL:
     os.environ['CUDA_VISIBLE_DEVICES'] = '3'
 PARALLEL_GPUS = [0, 2, 3]
 DEVICE = 'cuda' if torch.cuda.is_available() else 'cpu'
-NET_MODEL = VGG19
+NET_MODEL = ResNet50
 
 # PATH
-DATASET_PATH = '/data/space/Dataset_six_random/'
-WRITER_PATH = os.path.expanduser('~') + '/ShowTensorboard/gamma'
+DATASET_PATH = '/data/space/dataset_hank/'
+WRITER_PATH = os.path.expanduser('~') + '/ShowTensorboard/gamma200m-30km'
 
 # Dataset
 LABEL_TYPE = ['c_gamma']
 LABEL_NUM = len(LABEL_TYPE)
 DATASET_TYPE = {'train', 'test', 'validation'}
-SPLIT_DATASET_SIZE = {'train': 20000, 'test': 20000, 'validation': 20000}
+SPLIT_DATASET_SIZE = {'train': 10000, 'test': 10000, 'validation': 10000}
 SUBDIR_NUM = 10
-DATASET_SIZE = {'train': 160000, 'test': 20000, 'validation': 20000}
+DATASET_SIZE = {'train': 80000, 'test': 10000, 'validation': 10000}
 
 # Loss Function
 GAMMA_RADIUS = 1.742887
 GAMMA_UNIT = 996.679647
-GAMMA_RANGE = 10 / GAMMA_UNIT
+GAMMA_RANGE = 30 / GAMMA_UNIT
 CONSTANT_WEIGHT = 20000
 
 # Visualization
