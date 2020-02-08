@@ -8,7 +8,7 @@ import numpy as np
 from glob import glob
 from torch.utils.data import Dataset
 from torchvision import transforms
-from config import GAMMA_RADIUS, GAMMA_RANGE, SPLIT_DATASET_SIZE, DATASET_SIZE, DATASET_PATH, SUBDIR_NUM
+from config import GAMMA_RADIUS, GAMMA_RANGE, SPLIT_DATASET_SIZE, DATASET_SIZE, DATASET_PATH, SUBDIR_NUM, DATASET_NAME
 
 
 def load_label(label_path, image_name):
@@ -91,7 +91,7 @@ class MoonDataset(Dataset):
 
         for i in range(dir_num):
             for j in range(SUBDIR_NUM):
-                imgs_path = dataset_path + '/images/' + '%d/%d_%d' % (i, i, j) + '/Dataset*'
+                imgs_path = dataset_path + '/images/' + '%d/%d_%d/' % (i, i, j) + DATASET_NAME + '*'
                 image_files += (sorted(glob(imgs_path)))
 
         labels_path = dataset_path + '/labels/target*'
