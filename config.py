@@ -13,7 +13,7 @@ DEVICE = 'cuda' if torch.cuda.is_available() else 'cpu'
 NET_MODEL = ResNet50
 
 # PATH
-DATASET_NAME = 'dateset_hank'
+DATASET_NAME = 'dataset_hank'
 DATASET_PATH = '/data/space/%s/' % DATASET_NAME
 WRITER_PATH = os.path.expanduser('~') + '/ShowTensorboard/gamma200m-30km'
 
