@@ -3,7 +3,6 @@ import time
 import torch
 import argparse
 import logging
-import numpy as np
 from glob import glob
 from torch.utils.data import DataLoader
 
