@@ -22,24 +22,7 @@ def get_error_percentage(output, target):
         error = (abs(output[i] - target[i])).item()
         error_percentage.append(error)
 
-    # c_gamma = target[0].item()
-
-    # dist = get_gamma(output)
-
     gamma_error = abs(output[0] - target[0]).item()
-    # gamma_error *= GAMMA_UNIT
-
-    # for i in range(1, 3):
-    #     output[i] = output[i] % 1
-    #
-    #     dis = abs(output[i] - target[i])
-    #     error_percentage[i] = (1 - dis).item() if dis > 0.5 else dis.item()
-    #
-    # for i in range(3, 5):
-    #     output[i] = output[i] % 1
-    #
-    #     dis = abs(output[i] - target[i])
-    #     error_percentage[i] = (1 - dis).item() if dis > 0.5 else dis.item()
 
     return np.array(error_percentage), gamma_error
 
