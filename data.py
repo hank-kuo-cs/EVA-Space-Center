@@ -30,9 +30,7 @@ def load_image(img_path):
     try:
         img = cv2.pyrDown(img)
     except Exception as e:
-        logging.error('Load image error: %s' % str(e))
-        logging.error('Image path = %s' % img_path)
-        return False
+        raise ValueError('Load image error (%s), %s' % (img_path, str(e)))
 
     augmentation = [cv2.equalizeHist, sobel, original]
     n = random.randint(0, 2)
@@ -65,10 +63,12 @@ class MoonDataset(Dataset):
 
     def __getitem__(self, item):
         image_path = self.image_files[item]
-        image = load_image(image_path)
-        if not image:
+        try:
+            image = load_image(image_path)
+        except ValueError as e:
             image_path = self.image_files[item-1]
             image = load_image(image_path)
+            logging.error(str(e))
 
         image_name = re.split('/', image_path)[-1][:-4]
         target_num = item // SPLIT_DATASET_SIZE[self.data_type]
