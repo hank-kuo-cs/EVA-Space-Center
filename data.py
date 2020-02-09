@@ -32,7 +32,7 @@ def load_image(img_path):
     except Exception as e:
         logging.error('Load image error: %s' % str(e))
         logging.error('Image path = %s' % img_path)
-        return np.zeros((300, 400), dtype=np.float)
+        return False
 
     augmentation = [cv2.equalizeHist, sobel, original]
     n = random.randint(0, 2)
@@ -66,6 +66,9 @@ class MoonDataset(Dataset):
     def __getitem__(self, item):
         image_path = self.image_files[item]
         image = load_image(image_path)
+        if not image:
+            image_path = self.image_files[item-1]
+            image = load_image(image_path)
 
         image_name = re.split('/', image_path)[-1][:-4]
         target_num = item // SPLIT_DATASET_SIZE[self.data_type]
