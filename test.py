@@ -73,6 +73,7 @@ def test(loader, dataset_type, model, epoch=-1):
     error_percentages = np.zeros(LABEL_NUM, dtype=np.double)
     gamma_error_percentages = 0
     gamma_error_small_than_10km_percentages = 0
+    gamma_error_small_than_10km_count = 0
     tsne_data, tsne_labels = [], []
     running_loss = 0.0
 
@@ -96,6 +97,7 @@ def test(loader, dataset_type, model, epoch=-1):
 
                 if labels[b].clone()[0].item() <= 0.125:
                     gamma_error_small_than_10km_percentages += gamma_error
+                    gamma_error_small_than_10km_count += 1
 
             if i % LOG_STEP == LOG_STEP - 1:
                 logging.info('%d-th iter, check some predict value:' % (i * BATCH_SIZE))
@@ -104,7 +106,7 @@ def test(loader, dataset_type, model, epoch=-1):
 
     error_percentages /= (DATASET_SIZE[dataset_type] / 100)
     # gamma_error_percentages /= DATASET_SIZE[dataset_type]
-    gamma_error_small_than_10km_percentages /= (DATASET_SIZE[dataset_type] / 100)
+    gamma_error_small_than_10km_percentages /= (gamma_error_small_than_10km_count / 100)
     running_loss /= (DATASET_SIZE[dataset_type] // BATCH_SIZE)
 
     logging.info('Finish testing ' + dataset_type + ' dataset, time = ' + str(time.time() - test_start))
