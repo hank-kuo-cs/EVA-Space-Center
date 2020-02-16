@@ -20,9 +20,9 @@ WRITER_PATH = os.path.expanduser('~') + '/ShowTensorboard/densenet_80km'
 LABEL_TYPE = ['c_gamma']
 LABEL_NUM = len(LABEL_TYPE)
 DATASET_TYPE = {'train', 'test', 'validation'}
-SPLIT_DATASET_SIZE = {'train': 10000, 'test': 10000, 'validation': 10000}
+SPLIT_DATASET_SIZE = {'train': 20000, 'test': 20000, 'validation': 20000}
 SUBDIR_NUM = 10
-DATASET_SIZE = {'train': 80000, 'test': 10000, 'validation': 10000}
+DATASET_SIZE = {'train': 160000, 'test': 20000, 'validation': 20000}
 
 # Loss Function
 GAMMA_RADIUS = 1.742887
