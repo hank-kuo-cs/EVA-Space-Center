@@ -40,14 +40,14 @@ def get_all_model():
 
 
 def print_error_percentage(error_percentage):
-    total_error_percentage = 0
+    gamma_km_error = 0
 
-    for i in range(LABEL_NUM):
-        logging.info('%s error percentage: ' % LABEL_TYPE[i] + str(error_percentage[i]))
+    logging.info('%s error percentage (80km): ' % LABEL_TYPE[0] + str(error_percentage[0]))
+    logging.info('%s error percentage (10km): ' % LABEL_TYPE[0] + str(error_percentage[0] * 80 / 10))
 
-        total_error_percentage += error_percentage[i] / LABEL_NUM
+    gamma_km_error = error_percentage[0] * 80
 
-    logging.info('total error percentage: ' + str(total_error_percentage))
+    logging.info('gamma error km: ' + str(gamma_km_error))
 
 
 def set_net_work(model):
@@ -70,7 +70,6 @@ def test(loader, dataset_type, model, epoch=-1):
     test_start = time.time()
 
     error_percentages = np.zeros(LABEL_NUM, dtype=np.double)
-    gamma_error_percentages = 0
     tsne_data, tsne_labels = [], []
     running_loss = 0.0
 
@@ -87,10 +86,8 @@ def test(loader, dataset_type, model, epoch=-1):
             running_loss += MoonLoss()(outputs.clone().double(), labels.clone()).item()
 
             for b in range(BATCH_SIZE):
-                e_percentage, gamma_error = get_error_percentage(outputs[b].clone(), labels[b].clone())
+                e_percentage = get_error_percentage(outputs[b].clone(), labels[b].clone())
                 error_percentages += e_percentage
-
-                gamma_error_percentages += gamma_error
 
             if i % LOG_STEP == LOG_STEP - 1:
                 logging.info('%d-th iter, check some predict value:' % (i * BATCH_SIZE))
@@ -98,13 +95,11 @@ def test(loader, dataset_type, model, epoch=-1):
                 logging.info('Target: ' + str(labels[0]) + '\n')
 
     error_percentages /= (DATASET_SIZE[dataset_type] / 100)
-    gamma_error_percentages /= DATASET_SIZE[dataset_type]
     running_loss /= (DATASET_SIZE[dataset_type] // BATCH_SIZE)
 
     logging.info('Finish testing ' + dataset_type + ' dataset, time = ' + str(time.time() - test_start))
     logging.info('Loss = %.10f' % running_loss)
     print_error_percentage(error_percentages)
-    logging.info('Gamma average error = %s km' % str(gamma_error_percentages))
 
     if epoch > 0:
         logging.info('Draw error percentage & tsne onto the tensorboard')
