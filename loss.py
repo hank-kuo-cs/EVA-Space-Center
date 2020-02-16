@@ -3,17 +3,6 @@ import torch
 from config import BATCH_SIZE, LABEL_TYPE, LABEL_NUM, GAMMA_RANGE, GAMMA_RADIUS, GAMMA_UNIT
 
 
-def get_gamma(output):
-    dist = 0
-    for i in range(LABEL_NUM):
-        dist += ((output[i] * (GAMMA_RANGE + GAMMA_RADIUS)) ** 2).item()
-
-    dist = np.array(dist)
-    dist = np.sqrt(dist)
-
-    return dist
-
-
 def get_error_percentage(output, target):
     output = output.double()
     error_percentage = []
@@ -22,26 +11,7 @@ def get_error_percentage(output, target):
         error = (abs(output[i] - target[i])).item()
         error_percentage.append(error)
 
-    c_gamma = target[3].item()
-
-    dist = get_gamma(output)
-
-    gamma_error = abs(dist - c_gamma)
-    gamma_error *= GAMMA_UNIT
-
-    # for i in range(1, 3):
-    #     output[i] = output[i] % 1
-    #
-    #     dis = abs(output[i] - target[i])
-    #     error_percentage[i] = (1 - dis).item() if dis > 0.5 else dis.item()
-    #
-    # for i in range(3, 5):
-    #     output[i] = output[i] % 1
-    #
-    #     dis = abs(output[i] - target[i])
-    #     error_percentage[i] = (1 - dis).item() if dis > 0.5 else dis.item()
-
-    return np.array(error_percentage), gamma_error
+    return np.array(error_percentage)
 
 
 class BCMSELoss(torch.nn.Module):
@@ -77,5 +47,5 @@ class MoonLoss(torch.nn.Module):
         super(MoonLoss, self).__init__()
 
     def forward(self, outputs, targets):
-        loss = torch.nn.MSELoss()(outputs, targets[:, :3])
+        loss = torch.nn.MSELoss()(outputs, targets)
         return loss
