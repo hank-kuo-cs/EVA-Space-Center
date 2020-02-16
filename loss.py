@@ -77,5 +77,5 @@ class MoonLoss(torch.nn.Module):
         super(MoonLoss, self).__init__()
 
     def forward(self, outputs, targets):
-        loss = torch.nn.MSELoss()(outputs, targets[:, :3])
+        loss = torch.nn.MSELoss()(outputs, targets)
         return loss
