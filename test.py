@@ -70,6 +70,7 @@ def test(loader, dataset_type, model, epoch=-1):
     test_start = time.time()
 
     error_percentages = np.zeros(LABEL_NUM, dtype=np.double)
+    error_percentages_10km = np.zeros(LABEL_NUM, dtype=np.double)
     tsne_data, tsne_labels = [], []
     running_loss = 0.0
 
@@ -89,12 +90,15 @@ def test(loader, dataset_type, model, epoch=-1):
                 e_percentage = get_error_percentage(outputs[b].clone(), labels[b].clone())
                 error_percentages += e_percentage
 
+                error_percentages_10km += e_percentage * 80 / 10
+
             if i % LOG_STEP == LOG_STEP - 1:
                 logging.info('%d-th iter, check some predict value:' % (i * BATCH_SIZE))
                 logging.info('Predict: ' + str(outputs[0]) + str(get_gamma(outputs[0])))
                 logging.info('Target: ' + str(labels[0]) + '\n')
 
     error_percentages /= (DATASET_SIZE[dataset_type] / 100)
+    error_percentages_10km /= (DATASET_SIZE[dataset_type] / 100)
     running_loss /= (DATASET_SIZE[dataset_type] // BATCH_SIZE)
 
     logging.info('Finish testing ' + dataset_type + ' dataset, time = ' + str(time.time() - test_start))
@@ -104,7 +108,7 @@ def test(loader, dataset_type, model, epoch=-1):
     if epoch > 0:
         logging.info('Draw error percentage & tsne onto the tensorboard')
 
-        # draw_error_percentage_tensorboard(error_percentages, epoch, dataset_type)
+        draw_error_percentage_tensorboard(error_percentages_10km, epoch, dataset_type)
         draw_loss_tensorboard(running_loss, epoch-1, -1, 'test')
 
         # if epoch % TSNE_EPOCH == 1:
