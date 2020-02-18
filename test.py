@@ -9,7 +9,7 @@ from glob import glob
 from config import DATASET_SIZE, TSNE_STEP, TSNE_EPOCH, BATCH_SIZE, \
     LABEL_TYPE, LABEL_NUM, NET_MODEL, DEVICE, LOG_STEP, IS_PARALLEL, PARALLEL_GPUS
 from data import MoonDataset
-from loss import get_error_percentage, MoonLoss, get_gamma
+from loss import get_error_percentage, MoonLoss
 from visualize import draw_error_percentage_tensorboard, draw_tsne_tensorboard, draw_loss_tensorboard, add_tsne_label, add_tsne_data
 
 
@@ -45,7 +45,7 @@ def print_error_percentage(error_percentage):
     logging.info('%s error percentage (80km): ' % LABEL_TYPE[0] + str(error_percentage[0]))
     logging.info('%s error percentage (10km): ' % LABEL_TYPE[0] + str(error_percentage[0] * 80 / 10))
 
-    gamma_km_error = error_percentage[0] * 80
+    gamma_km_error = error_percentage[0] * 80 / 100
 
     logging.info('gamma error km: ' + str(gamma_km_error))
 
@@ -94,7 +94,7 @@ def test(loader, dataset_type, model, epoch=-1):
 
             if i % LOG_STEP == LOG_STEP - 1:
                 logging.info('%d-th iter, check some predict value:' % (i * BATCH_SIZE))
-                logging.info('Predict: ' + str(outputs[0]) + str(get_gamma(outputs[0])))
+                logging.info('Predict: ' + str(outputs[0]))
                 logging.info('Target: ' + str(labels[0]) + '\n')
 
     error_percentages /= (DATASET_SIZE[dataset_type] / 100)
